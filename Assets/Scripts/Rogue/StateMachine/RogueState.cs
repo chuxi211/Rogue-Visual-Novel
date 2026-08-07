@@ -1,0 +1,23 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+namespace StateMachine.Rogue
+{
+    public abstract class RogueState : IState
+    {
+        public RogueStateMachine StateMachine { get; private set; }
+        public RogueState(RogueStateMachine stateMachine)
+        {
+            StateMachine = stateMachine;
+        }
+        public virtual void Enter()
+        {
+            Debug.Log($"CurrentState:{this.GetType()}");
+        }
+
+        public virtual void Exit()
+        {
+            Debug.Log($"ExitState:{this.GetType()}");
+        }
+    }
+}
