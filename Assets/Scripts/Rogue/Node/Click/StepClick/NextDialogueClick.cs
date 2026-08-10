@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class NextDialogueClick : MonoBehaviour,IStepClick,IPointerClickHandler
+public class NextDialogueClick : MonoBehaviour, IStepClick, IPointerClickHandler
 {
     public void Click()
     {

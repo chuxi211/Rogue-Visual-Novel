@@ -1,0 +1,56 @@
+ManifestFileVersion: 0
+CRC: 4202761087
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: e499a0fb91e8a70e84eaf09a091dadb3
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: fb945bd198aefda5bb61899f46d5c69c
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: e499a0fb91e8a70e84eaf09a091dadb3
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 64
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 18a908217084ac341bda6256e8a5bf80, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: f3874aa10058f7c45a8a9abaaf38cf17, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: bb99b96115b64f94183b6f3feaf6bea0, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: a93bd2b60f2e7d642ac140450857925d, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 1a26131d47d6fce408991c401ae25bf4, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 759208eb6a0196f4682a33a58ccc63b5, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: b58e9e5d99057fd43a9502df95114268, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 35609a84228028049adafc2fbdcda9b4, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 63416940cba30a54fa6f9788c94195c8, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 212
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/AssetBundles/ConfigInfos/RogueMaps/LayerMaps/LayerMap_1.asset
+Dependencies: []

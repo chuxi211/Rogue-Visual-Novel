@@ -1,7 +1,4 @@
-using Running;
-using System;
-using System.Collections;
-using System.Collections.Generic;
+using Config;
 using UnityEngine;
 using Utility;
 namespace StateMachine.Node
@@ -9,7 +6,7 @@ namespace StateMachine.Node
     public class NodeStateMachine : StateMachine<NodeState>
     {
         public Running.Node Node { get; private set; }
-        public Step CurrentStep { get; set; }
+        public Running.Step CurrentStep { get; set; }
         public int CurrentStepIndex { get; set; } = 0;
         public NodeStateMachine(Running.Node node)
         {
@@ -46,6 +43,19 @@ namespace StateMachine.Node
             CurrentStepIndex = NextStepIndex;
             CurrentStep = Node.Steps[CurrentStepIndex];
             SwitchState(new AdvanceState(this, CurrentStep));
+        }
+        public void Advance(StepID nextID)
+        {
+            if(Node.StepsMap.TryGetValue(nextID, out Running.Step nextStep))
+            {
+                CurrentStep = nextStep;
+                CurrentStepIndex = Node.Steps.IndexOf(nextStep);
+                SwitchState(new AdvanceState(this, CurrentStep));
+            }
+            else
+            {
+                Debug.LogError($"No step with ID {nextID} found in the node.");
+            }
         }
         public void Complete()
         {

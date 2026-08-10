@@ -8,7 +8,7 @@ namespace Config
     [System.Serializable]
     public class Step:ScriptableObject
     {
-        public string ID;
+        public StepID ID;
         public List<NodeBehaviour> Behaviours;
     }
 }

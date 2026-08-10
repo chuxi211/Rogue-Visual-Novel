@@ -22,7 +22,7 @@ namespace Running
                 Debug.LogError("ConfigStep is null");
                 return null;
             }
-            Step step = new Step();
+            Step step = new Step(configStep.ID);
             configStep.Behaviours.ForEach(bahaviour =>
             {
                 IComponent component = ComponentFactory.BuildComponent(bahaviour);

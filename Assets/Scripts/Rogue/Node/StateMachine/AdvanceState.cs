@@ -21,6 +21,7 @@ namespace StateMachine.Node
         {
             base.Enter();
             EventBus.Subscript<ERequestNextStep>(OnRequestAdvance);
+            EventBus.Subscript<ERequestStepByID>(OnRequestStepByID);
             InputManager.Instance.InputStateMachine.SwitchState(new StepInputState());
             Step.ComponentsList.ForEach(component =>
             {
@@ -35,7 +36,6 @@ namespace StateMachine.Node
         public override void Exit()
         {
             base.Exit();
-            EventBus.Unsubscript<ERequestNextStep>(OnRequestAdvance);
             Step.ComponentsList.ForEach(component =>
             {
                 if (component == null)
@@ -45,6 +45,8 @@ namespace StateMachine.Node
                 }
                 component.Exit(StateMachine.Node);
             });
+            EventBus.Unsubscript<ERequestNextStep>(OnRequestAdvance);
+            EventBus.Unsubscript<ERequestStepByID>(OnRequestStepByID);
         }
         private void OnRequestAdvance(ERequestNextStep e)
         {
@@ -54,6 +56,19 @@ namespace StateMachine.Node
             }
             HasRequestedAdvance = true;
             StateMachine.Advance();
+        }
+        private void OnRequestStepByID(ERequestStepByID e)
+        {
+            if (HasRequestedAdvance)
+            {
+                return;
+            }
+            //if (e.NextID == null)
+            //{
+            //    return;
+            //}
+            HasRequestedAdvance = true;
+            StateMachine.Advance(e.NextID);
         }
     }
 }

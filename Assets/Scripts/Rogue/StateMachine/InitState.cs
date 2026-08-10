@@ -90,6 +90,8 @@ namespace StateMachine.Rogue
         {
             PlayerProvideRegistry playerProviderRegistry = new PlayerProvideRegistry();
             playerProviderRegistry.Register<DialoguePlayer>(new DialoguePlayerProvider(playerCache,prefabLoader,playerFactory,playerParent));
+            playerProviderRegistry.Register<ChoicePlayer>(new ChoicePlayerProvider(playerCache, prefabLoader, playerFactory, playerParent));
+            playerProviderRegistry.Register<CharacterPlayer>(new CharacterPlayerProvider(playerCache, prefabLoader, playerFactory));
             return playerProviderRegistry;
         }
         private void RegisterComponentFactory(ComponentFactory componentFactory,PlayerProvideRegistry playerProvideRegistry)
@@ -104,11 +106,23 @@ namespace StateMachine.Rogue
                 Debug.LogError("RegisterComponentFactory failed: PlayerProviderRegistry is null.");
                 return;
             }
-            if(playerProvideRegistry.TryGet<DialoguePlayer>(out var player))
+            if(playerProvideRegistry.TryGet<DialoguePlayer>(out var dplayer))
             {
                 componentFactory.Register<DialogueBehaviour>(
                 DialogueBehaviour => new DialogueComponent(
-                    DialogueBehaviour,player));
+                    DialogueBehaviour,dplayer));
+            }
+            if(playerProvideRegistry.TryGet<ChoicePlayer>(out var cplayer))
+            {
+                componentFactory.Register<ChoiceBehaviour>(
+                ChoiceBehaviour => new ChoiceComponent(
+                    ChoiceBehaviour,cplayer));
+            }
+            if(playerProvideRegistry.TryGet<CharacterPlayer>(out var charplayer))
+            {
+                componentFactory.Register<CharacterBehaviour>(
+                    CharacterBehaviour => new CharacterComponent(
+                        CharacterBehaviour, charplayer));
             }
         }
         private void NewGame()

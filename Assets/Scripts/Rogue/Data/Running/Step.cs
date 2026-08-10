@@ -1,3 +1,4 @@
+using Config;
 using System;
 using System.Collections.Generic;
 
@@ -5,8 +6,14 @@ namespace Running
 {
     public class Step 
     {
+        public StepID ID { get; private set; }
         public Dictionary<Type, IComponent> ComponentsMap { get; private set; } = new Dictionary<Type, IComponent>();
         public List<IComponent> ComponentsList { get; private set; } = new List<IComponent>();
+        public Step(StepID id)
+        {
+            this.ID = id;
+        } 
+
 
         public void AddComponent(IComponent component)
         {
