@@ -91,11 +91,16 @@ namespace StateMachine.Rogue
             PlayerProvideRegistry playerProviderRegistry = new PlayerProvideRegistry();
             playerProviderRegistry.Register<DialoguePlayer>(new DialoguePlayerProvider(playerCache,prefabLoader,playerFactory,playerParent));
             playerProviderRegistry.Register<ChoicePlayer>(new ChoicePlayerProvider(playerCache, prefabLoader, playerFactory, playerParent));
-            playerProviderRegistry.Register<CharacterPlayer>(new CharacterPlayerProvider(playerCache, prefabLoader, playerFactory));
+            playerProviderRegistry.Register<CharacterPlayer>(new CharacterPlayerProvider(playerCache, prefabLoader, playerFactory,playerParent));
+            playerProviderRegistry.Register<BGPlayer>(new BGPlayerProvider(playerCache,prefabLoader,playerFactory,playerParent));
             return playerProviderRegistry;
         }
         private void RegisterComponentFactory(ComponentFactory componentFactory,PlayerProvideRegistry playerProvideRegistry)
         {
+            //Component的实例化需要Provider提供provider<>
+            //provider又不可能凭空变出来
+            //只能从PlayerProvideRegistry中获取
+            //获取到之后再注册到componentFactory中
             if (componentFactory == null)
             {
                 Debug.LogError("RegisterComponentFactory failed: ComponentFactory is null.");
@@ -123,6 +128,12 @@ namespace StateMachine.Rogue
                 componentFactory.Register<CharacterBehaviour>(
                     CharacterBehaviour => new CharacterComponent(
                         CharacterBehaviour, charplayer));
+            }
+            if(playerProvideRegistry.TryGet<BGPlayer> (out var bgplayer))
+            {
+                componentFactory.Register<BGBehaviour>(
+                    BGBehaviour=>new BGComponent(
+                        BGBehaviour,bgplayer));
             }
         }
         private void NewGame()

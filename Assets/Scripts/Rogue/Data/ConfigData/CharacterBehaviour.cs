@@ -14,5 +14,12 @@ namespace Config
         public float Horizontal;
         [Range(0f, 1f)]
         public float Vertical;
+        public Vector2 NormalizedPosition
+        {
+            get
+            {
+                return new Vector2(Horizontal, Vertical);
+            }
+        }
     }
 }
