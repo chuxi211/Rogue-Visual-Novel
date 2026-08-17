@@ -7,11 +7,13 @@ namespace Running
     public class Step 
     {
         public StepID ID { get; private set; }
+        public StepID NextID { get; private set; }
         public Dictionary<Type, IComponent> ComponentsMap { get; private set; } = new Dictionary<Type, IComponent>();
         public List<IComponent> ComponentsList { get; private set; } = new List<IComponent>();
-        public Step(StepID id)
+        public Step(StepID id,StepID nextID)
         {
             this.ID = id;
+            this.NextID = nextID;
         } 
 
 

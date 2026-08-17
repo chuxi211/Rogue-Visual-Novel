@@ -6,7 +6,8 @@ namespace Running
 {
     public interface IComponent
     {
-        void Enter(Node node);
-        void Exit(Node node);
+        void Enter();
+        void ExitOnStepEnd();
+        void ExitOnNodeEnd();
     }
 }

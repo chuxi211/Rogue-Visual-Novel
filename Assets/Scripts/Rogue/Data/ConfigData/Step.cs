@@ -9,6 +9,7 @@ namespace Config
     public class Step:ScriptableObject
     {
         public StepID ID;
+        public StepID NextID;
         public List<NodeBehaviour> Behaviours;
     }
 }

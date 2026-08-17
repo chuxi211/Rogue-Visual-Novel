@@ -16,16 +16,22 @@ namespace Running
             PlayerProvider = playerProvider;
         }
 
-        public void Enter(Node node)
+        public void Enter()
         {
             Player= PlayerProvider.GetPlayer();
             Player.SetBG(BGBehaviour.BG);
             Player.Show();
         }
 
-        public void Exit(Node node)
+        public void ExitOnNodeEnd()
         {
-            throw new System.NotImplementedException();
+            Player.Clear();
+            Player.Hide();
+        }
+
+        public void ExitOnStepEnd()
+        {
+            
         }
     }
 }

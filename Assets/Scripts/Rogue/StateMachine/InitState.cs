@@ -72,13 +72,14 @@ namespace StateMachine.Rogue
         {
             MapBuilder mapBuilder = new MapBuilder();
             NodeBuilder nodeBuilder = new NodeBuilder();
+            EdgeBuilder edgeBuilder= new EdgeBuilder();
             StepBuilder stepBuilder = new StepBuilder();
             ComponentFactory componentFactory = new ComponentFactory();
-            NodeStateFactory stateFactory = new NodeStateFactory();
             RegisterComponentFactory(componentFactory,provideRegistry);
             stepBuilder.BindComponentFactory(componentFactory);
             nodeBuilder.BindStepBuilder(stepBuilder);
             mapBuilder.BindNodeBuilder(nodeBuilder);
+            mapBuilder.BindEdgeBuilder(edgeBuilder);
             return mapBuilder;
         }
         private PlayerProvideRegistry InitPlayerProviderRegistry(
@@ -95,7 +96,9 @@ namespace StateMachine.Rogue
             playerProviderRegistry.Register<BGPlayer>(new BGPlayerProvider(playerCache,prefabLoader,playerFactory,playerParent));
             return playerProviderRegistry;
         }
-        private void RegisterComponentFactory(ComponentFactory componentFactory,PlayerProvideRegistry playerProvideRegistry)
+        private void RegisterComponentFactory(
+            ComponentFactory componentFactory,
+            PlayerProvideRegistry playerProvideRegistry)
         {
             //Component的实例化需要Provider提供provider<>
             //provider又不可能凭空变出来

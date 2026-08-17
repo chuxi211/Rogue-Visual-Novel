@@ -20,8 +20,8 @@ namespace StateMachine.Node
         public override void Enter()
         {
             base.Enter();
-            EventBus.Subscript<ERequestNextStep>(OnRequestAdvance);
             EventBus.Subscript<ERequestStepByID>(OnRequestStepByID);
+            EventBus.Subscript<ERequestNextStep>(OnRequestNextStep);
             InputManager.Instance.InputStateMachine.SwitchState(new StepInputState());
             Step.ComponentsList.ForEach(component =>
             {
@@ -30,7 +30,8 @@ namespace StateMachine.Node
                     Debug.LogError("Some Component is null");
                     return;
                 }
-                component.Enter(StateMachine.Node);
+                component.Enter();
+                StateMachine.Node.AddEnteredComponent(component);
             });
         }
         public override void Exit()
@@ -43,19 +44,10 @@ namespace StateMachine.Node
                     Debug.LogError("Some Component is null");
                     return;
                 }
-                component.Exit(StateMachine.Node);
+                component.ExitOnStepEnd();
             });
-            EventBus.Unsubscript<ERequestNextStep>(OnRequestAdvance);
             EventBus.Unsubscript<ERequestStepByID>(OnRequestStepByID);
-        }
-        private void OnRequestAdvance(ERequestNextStep e)
-        {
-            if (HasRequestedAdvance)
-            {
-                return;
-            }
-            HasRequestedAdvance = true;
-            StateMachine.Advance();
+            EventBus.Unsubscript<ERequestNextStep>(OnRequestNextStep);
         }
         private void OnRequestStepByID(ERequestStepByID e)
         {
@@ -69,6 +61,18 @@ namespace StateMachine.Node
             //}
             HasRequestedAdvance = true;
             StateMachine.Advance(e.NextID);
+        }
+        private void OnRequestNextStep(ERequestNextStep e)
+        {
+            if (HasRequestedAdvance)
+            {
+                return;
+            }
+            if (Step.NextID.IsValid)
+            {
+                HasRequestedAdvance = true;
+                StateMachine.Advance(Step.NextID);
+            }
         }
     }
 }

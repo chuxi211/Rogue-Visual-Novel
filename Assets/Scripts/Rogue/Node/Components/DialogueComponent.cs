@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Running
 {
-    public class DialogueComponent :  IComponent
+    public class DialogueComponent : IComponent
     {
         private Config.DialogueBehaviour DialogueBehaviour;
         private DialoguePlayer Player;
@@ -16,19 +16,24 @@ namespace Running
             if (DialogueBehaviour == null) Debug.LogError("DialogueComponent: Behaviour is null");
             if (DialoguePlayerProvider == null) Debug.LogError("DialogueComponent:PlayerProvider is null");
         }
-        public void Enter(Node node)
+        public void Enter()
         {
             Debug.Log("DialogueComponent OnEnter");
             Player=DialoguePlayerProvider.GetPlayer();
             Player.SetText(DialogueBehaviour.DialogueText);
             Player.Show();
         }
-        public void Exit(Node node)
+
+        public void ExitOnNodeEnd()
+        {
+            
+        }
+
+        public void ExitOnStepEnd()
         {
             Debug.Log("DialogueComponent OnExit");
             Player.ClearText();
             Player.Hide();
-            Player = null;
         }
     }
 }

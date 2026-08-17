@@ -30,20 +30,6 @@ namespace StateMachine.Node
                 return false;
             }
         }
-        public void Advance()
-        {
-            int NextStepIndex = CurrentStepIndex + 1;
-
-            if (NextStepIndex >= Node.Steps.Count)
-            {
-                SwitchState(new ExitState(this));
-                return;
-            }
-
-            CurrentStepIndex = NextStepIndex;
-            CurrentStep = Node.Steps[CurrentStepIndex];
-            SwitchState(new AdvanceState(this, CurrentStep));
-        }
         public void Advance(StepID nextID)
         {
             if(Node.StepsMap.TryGetValue(nextID, out Running.Step nextStep))
@@ -54,13 +40,15 @@ namespace StateMachine.Node
             }
             else
             {
-                Debug.LogError($"No step with ID {nextID} found in the node.");
+                Debug.LogError($"No step with ID {nextID} found in the node.\nThe Node will be interrupted");
+                Complete();
             }
         }
         public void Complete()
         {
             CurrentStep = null;
             CurrentStepIndex = 0;
+            SwitchState(new ExitState(this));
         }
     }
 }

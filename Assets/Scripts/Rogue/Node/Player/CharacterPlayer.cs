@@ -39,100 +39,21 @@ namespace Running
     public class CharacterPlayer : MonoBehaviour
     {
         public CharacterContainer Template;
-        private readonly Dictionary<CharacterPlaybackHandle , CharacterContainer> ActiveContainers=
-            new Dictionary<CharacterPlaybackHandle, CharacterContainer> ();
-        //显式维护
-        private int NextHandleValue = 1;
-        public List<CharacterContainer> Containers = new List<CharacterContainer>();
+        private Dictionary<string, CharacterContainer> Cache = new Dictionary<string, CharacterContainer>();
+        public List<CharacterContainer> Containers { get; private set; } = new List<CharacterContainer>();
         
-        public bool TryShow(Sprite visual,Vector2 normalizedpos,out CharacterPlaybackHandle handle)
+        public void SetCharacter(string characterID, Sprite visual, Vector2 normalizedPosition)
         {
-            handle = default;
-            CharacterContainer Container = GetOrCreateContainer();
-            if (Container == null)
+            if (!Cache.TryGetValue(characterID, out var container))
             {
-                Debug.LogError(
-                    "CharacterPlayer: Failed to get CharacterContainer.");
-                return false;
+                container = Instantiate(Template, transform);
+                Cache[characterID] = container;
+                Containers.Add(container);
             }
-            handle = new CharacterPlaybackHandle( NextHandleValue);
-            NextHandleValue++;
-            ActiveContainers.Add(handle,Container);
-            Container.SetSprite(visual);
-            Container.SetPosition(normalizedpos);
-            Container.gameObject.SetActive(true);
-            return true;
-        }
-        public bool TryUpdate(CharacterPlaybackHandle Handle,Sprite visual,Vector2 normalizedpos)
-        {
-            if (!Handle.IsValid)
-            {
-                Debug.LogError(
-                    "CharacterPlayer: Handle is invalid.");
-                return false;
-            }
-
-            if (!ActiveContainers.TryGetValue(
-                    Handle,
-                    out CharacterContainer Container))
-            {
-                Debug.LogError(
-                    $"CharacterPlayer: Handle {Handle.Value} was not found.");
-                return false;
-            }
-
-            if (Container == null)
-            {
-                Debug.LogError(
-                    "CharacterPlayer: CharacterContainer is null.");
-
-                ActiveContainers.Remove(Handle);
-                return false;
-            }
-
-            Container.SetSprite(visual);
-            Container.SetPosition(normalizedpos);
-            return true;
-        }
-        public bool TryHide(CharacterPlaybackHandle handle)
-        {
-            if (!ActiveContainers.TryGetValue(handle, out CharacterContainer Container))
-            {
-                return false;
-            }
-
-            Container.gameObject.SetActive(false);
-            return true;
-        }
-        public bool TryRelease(CharacterPlaybackHandle handle)
-        {
-            if(!ActiveContainers.TryGetValue(handle,out CharacterContainer container))
-            {
-                return false;
-            }
-            ActiveContainers.Remove(handle);
-            if(container != null)
-            {
-                container.SetSprite(null);
-                container.gameObject.SetActive(false);
-            }
-            return true;
-        }
-        private CharacterContainer GetOrCreateContainer()
-        {
-            foreach(var container in ActiveContainers.Values)
-            {
-                if (container == null) continue;
-                return container;
-            }
-            if (Template == null)
-            {
-                Debug.LogError( "CharacterPlayer: Template is null.");
-                return null;
-            }
-            CharacterContainer NewContainer = Instantiate(Template, transform);
-            Containers.Add(NewContainer);
-            return NewContainer;
+            
+            container.SetSprite(visual);
+            container.SetPosition(normalizedPosition);
+            container.gameObject.SetActive(true);
         }
         //Reference On NodeCompleted Or GameExit
         public void ClearAll()

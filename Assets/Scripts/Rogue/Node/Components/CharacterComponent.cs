@@ -10,14 +10,13 @@ namespace Running
         public CharacterBehaviour Behaviour { get; private set; }
         public IPlayerProvider<CharacterPlayer> PlayerProvider { get; private set; }
         private CharacterPlayer Player;
-        private CharacterPlaybackHandle PlaybackHandle;
         public CharacterComponent(CharacterBehaviour behaviour, IPlayerProvider<CharacterPlayer> playerProvider)
         {
             Behaviour = behaviour;
             PlayerProvider = playerProvider;
         }
 
-        public void Enter(Node node)
+        public void Enter()
         {
             Player = PlayerProvider.GetPlayer();
             if (Player == null)
@@ -41,17 +40,18 @@ namespace Running
                 return;
             }
             Sprite visual = Behaviour.Character.GetIllustration(Behaviour.VisualState);
-            if(!Player.TryShow(visual, Behaviour.NormalizedPosition, out PlaybackHandle))
-            {
-                Debug.LogError(
-                    "CharacterComponent: Failed to show character.");
-                return;
-            }
+            Player.SetCharacter(Behaviour.Character.ID, visual, Behaviour.NormalizedPosition);
         }
 
-        public void Exit(Node node)
+        public void ExitOnStepEnd()
         {
-            throw new System.NotImplementedException();
+            
+        }
+
+        public void ExitOnNodeEnd()
+        {
+            Player.ClearAll();
+            Player.HideAll();
         }
     }
 }
