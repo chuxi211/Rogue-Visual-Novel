@@ -21,6 +21,11 @@ namespace StateMachine.Rogue
         }
         private void OnRequestEnterNode(ERequestEnterNode e)
         {
+            if (!StateMachine.Context.MapProgression.TryMoveTo(e.Actor.NodeRunning))
+            {
+                return;
+            }
+            StateMachine.Context.Camera.StartMoveTo(e.Actor.gameObject.transform.position);
             StateMachine.PushState(new NodeState(StateMachine,e.Actor.NodeRunning));
         }
     }

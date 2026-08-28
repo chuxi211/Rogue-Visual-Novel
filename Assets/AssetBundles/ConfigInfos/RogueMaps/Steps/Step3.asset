@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb99b96115b64f94183b6f3feaf6bea0, type: 3}
+  m_Name: Step3
+  m_EditorClassIdentifier: 
+  ID:
+    Value: 3
+  NextID:
+    Value: 
+  Behaviours:
+  - {fileID: 11400000, guid: 6e28e269f1d56e4419461ce72b34097b, type: 2}
+  - {fileID: 11400000, guid: b59cdfea5aff7d94f90dc72123e06f3e, type: 2}
+  - {fileID: 11400000, guid: 064a5299fbd9eaa4ca96664f5f82fdb3, type: 2}

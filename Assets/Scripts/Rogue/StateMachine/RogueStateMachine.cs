@@ -1,3 +1,4 @@
+using Running;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,18 @@ namespace StateMachine.Rogue
         public void BindPlayerParent(Transform parent)
         {
             Context.BindPlayerParent(parent);
+        }
+        public void BindMapParent(Transform parent)
+        {
+            Context.BindRogueMapParent(parent);
+        }
+        public void BindSettingRepository(SettingRepository settingRepository)
+        {
+            Context.BindSettingRepository(settingRepository);
+        }
+        public void BindRogueCamera(RogueCamera camera)
+        {
+            Context.BindRogueCamera(camera);
         }
     }
 }

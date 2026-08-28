@@ -1,0 +1,42 @@
+using Running;
+using StateMachine.Rogue;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using UnityEditor.SettingsManagement;
+using UnityEngine;
+
+public class RogueBootstrap : MonoBehaviour
+{
+    [SerializeField]
+    private Transform PlayerParent;
+    [SerializeField]
+    private Transform RogueMapParent;
+    [SerializeField]
+    private RogueCamera RogueCamera;
+    public RogueStateMachine StateMachine { get; private set; }
+    public void InitStateMachine(SettingRepository settingRepository)
+    {
+        if (PlayerParent == null)
+        {
+            Debug.LogError("RogueController initialization failed: PlayerParent is null.");
+            return;
+        }
+        StateMachine =new RogueStateMachine();
+        InjectContextDependency(settingRepository);
+        RegisterStates();
+        StateMachine.SwitchState<InitState>();
+    }
+    private void InjectContextDependency(SettingRepository settingRepository)
+    {
+        StateMachine.BindPlayerParent(PlayerParent);
+        StateMachine.BindMapParent(RogueMapParent);
+        StateMachine.BindSettingRepository(settingRepository);
+        StateMachine.BindRogueCamera(RogueCamera);
+    }
+    private void RegisterStates()
+    {
+        StateMachine.RegisterState(new InitState(StateMachine));
+        StateMachine.RegisterState(new IdleState(StateMachine));
+    }
+}

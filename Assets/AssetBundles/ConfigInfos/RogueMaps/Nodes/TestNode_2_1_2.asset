@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18a908217084ac341bda6256e8a5bf80, type: 3}
+  m_Name: TestNode_2_1_2
+  m_EditorClassIdentifier: 
+  NodeID: TEST_L2_M1_N2
+  NodeName: "\u6D4B\u8BD5\u8282\u70B9 L2-M1-N2"
+  Position:
+    X: 1
+    Y: 1
+  NodePrefab: {fileID: 8544970920741440139, guid: 17049df1d1e5be649b00505541548c61, type: 3}
+  NodeDescription: "\u7B2C 2 \u5C42\u3001\u7B2C 1 \u5F20\u5730\u56FE\u7684\u7B2C
+    2 \u4E2A\u529F\u80FD\u6D4B\u8BD5\u8282\u70B9\u3002"
+  UtilityType: 3
+  AdvanceType: 0
+  Steps:
+  - {fileID: 11400000, guid: 8940f2099a41db742bf0b34b2dae1a2e, type: 2}
+  - {fileID: 11400000, guid: 24d3a2da8f88e0042b7691c90c667094, type: 2}
+  - {fileID: 11400000, guid: c7358a73e3f55344c8696d8f64e6bdb4, type: 2}

@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a93bd2b60f2e7d642ac140450857925d, type: 3}
+  m_Name: TestChoice_2_1_2_1
+  m_EditorClassIdentifier: 
+  Choices:
+  - Text: "\u9009\u62E9\u9ED8\u8BA4\u5206\u652F"
+    NextID:
+      Value: 20055e7ec7e04ab490b1c0e64af6dc39
+  - Text: "\u9009\u62E9\u5907\u7528\u5206\u652F"
+    NextID:
+      Value: b7ab22a0eceb45088d2c1b125014c83c

@@ -14,11 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NodeID: 
   NodeName: 
-  Column: 0
-  Row: 0
+  Position:
+    X: 0
+    Y: 1
   NodePrefab: {fileID: 3811105671847659441, guid: c4f0d9fa574192b44b113bbed18a04d0, type: 3}
   NodeDescription: 
-  NodeType: 1
+  UtilityType: 0
+  AdvanceType: 0
   Steps:
   - {fileID: 11400000, guid: c32092a4355640c4387b416d21cd3b33, type: 2}
-  - {fileID: 11400000, guid: c32092a4355640c4387b416d21cd3b33, type: 2}
+  - {fileID: 11400000, guid: 650ea7f0fd50617449a94110306730dd, type: 2}

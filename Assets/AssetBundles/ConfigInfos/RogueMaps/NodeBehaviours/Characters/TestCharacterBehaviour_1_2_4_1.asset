@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdb6ead7e6dea0045a4fc9aba3da9e87, type: 3}
+  m_Name: TestCharacterBehaviour_1_2_4_1
+  m_EditorClassIdentifier: 
+  Character: {fileID: 11400000, guid: fb20be7a08abb4e468ad5e797462ec25, type: 2}
+  VisualState: 3
+  Horizontal: 0.8
+  Vertical: 0.1

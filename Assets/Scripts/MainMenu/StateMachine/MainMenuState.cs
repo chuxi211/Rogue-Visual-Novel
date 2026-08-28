@@ -19,15 +19,7 @@ namespace StateMachine.Core
         }
         private void OnNewGame(RequestNewGameEvent e)
         {
-            SceneManager.sceneLoaded += OnGameSceneLoaded;
-            SceneManager.LoadScene("Game");
-        }
-        private void OnGameSceneLoaded(Scene scene,LoadSceneMode loadSceneMode)
-        {
-            if (scene.name == "Game")
-            {
-                SceneManager.sceneLoaded -= OnGameSceneLoaded;
-            }
+            StateMachine.SwitchState<RogueModeState>();
         }
     }
 }

@@ -14,6 +14,19 @@ namespace StateMachine.Rogue
         public PrefabLoader PrefabLoader { get; private set; }
         public PlayerFactory PlayerFactory { get; private set; }
         public Transform PlayerParent { get; private set; }
+        public Transform RogueMapParent { get; private set; }
+        public MapProgression MapProgression { get; private set; }
+        public LayerProgression LayerProgression { get; private set; }
+        public SettingRepository SettingRepository { get; private set; }
+        public RogueCamera Camera { get; private set; }
+        public void BindSettingRepository(SettingRepository settingRepository)
+        {
+            SettingRepository = settingRepository;
+            if(SettingRepository == null)
+            {
+                Debug.LogError("SettingRepository is null");
+            }
+        }
         public void BindConfigRepository(ConfigRepository configRepository)
         {
             this.ConfigRepository = configRepository;
@@ -47,6 +60,30 @@ namespace StateMachine.Rogue
             }
 
             PlayerParent = playerParent;
+        }
+        public void BindRogueMapParent(Transform rogueMapParent)
+        {
+            if(rogueMapParent == null)
+            {
+                return;
+            }
+            RogueMapParent = rogueMapParent;
+        }
+        public void BindMapProgression(MapProgression mapProgression)
+        {
+            this.MapProgression = mapProgression;
+            if (MapProgression == null)
+            {
+                Debug.LogError("MapProgression is null");
+            }
+        }
+        public void BindLayerProgression(LayerProgression layerProgression)
+        {
+            this.LayerProgression = layerProgression;
+        }
+        public void BindRogueCamera(RogueCamera camera)
+        {
+            Camera = camera;
         }
     }
 }

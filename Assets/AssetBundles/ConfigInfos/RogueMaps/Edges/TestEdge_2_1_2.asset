@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63416940cba30a54fa6f9788c94195c8, type: 3}
+  m_Name: TestEdge_2_1_2
+  m_EditorClassIdentifier: 
+  From: {fileID: 11400000, guid: b8e0bd712385b5a469ecdb7809916b7b, type: 2}
+  To: {fileID: 11400000, guid: d46253fb785482f4883f091463d98453, type: 2}

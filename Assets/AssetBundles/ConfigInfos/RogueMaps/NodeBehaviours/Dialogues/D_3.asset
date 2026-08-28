@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 759208eb6a0196f4682a33a58ccc63b5, type: 3}
   m_Name: D_3
   m_EditorClassIdentifier: 
-  DialogueText: 
+  DialogueText: test text3

@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Step1
   m_EditorClassIdentifier: 
   ID:
-    Value: 
+    Value: 1
+  NextID:
+    Value: 2
   Behaviours:
-  - {fileID: 11400000, guid: 6e28e269f1d56e4419461ce72b34097b, type: 2}
-  - {fileID: 11400000, guid: 4dd58f979e66ee14393c0675b0f4d2ec, type: 2}
-  - {fileID: 11400000, guid: fb6a035ecdb83764482a9e2676a090e7, type: 2}
+  - {fileID: 11400000, guid: 064a5299fbd9eaa4ca96664f5f82fdb3, type: 2}
+  - {fileID: 11400000, guid: 9a25221349c3ef64eab7ddc430ad8e56, type: 2}

@@ -48,6 +48,7 @@ namespace StateMachine.Node
         {
             CurrentStep = null;
             CurrentStepIndex = 0;
+            Node.MarkCompleted();
             SwitchState(new ExitState(this));
         }
     }

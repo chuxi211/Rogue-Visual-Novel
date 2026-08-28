@@ -11,11 +11,28 @@ namespace StateMachine.Core
         public override void Enter()
         {
             base.Enter();
+
+            if (!Init())
+            {
+                Debug.LogError("Core InitState initialization failed.");
+                return;
+            }
+
             StateMachine.SwitchState<MainMenuState>();
         }
         public override void Exit()
         {
             base.Exit();
+        }
+        private bool Init()
+        {
+            if (StateMachine.Context == null)
+            {
+                Debug.LogError("CoreContext is null.");
+                return false;
+            }
+
+            return StateMachine.Context.Init();
         }
     }
 

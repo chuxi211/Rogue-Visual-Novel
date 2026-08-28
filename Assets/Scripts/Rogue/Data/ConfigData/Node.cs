@@ -10,13 +10,17 @@ namespace Config
     {
         public string NodeID;
         public string NodeName;
-        public int Column;
-        public int Row;
+        public NodePosition Position;
         public GameObject NodePrefab;
         public string NodeDescription;
-        public NodeType NodeType;
+        public NodeUtilityType UtilityType;
+        public NodeAdvanceType AdvanceType;
         public List<Step> Steps;
-        [NonSerialized]
-        public List<Edge> Edges;
+    }
+    [Serializable]
+    public struct NodePosition
+    {
+        public int X;
+        public int Y;
     }
 }

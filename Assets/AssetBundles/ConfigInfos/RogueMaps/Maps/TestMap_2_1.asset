@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f3874aa10058f7c45a8a9abaaf38cf17, type: 3}
+  m_Name: TestMap_2_1
+  m_EditorClassIdentifier: 
+  Nodes:
+  - {fileID: 11400000, guid: da116af7a6404e14e9d0d47e6dd788a7, type: 2}
+  - {fileID: 11400000, guid: b8e0bd712385b5a469ecdb7809916b7b, type: 2}
+  - {fileID: 11400000, guid: d46253fb785482f4883f091463d98453, type: 2}
+  - {fileID: 11400000, guid: 88e38fa010cda7c4a866a1ed48990002, type: 2}
+  Edges:
+  - {fileID: 11400000, guid: 1e5d77149ae36234d840e8accf83197e, type: 2}
+  - {fileID: 11400000, guid: 97cfe00cded015342b78836900116640, type: 2}
+  - {fileID: 11400000, guid: bb1eea3bdc789da47967a852f0cf80f7, type: 2}

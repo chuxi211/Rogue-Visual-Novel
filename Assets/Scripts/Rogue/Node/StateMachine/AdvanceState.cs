@@ -66,13 +66,16 @@ namespace StateMachine.Node
         {
             if (HasRequestedAdvance)
             {
+                Debug.Log("");
                 return;
             }
-            if (Step.NextID.IsValid)
+            if (!Step.NextID.IsValid)
             {
-                HasRequestedAdvance = true;
-                StateMachine.Advance(Step.NextID);
+                Debug.Log("");
+                return;
             }
+            HasRequestedAdvance = true;
+            StateMachine.Advance(Step.NextID);
         }
     }
 }

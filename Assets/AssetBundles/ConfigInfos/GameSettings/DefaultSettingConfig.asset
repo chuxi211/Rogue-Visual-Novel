@@ -16,3 +16,4 @@ MonoBehaviour:
   InputSetting: {fileID: 11400000, guid: 2acb2bf26f794fc4fa5141457ad40222, type: 2}
   TextSetting: {fileID: 11400000, guid: 7c36f568441fb8143950ebed4ae18559, type: 2}
   DisplaySetting: {fileID: 11400000, guid: 785f0cb8431cb534e9e7c167a0989073, type: 2}
+  DeveloperSetting: {fileID: 11400000, guid: 14ef8f970bd909f4a89a145370fcf007, type: 2}

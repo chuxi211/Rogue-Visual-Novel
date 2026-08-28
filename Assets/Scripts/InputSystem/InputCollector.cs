@@ -61,7 +61,6 @@ public class InputCollector : MonoBehaviour
         {
             return;
         }
-        Debug.Log(hitInfo.collider.name);
         Debug.Log(hitInfo.collider.transform.position);
         INodeClick nodeClick = hitInfo.collider.GetComponent<INodeClick>();
         if (nodeClick == null)

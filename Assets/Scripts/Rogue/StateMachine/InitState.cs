@@ -11,6 +11,7 @@ namespace StateMachine.Rogue
 {
     public class InitState : RogueState
     {
+        //后续所有的Init逻辑可以移至RogueInitiallizer
         private RogueInitiallizer RogueInitiallizer;
         public InitState(RogueStateMachine stateMachine) : base(stateMachine)
         {
@@ -34,17 +35,21 @@ namespace StateMachine.Rogue
             PlayerFactory playerFactory = new PlayerFactory();
             PlayerProvideRegistry playerProvideRegistry = InitPlayerProviderRegistry(playerCache,prefabLoader,playerFactory,StateMachine.Context.PlayerParent);
             MapBuilder mapBuilder= InitMapBuilder(playerProvideRegistry);
-            ContextDependencyInject(configRepository,mapBuilder,playerProvideRegistry);
+            LayerProgression layerProgression = new LayerProgression();
+            ContextDependencyInject(configRepository, mapBuilder, playerProvideRegistry, layerProgression);
+            InjectCameraSetting();
             NewGame();
         }
         private void ContextDependencyInject(
             ConfigRepository configRepository,
             MapBuilder mapBuilder,
-            PlayerProvideRegistry playerProvideRegistry)
+            PlayerProvideRegistry playerProvideRegistry,
+            LayerProgression layerProgression)
         {
             StateMachine.Context.BindConfigRepository(configRepository);
             StateMachine.Context.BindMapBuilder(mapBuilder);
             StateMachine.Context.BindPlayerRegistry(playerProvideRegistry);
+            StateMachine.Context.BindLayerProgression(layerProgression);
         }
         private Utility.LayerMapLoader InitLayerMapLoader()
         {
@@ -139,10 +144,19 @@ namespace StateMachine.Rogue
                         BGBehaviour,bgplayer));
             }
         }
+        private void InjectCameraSetting() =>
+            StateMachine.Context.Camera.InitAttribute(
+                StateMachine.Context.SettingRepository.SettingData.OtherSetting.CameraMovingSpeed,
+                StateMachine.Context.SettingRepository.SettingData.OtherSetting.Offset);
+
         private void NewGame()
         {
-            StateMachine.Context.ConfigRepository.TryGetLayerMap(1, out LayerMapGroup layerMapGroup);
-            StateMachine.PushState(new BuildMapState(StateMachine, layerMapGroup.Variants[0]));
+            StateMachine.Context.LayerProgression.SetLayer(1);
+            if(StateMachine.Context.ConfigRepository.TryGetMap(
+                StateMachine.Context.LayerProgression.CurrentLayer, out Config.Map map))
+            {
+                StateMachine.SwitchState(new BuildMapState(StateMachine, map));
+            }
         }
         private void Load()
         {

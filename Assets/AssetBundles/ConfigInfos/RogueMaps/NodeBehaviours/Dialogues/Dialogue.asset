@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 759208eb6a0196f4682a33a58ccc63b5, type: 3}
   m_Name: Dialogue
   m_EditorClassIdentifier: 
-  DialogueText: "\u8FD9\u662F\u4E00\u4E2A\u6D4B\u8BD5\u7528\u5BF9\u8BDD"
+  DialogueText: test dialogue
