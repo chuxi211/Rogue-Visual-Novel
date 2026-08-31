@@ -15,5 +15,9 @@ namespace Config
         public Vector2 NodeSpaceing = new Vector2(25, 15);
         [SerializeField]
         public Vector3 Offset = new Vector3(10, 0, -10);
+        [Min(1)]
+        public int CGCount;
+        [Min(1)]
+        public int CountPerPage;
     }
 }

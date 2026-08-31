@@ -5,11 +5,14 @@ using StateMachine.Core;
 using Config;
 using Running;
 
-public class CoreController : MonoBehaviour
+public class CoreBootstrap : MonoBehaviour
 {
-    public static CoreController Instance { get; private set; }
+    public static CoreBootstrap Instance { get; private set; }
     public CoreStateMachine StateMachine { get; private set; }
     public DefaultSettingConfig DefaultSettingConfig;
+    public CanvasGroup Menu;
+    public CanvasGroup CGCanvas;
+    public CGPlayer CGPlayer;
     private void Awake()
     {
         if(Instance != null&& Instance != this)
@@ -32,11 +35,12 @@ public class CoreController : MonoBehaviour
         }
 
         SettingLoader settingLoader = new SettingLoader(DefaultSettingConfig);
-        CoreContext coreContext = new CoreContext(settingLoader);
-        StateMachine = new CoreStateMachine(coreContext);
-        StateMachine.RegisterState(new InitState(StateMachine));
-        StateMachine.RegisterState(new MainMenuState(StateMachine));
+        CoreInitilaizer coreInitilaizer = new CoreInitilaizer(settingLoader);
+        StateMachine = new CoreStateMachine();
+        StateMachine.RegisterState(new InitState(StateMachine,coreInitilaizer));
+        StateMachine.RegisterState(new MainMenuState(StateMachine,Menu));
         StateMachine.RegisterState(new RogueModeState(StateMachine));
+        StateMachine.RegisterState(new GalleryState(StateMachine,CGCanvas,CGPlayer));
         StateMachine.SwitchState<InitState>();
     }
 }

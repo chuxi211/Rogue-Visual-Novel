@@ -6,17 +6,9 @@ namespace StateMachine.Core
 {
     public class CoreStateMachine : StateMachine<CoreState>
     {
-        public CoreStateMachine(CoreContext context)
+        public CoreStateMachine()
         {
-            if (context == null)
-            {
-                Debug.LogError(
-                    "CoreStateMachine initialization failed: " +
-                    "CoreContext is null.");
-                return;
-            }
-
-            Context = context;
+            Context=new CoreContext();
         }
 
         public CoreContext Context { get; private set; }

@@ -11,11 +11,15 @@ namespace Running
         public int CameraMovingSpeed;
         public Vector2 NodeSpaceing = new Vector2(25, 15);
         public Vector3 Offset = new Vector3(10, 0, -10);
+        public int CGCount;
+        public int CountPerPage;
         public OtherSetting(DeveloperSettings config)
         {
             CameraMovingSpeed = config.CameraMovingSpeed;
             NodeSpaceing = config.NodeSpaceing;
             Offset = config.Offset;
+            CGCount = config.CGCount;
+            CountPerPage = config.CountPerPage;
         }
     }
 }

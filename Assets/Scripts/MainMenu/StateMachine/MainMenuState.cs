@@ -6,20 +6,37 @@ namespace StateMachine.Core
 {
     public class MainMenuState : CoreState
     {
-        public MainMenuState(CoreStateMachine stateMachine) : base(stateMachine)
+        private CanvasGroup Menu;
+        public MainMenuState(CoreStateMachine stateMachine, CanvasGroup menu) : base(stateMachine)
         {
+            Menu = menu;
         }
         public override void Enter()
         {
-            EventBus.Subscript<RequestNewGameEvent>(OnNewGame);
+            EventBus.Subscript<ERequestNewGame>(OnNewGame);
+            EventBus.Subscript<ERequestGallery>(OnGallery);
+            if (Menu == null)
+            {
+                Debug.LogError("Menu is null");
+                return;
+            }
+            Menu.blocksRaycasts=true;
+            Menu.interactable=true;
         }
         public override void Exit()
         {
-            EventBus.Unsubscript<RequestNewGameEvent>(OnNewGame);
+            EventBus.Unsubscript<ERequestNewGame>(OnNewGame);
+            EventBus.Unsubscript<ERequestGallery>(OnGallery);
         }
-        private void OnNewGame(RequestNewGameEvent e)
+        private void OnNewGame(ERequestNewGame e)
         {
             StateMachine.SwitchState<RogueModeState>();
+        }
+        private void OnGallery(ERequestGallery e)
+        {
+            Menu.interactable = false;
+            Menu.blocksRaycasts = false;
+            StateMachine.SwitchState<GalleryState>();
         }
     }
 }

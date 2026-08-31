@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace Utility
 {
+    public interface IAssetLoader
+    {
+
+    }
     public interface IAssetLoader<T>
     {
         T Load(string path,string assetName);

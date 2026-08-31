@@ -9,6 +9,7 @@ namespace Utility
 {
     public class LayerMapLoader : IAssetLoader<LayerMapGroup>
     {
+        private AssetBundleManager AssetBundleManager;
         private readonly string BundleRootPath;
         private readonly AssetBundleManifest Manifest;
 

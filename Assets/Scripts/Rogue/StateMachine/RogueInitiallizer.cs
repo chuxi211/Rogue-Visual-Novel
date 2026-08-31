@@ -1,3 +1,4 @@
+using StateMachine.Rogue;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,5 +10,9 @@ public class RogueInitiallizer
     public RogueInitiallizer(LayerMapLoader layerMapLoader)
     {
         LayerMapLoader = layerMapLoader;
+    }
+    public void InitContext(RogueContext context)
+    {
+
     }
 }

@@ -1,3 +1,4 @@
+using Running;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,8 +6,10 @@ namespace StateMachine.Core
 {
     public class InitState : CoreState
     {
-        public InitState(CoreStateMachine stateMachine) : base(stateMachine)
+        private CoreInitilaizer CoreInitilaizer;
+        public InitState(CoreStateMachine stateMachine,CoreInitilaizer coreInitilaizer) : base(stateMachine)
         {
+            CoreInitilaizer = coreInitilaizer;
         }
         public override void Enter()
         {
@@ -31,8 +34,8 @@ namespace StateMachine.Core
                 Debug.LogError("CoreContext is null.");
                 return false;
             }
-
-            return StateMachine.Context.Init();
+            CoreInitilaizer.InitContext(StateMachine.Context);
+            return false;
         }
     }
 

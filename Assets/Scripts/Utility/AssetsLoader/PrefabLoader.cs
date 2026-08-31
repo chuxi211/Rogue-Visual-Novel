@@ -6,6 +6,11 @@ namespace Utility
 {
     public class PrefabLoader : IAssetLoader<GameObject>
     {
+        private AssetBundleManager AssetBundleManager;
+        public PrefabLoader(AssetBundleManager assetBundleManager)
+        {
+            this.AssetBundleManager = assetBundleManager;
+        }
         public GameObject AsyncLoad(string path, string assetName)
         {
             throw new System.NotImplementedException();
