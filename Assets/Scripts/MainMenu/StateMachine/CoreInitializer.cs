@@ -55,18 +55,26 @@ namespace StateMachine.Core
             {
                 return false;
             }
-            if(!InitAudioSystem(out AudioSystem audioSystem))
+            string bundlename = settingRepository.SettingData.OtherSetting.AudioDefinitionCatalogBundle;
+            string assetname = settingRepository.SettingData.OtherSetting.AudioDefinitionCatalogAsset;
+            if (!InitAudioDefinitionRepository(bundlename,assetname, out AudioDefinitionRepository audioDefinitionRepository))
+            {
+                return false;
+            }
+            if (!InitAudioSystem(audioDefinitionRepository, out AudioSystem audioSystem))
             {
                 return false;
             }
             InitButtons(settingRepository.SettingData.OtherSetting.ButtonSE,audioSystem);
             coreContext.BindSettingRepository(settingRepository);
             coreContext.BindABManager(assetBundleManager);
+            coreContext.BindAudioSystem(audioSystem);
+            coreContext.BindAudioDefinitionRepository(audioDefinitionRepository);
             return true;
         }
-        public bool InitAudioSystem(out  AudioSystem audioSystem)
+        public bool InitAudioSystem(AudioDefinitionRepository audioDefinitionRepository, out  AudioSystem audioSystem)
         {
-            audioSystem=new AudioSystem();
+            audioSystem=new AudioSystem(AssetBundleManager,audioDefinitionRepository);
             return true;
         }
 
@@ -146,6 +154,22 @@ namespace StateMachine.Core
             }
             CGLoader = new CGLoader(AssetBundleManager);
             CGPlayer.InitCGLoader(CGLoader);
+            return true;
+        }
+        public bool InitAudioDefinitionRepository(string bundlename,string assetname, out AudioDefinitionRepository audioDefinitionRepository)
+        {
+            audioDefinitionRepository = null;
+            //实例AssetDefinitionLoader
+            AudioDefinitionsLoader audioDefinitionsLoader = new AudioDefinitionsLoader(AssetBundleManager);
+            //加载所有Definition
+            if(!audioDefinitionsLoader.TryLoad(bundlename,assetname, out AudioDefinitionCatalog definitions))
+            {
+                Debug.LogError("CoreContext initialization failed: AudioDefinitionRepository initialization failed.");
+                audioDefinitionRepository = null;
+                return false;
+            }
+            //将Definition存入AudioDefinitionRepository
+            audioDefinitionRepository = new AudioDefinitionRepository(definitions.AudioDefinitions.ToArray());
             return true;
         }
         public void InitButtons(AudioID audioID,ISoundPlayback soundPlayback)

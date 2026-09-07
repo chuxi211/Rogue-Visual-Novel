@@ -20,8 +20,16 @@ namespace Config
         public int CGCount;
         [Min(1)]
         public int CountPerPage;
+        //该属性用于懒加载
         [SerializeField]
         public string AssetBundlesRoot;
+        //全局服务，全局预加载
+        [SerializeField]
+        public string AudioDefinitionCatalogDire;
+        [SerializeField]
+        public string AudioDefinitionCatalogBundle;
+        [SerializeField]
+        public string AudioDefinitionCatalogAsset;
         [SerializeField]
         public AudioID ButtonSE;
     }

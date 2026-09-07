@@ -15,6 +15,9 @@ namespace Running
         public int CGCount;
         public int CountPerPage;
         public string AssetBundlesRoot;
+        public string AudioDefinitionCatalogDire;
+        public string AudioDefinitionCatalogBundle;
+        public string AudioDefinitionCatalogAsset;
         public AudioID ButtonSE;
         public OtherSetting(DeveloperSettings config)
         {
@@ -24,6 +27,9 @@ namespace Running
             CGCount = config.CGCount;
             CountPerPage = config.CountPerPage;
             AssetBundlesRoot = config.AssetBundlesRoot;
+            AudioDefinitionCatalogDire = config.AudioDefinitionCatalogDire;
+            AudioDefinitionCatalogBundle = config.AudioDefinitionCatalogBundle;
+            AudioDefinitionCatalogAsset = config.AudioDefinitionCatalogAsset;
             ButtonSE = config.ButtonSE;
         }
     }

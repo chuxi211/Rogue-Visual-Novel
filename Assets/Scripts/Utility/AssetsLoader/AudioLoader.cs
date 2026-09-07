@@ -7,6 +7,10 @@ namespace Utility
     public class AudioLoader:IAssetLoader<AudioClip>
     {
         private AssetBundleManager AssetBundleManager;
+        public AudioLoader(AssetBundleManager assetBundleManager)
+        {
+            AssetBundleManager = assetBundleManager;
+        }
         public AudioClip AsyncLoad(string bundleName, string assetName)
         {
             throw new System.NotImplementedException();

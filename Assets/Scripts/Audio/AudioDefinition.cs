@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Audio
 {
     [Serializable]
-    [CreateAssetMenu(fileName = "AudioDefinition", menuName = "ConfigInfo/Audio", order = 1)]
+    [CreateAssetMenu(fileName = "AudioDefinition", menuName = "ConfigInfo/Audio/AudioDefinition", order = 1)]
     public class AudioDefinition : ScriptableObject
     {
         public AudioID ID;
@@ -23,9 +23,24 @@ namespace Audio
         Dialogue,
     }
     [Serializable]
-    public class AudioID
+    public class AudioID:IEquatable<AudioID>
     {
         public string ID;
         public bool IsValid => !string.IsNullOrEmpty(ID);
+
+        public bool Equals(AudioID other)
+        {
+            return other != null && ID == other.ID;
+        }
+        public static bool operator == (AudioID left, AudioID right)
+        {
+            if (left is null && right is null) return true;
+            if (left is null || right is null) return false;
+            return left.Equals(right);
+        }
+        public static bool operator !=(AudioID left, AudioID right)
+        {
+            return !(left == right);
+        }
     }
 }

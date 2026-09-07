@@ -13,16 +13,19 @@ namespace Audio
         private AudioCache AudioCache;
         private AudioLoader AudioLoader;
         private AudioDefinitionRepository AudioDefinitionRepository;
-        public AudioSystem()
+        public AudioSystem(AssetBundleManager assetBundleManager, AudioDefinitionRepository audioDefinitionRepository)
         {
             //Player通过外部注入
-            //AudioDefinitionRepository是ID-->AudioDefinition的映射
-            //这个映射可以通过配置文件或者其他方式来实现
-            //具体是什么方式？
             AudioCache = new AudioCache();
-            AudioLoader = new AudioLoader();
-            //AudioDefinitionRepository = new AudioDefinitionRepository();
-        }
+            AudioLoader = new AudioLoader(assetBundleManager);
+            if(audioDefinitionRepository!= null)
+            {
+                AudioDefinitionRepository = audioDefinitionRepository;
+            }
+            else
+            {
+                Debug.LogError("AudioDefinitionRepository is null");
+            }
         private bool GetAudioClip(AudioID audioID,out AudioClip audioClip)
         {
             audioClip = null;
