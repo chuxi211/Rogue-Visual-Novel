@@ -1,33 +1,40 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
-using Utility;
 
-namespace CGLoader
+namespace Utility
 {
+    //由于先做了Rogue部分，导致CoreInitializer和RogueInitiallizer的初始化方式不一致
+    //导致CGLoader和RogueMapLoader的初始化方式也不一致
+    //对不起，下次会统一这部分
     public class CGLoader : IAssetLoader<CGList>
     {
-        private AssetBundleManifest Manifest;
         private AssetBundleManager AssetBundleManager;
-        public CGList AsyncLoad(string path, string assetName)
+        public CGLoader(AssetBundleManager assetBundleManager)
+        {
+            AssetBundleManager = assetBundleManager;
+        }
+
+        public CGList AsyncLoad(string bundleName, string assetName)
         {
             throw new System.NotImplementedException();
         }
 
-        public CGList Load(string path, string assetName)
+        public CGList Load(string bundleName, string assetName)
         {
             throw new System.NotImplementedException();
         }
 
-        public bool TryAsyncLoad(string path, string assetName, out CGList result)
+        public bool TryAsyncLoad(string bundleName, string assetName, out CGList result)
         {
             throw new System.NotImplementedException();
         }
 
-        public bool TryLoad(string path, string assetName, out CGList result)
+        public bool TryLoad(string bundleName, string assetName, out CGList result)
         {
             result = null;
-            if (string.IsNullOrEmpty(path))
+            if (string.IsNullOrEmpty(bundleName))
             {
                 return false;
             }
@@ -35,15 +42,17 @@ namespace CGLoader
             {
                 return false;
             }
-        }
-        private bool TryGetAllDependences(string assetName,out AssetBundle targetBundle)
-        {
-            targetBundle = null;
-            string[] dependences=Manifest.GetAllDependencies(assetName);
-            foreach(var dependen in dependences)
+            AssetBundleManager.TryGetBundleWithDependencies(bundleName, out AssetBundle bundle);
+            if(bundle == null)
             {
-                
+                return false;
             }
+            result = bundle.LoadAsset<CGList>(assetName);
+            if(result == null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }

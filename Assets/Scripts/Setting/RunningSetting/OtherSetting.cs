@@ -2,6 +2,7 @@ using Config;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Audio;
 
 namespace Running
 {
@@ -13,6 +14,8 @@ namespace Running
         public Vector3 Offset = new Vector3(10, 0, -10);
         public int CGCount;
         public int CountPerPage;
+        public string AssetBundlesRoot;
+        public AudioID ButtonSE;
         public OtherSetting(DeveloperSettings config)
         {
             CameraMovingSpeed = config.CameraMovingSpeed;
@@ -20,6 +23,8 @@ namespace Running
             Offset = config.Offset;
             CGCount = config.CGCount;
             CountPerPage = config.CountPerPage;
+            AssetBundlesRoot = config.AssetBundlesRoot;
+            ButtonSE = config.ButtonSE;
         }
     }
 }

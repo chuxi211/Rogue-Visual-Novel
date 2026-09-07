@@ -1,24 +1,23 @@
 using Config;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
 
 namespace Utility
 {
     public class LayerMapLoader : IAssetLoader<LayerMapGroup>
     {
-        private AssetBundleManager AssetBundleManager;
-        private readonly string BundleRootPath;
-        private readonly AssetBundleManifest Manifest;
+        private readonly AssetBundleManager AssetBundleManager;
 
-        private readonly Dictionary<string, AssetBundle> LoadedBundles = new();
-
-        public LayerMapLoader(string bundleRootPath,AssetBundleManifest manifest)
+        public LayerMapLoader(AssetBundleManager assetBundleManager)
         {
-            BundleRootPath = bundleRootPath;
-            Manifest = manifest;
+            if (assetBundleManager == null)
+            {
+                Debug.LogError(
+                    "LayerMapLoader initialization failed: " +
+                    "AssetBundleManager is null.");
+            }
+
+            AssetBundleManager = assetBundleManager;
         }
 
         public bool TryLoad(string bundleName,string assetName,out LayerMapGroup result)
@@ -37,8 +36,25 @@ namespace Utility
                 return false;
             }
 
-            if (!TryLoadBundleWithDependencies(bundleName, out AssetBundle bundle))
+            if (AssetBundleManager == null)
             {
+                Debug.LogError(
+                    "LayerMapLoader failed to load: " +
+                    "AssetBundleManager is null.");
+                return false;
+            }
+
+            if (!AssetBundleManager.TryGetBundleWithDependencies(bundleName, out AssetBundle bundle))
+            {
+                Debug.LogError($"Failed to load bundle '{bundleName}' with dependencies.");
+                return false;
+            }
+
+            if (bundle == null)
+            {
+                Debug.LogError(
+                    "LayerMapLoader failed to load: " +
+                    $"Bundle '{bundleName}' is null.");
                 return false;
             }
 
@@ -54,58 +70,18 @@ namespace Utility
             return true;
         }
 
-        private bool TryLoadBundleWithDependencies(string bundleName,out AssetBundle targetBundle)
+        public LayerMapGroup Load(string bundleName, string assetName)
         {
-            targetBundle = null;
-
-            string[] dependencies = Manifest.GetAllDependencies(bundleName);
-
-            foreach (string dependencyName in dependencies)
-            {
-                if (!TryLoadBundle(dependencyName, out _))
-                {
-                    Debug.LogError(
-                        $"Failed to load dependency '{dependencyName}' for '{bundleName}'.");
-                    return false;
-                }
-            }
-
-            return TryLoadBundle(bundleName, out targetBundle);
-        }
-
-        private bool TryLoadBundle(string bundleName,out AssetBundle bundle)
-        {
-            if (LoadedBundles.TryGetValue(bundleName, out bundle))
-            {
-                return true;
-            }
-
-            string path = Path.Combine(BundleRootPath, bundleName);
-
-            bundle = AssetBundle.LoadFromFile(path);
-
-            if (bundle == null)
-            {
-                Debug.LogError($"Failed to load AssetBundle: {path}");
-                return false;
-            }
-
-            LoadedBundles.Add(bundleName, bundle);
-            return true;
-        }
-
-        public LayerMapGroup Load(string path, string assetName)
-        {
-            TryLoad(path, assetName, out LayerMapGroup result);
+            TryLoad(bundleName, assetName, out LayerMapGroup result);
             return result;
         }
 
-        public LayerMapGroup AsyncLoad(string path, string assetName)
+        public LayerMapGroup AsyncLoad(string bundleName, string assetName)
         {
             throw new NotImplementedException();
         }
 
-        public bool TryAsyncLoad(string path,string assetName,out LayerMapGroup result)
+        public bool TryAsyncLoad(string bundleName, string assetName, out LayerMapGroup result)
         {
             throw new NotImplementedException();
         }

@@ -7,5 +7,14 @@ using UnityEngine;
 public class CGList : ScriptableObject
 {
     [SerializeField]
-    private List<Sprite> CG=new List<Sprite>();
+    public Sprite Placeholder;
+    [SerializeField]
+    public List<Sprite> CG=new List<Sprite>();
+    public void OnValidate()
+    {
+        if (Placeholder == null)
+        {
+            Debug.LogError("The ScriptObject Placeholder is null");
+        }
+    }
 }

@@ -1,3 +1,4 @@
+using Audio;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,7 @@ namespace Running
         private Config.DialogueBehaviour DialogueBehaviour;
         private DialoguePlayer Player;
         private IPlayerProvider<DialoguePlayer> DialoguePlayerProvider;
+        private ISoundPlayer SoundService;
         public DialogueComponent(Config.DialogueBehaviour dialogueBehaviour, IPlayerProvider<DialoguePlayer> dialoguePlayerProvider)
         {
             this.DialogueBehaviour = dialogueBehaviour;

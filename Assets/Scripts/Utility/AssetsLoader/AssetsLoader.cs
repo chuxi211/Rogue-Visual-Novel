@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 namespace Utility
 {
     public interface IAssetLoader
@@ -9,9 +6,9 @@ namespace Utility
     }
     public interface IAssetLoader<T>
     {
-        T Load(string path,string assetName);
-        T AsyncLoad(string path, string assetName);
-        bool TryLoad(string path, string assetName, out T result);
-        bool TryAsyncLoad(string path, string assetName, out T result);
+        T Load(string bundleName,string assetName);
+        T AsyncLoad(string bundleName, string assetName);
+        bool TryLoad(string bundleName, string assetName, out T result);
+        bool TryAsyncLoad(string bundleName, string assetName, out T result);
     }
 }

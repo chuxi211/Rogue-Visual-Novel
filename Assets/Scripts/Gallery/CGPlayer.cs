@@ -2,63 +2,58 @@ using Core;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Utility;
 
 public class CGPlayer : MonoBehaviour
 {
     [SerializeField]
     private CGContainer Template;
     private List<CGContainer> CGContainers=new List<CGContainer>();
-    private int Count;
-    private int SlotsPerPage;
-    private int CurrentPageIndex;
-    private int TotalPages { get=>Count/SlotsPerPage;}
-    private int VisualIndex;
-    private int TrueIndex;
-
-    public void InitAttribute(int count,int countPerPage)
+    private CGList CGs;
+    private CGLoader CGLoader;
+    //采用Grid Layout Group布局
+    public void InitCGLoader(CGLoader loader)
     {
-        Count = count;
-        SlotsPerPage = countPerPage;
+        CGLoader = loader;
     }
-    private void Refresh()
+    public void Show()
     {
-        //for (int i = 0; i < SlotsPerPage; i++)
-        //{
-        //    TrueIndex = VisualIndexToTrueIndex(CurrentPageIndex, i);
-        //    if (TrueIndex < CGs.CGs.Count)
-        //    {
-        //        CGContainers[i].SetCG(CGs.CGs[TrueIndex]);
-        //        Debug.Log($"TrueIndex:{TrueIndex}");
-        //    }
-        //    else
-        //    {
-        //        CGContainers[i].SetCG(null);
-        //    }
-        //}
-    }
-    public int VisualIndexToTrueIndex(int currentPage, int Vindex)
-    {
-        return (currentPage * SlotsPerPage + Vindex);
-    }
-    public int TrueIndexToVisualIndex(int Tindex)
-    {
-        return (Tindex % SlotsPerPage);
-    }
-    public void NextPage(ERequestNextPage e)
-    {
-        if (CurrentPageIndex < TotalPages - 1)
+        if(CGs == null)
         {
-            CurrentPageIndex++;
+            Debug.Log("CGs is null, try to load CGs");
+            TryGetCGs();
         }
-        Refresh();
-    }
-    public void PrevPage(ERequestPrevPage e)
-    {
-        if (CurrentPageIndex > 0)
+        if (CGContainers.Count == 0)
         {
-            CurrentPageIndex--;
+            CreatBox();
         }
-        Refresh();
+        SetAll();
+        foreach (CGContainer c in CGContainers)
+        {
+            c.gameObject.SetActive(true);
+        }
+    }
+    public void Hide()
+    {
+        foreach(CGContainer c in CGContainers)
+        {
+            c.gameObject.SetActive(false);
+        }
+    }
+    private void SetAll()
+    {
+        Debug.Log($"The Count of CG : {CGs.CG.Count}");
+        CGContainers.ForEach(container =>
+        {
+            if (CGs.CG[CGContainers.IndexOf(container)] == null)
+            {
+                container.Set(CGs.Placeholder);
+            }
+            else
+            {
+                container.Set(CGs.CG[CGContainers.IndexOf(container)]);
+            }
+        });
     }
 
     private void CreatBox()
@@ -68,13 +63,13 @@ public class CGPlayer : MonoBehaviour
             Debug.LogError("Template is null!");
             return;
         }
-        for (short i = 0; i < SlotsPerPage; i++)
+        for (short i = 0; i < CGs.CG.Count; i++)
         {
-            GameObject box = Instantiate(Template.gameObject, transform); 
+            GameObject box = Instantiate(Template.gameObject, Template.transform.parent); 
             CGContainer cgBox = box.GetComponent<CGContainer>();
             CGContainers.Add(cgBox);
+            Debug.Log($"CGContainer {i} created.Position: {box.transform.position}");
         }
-        Refresh();
     }
     private void ClearBox()
     {
@@ -89,5 +84,8 @@ public class CGPlayer : MonoBehaviour
         }
         CGContainers.Clear();
     }
-
+    private bool TryGetCGs()
+    {
+        return CGLoader.TryLoad("cglist", "CGList", out CGs);
+    }
 }

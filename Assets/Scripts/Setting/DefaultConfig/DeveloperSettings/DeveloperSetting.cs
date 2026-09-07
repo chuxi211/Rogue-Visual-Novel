@@ -1,3 +1,4 @@
+using Audio;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,5 +20,9 @@ namespace Config
         public int CGCount;
         [Min(1)]
         public int CountPerPage;
+        [SerializeField]
+        public string AssetBundlesRoot;
+        [SerializeField]
+        public AudioID ButtonSE;
     }
 }

@@ -1,0 +1,9 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using Utility;
+
+public class CloseGalleryButton:UIButton<ERequestCloseGallery>
+{
+    
+}

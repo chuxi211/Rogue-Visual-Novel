@@ -11,7 +11,7 @@ public class RogueBootstrap : MonoBehaviour
     [SerializeField]
     private RogueCamera RogueCamera;
     public RogueStateMachine StateMachine { get; private set; }
-    public void InitStateMachine(SettingRepository settingRepository)
+    public void InitStateMachine(CoreContext coreContext)
     {
         if (PlayerParent == null)
         {
@@ -19,8 +19,8 @@ public class RogueBootstrap : MonoBehaviour
             return;
         }
         StateMachine =new RogueStateMachine();
-        InjectContextDependency(settingRepository);
-        RegisterStates();
+        InjectContextDependency(coreContext.SettingRepository);
+        RegisterStates(coreContext);
         StateMachine.SwitchState<InitState>();
     }
     private void InjectContextDependency(SettingRepository settingRepository)
@@ -30,9 +30,9 @@ public class RogueBootstrap : MonoBehaviour
         StateMachine.BindSettingRepository(settingRepository);
         StateMachine.BindRogueCamera(RogueCamera);
     }
-    private void RegisterStates()
+    private void RegisterStates(CoreContext coreContext)
     {
-        StateMachine.RegisterState(new InitState(StateMachine));
+        StateMachine.RegisterState(new InitState(StateMachine,coreContext.AssetBundleManager));
         StateMachine.RegisterState(new IdleState(StateMachine));
     }
 }

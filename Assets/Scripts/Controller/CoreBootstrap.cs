@@ -4,6 +4,8 @@ using UnityEngine;
 using StateMachine.Core;
 using Config;
 using Running;
+using Rogue;
+using Utility;
 
 public class CoreBootstrap : MonoBehaviour
 {
@@ -11,8 +13,10 @@ public class CoreBootstrap : MonoBehaviour
     public CoreStateMachine StateMachine { get; private set; }
     public DefaultSettingConfig DefaultSettingConfig;
     public CanvasGroup Menu;
-    public CanvasGroup CGCanvas;
+    public CanvasGroup GalleryCnvsGrp;
     public CGPlayer CGPlayer;
+    public Transform AudioPlayers;
+    public List<UIButton> Buttons;
     private void Awake()
     {
         if(Instance != null&& Instance != this)
@@ -35,12 +39,12 @@ public class CoreBootstrap : MonoBehaviour
         }
 
         SettingLoader settingLoader = new SettingLoader(DefaultSettingConfig);
-        CoreInitilaizer coreInitilaizer = new CoreInitilaizer(settingLoader);
+        CoreInitilaizer coreInitilaizer = new CoreInitilaizer(settingLoader,CGPlayer,Buttons);
         StateMachine = new CoreStateMachine();
         StateMachine.RegisterState(new InitState(StateMachine,coreInitilaizer));
         StateMachine.RegisterState(new MainMenuState(StateMachine,Menu));
         StateMachine.RegisterState(new RogueModeState(StateMachine));
-        StateMachine.RegisterState(new GalleryState(StateMachine,CGCanvas,CGPlayer));
+        StateMachine.RegisterState(new GalleryState(StateMachine,GalleryCnvsGrp,CGPlayer));
         StateMachine.SwitchState<InitState>();
     }
 }

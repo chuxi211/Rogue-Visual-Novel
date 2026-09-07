@@ -21,7 +21,7 @@ namespace StateMachine.Core
                 RogueBootstrap rogueBootstrap=UnityEngine.GameObject.FindFirstObjectByType<RogueBootstrap>();
                 if(rogueBootstrap != null)
                 {
-                    rogueBootstrap.InitStateMachine(StateMachine.Context.SettingRepository);
+                    rogueBootstrap.InitStateMachine(StateMachine.Context);
                 }
             }
         }

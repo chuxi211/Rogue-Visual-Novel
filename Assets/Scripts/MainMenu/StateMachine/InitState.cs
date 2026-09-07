@@ -34,8 +34,12 @@ namespace StateMachine.Core
                 Debug.LogError("CoreContext is null.");
                 return false;
             }
-            CoreInitilaizer.InitContext(StateMachine.Context);
-            return false;
+            if (!CoreInitilaizer.InitContext(StateMachine.Context))
+            {
+                Debug.LogError("CoreContext initialization failed.");
+                return false;
+            }
+            return true;
         }
     }
 

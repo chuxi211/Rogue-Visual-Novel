@@ -4,27 +4,26 @@ namespace StateMachine.Core
 {
     public class GalleryState : CoreState
     {
-        private CanvasGroup CGCanvas;
+        private CanvasGroup GalleryCnvsGrp;
         private CGPlayer CGPlayer;
         public GalleryState(CoreStateMachine stateMachine,CanvasGroup canvas,CGPlayer player) : base(stateMachine)
         {
-            CGCanvas = canvas;
+            GalleryCnvsGrp = canvas;
             CGPlayer = player;
         }
         public override void Enter()
         {
             base.Enter();
-            CGPlayer.InitAttribute(StateMachine.Context.SettingRepository.SettingData.OtherSetting.CGCount,
-                StateMachine.Context.SettingRepository.SettingData.OtherSetting.CountPerPage);
             EventBus.Subscript<ERequestCloseGallery>(OnCloseGallery);
-            if (CGCanvas == null)
+            if (GalleryCnvsGrp == null)
             {
                 Debug.LogError("CanvasGroup is null");
                 return;
             }
-            CGCanvas.alpha = 1;
-            CGCanvas.blocksRaycasts = true;
-            CGCanvas.interactable = true;
+            GalleryCnvsGrp.alpha = 1;
+            GalleryCnvsGrp.blocksRaycasts = true;
+            GalleryCnvsGrp.interactable = true;
+            CGPlayer.Show();
         }
         public override void Exit()
         {
@@ -33,9 +32,11 @@ namespace StateMachine.Core
         }
         private void OnCloseGallery(ERequestCloseGallery e)
         {
-            CGCanvas.alpha = 0;
-            CGCanvas.blocksRaycasts = false;
-            CGCanvas.interactable = false;
+            GalleryCnvsGrp.alpha = 0;
+            GalleryCnvsGrp.blocksRaycasts = false;
+            GalleryCnvsGrp.interactable = false;
+            CGPlayer.Hide();
+            StateMachine.SwitchState<MainMenuState>();
         }
     }
 }
