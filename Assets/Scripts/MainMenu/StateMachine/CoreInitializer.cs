@@ -15,11 +15,13 @@ namespace StateMachine.Core
         public CGPlayer CGPlayer { get; private set; }
         public CGLoader CGLoader { get; private set; }
         public List<UIButton> Buttons { get; private set; }
-        public CoreInitilaizer(SettingLoader settingLoader,CGPlayer cgPlayer,List<UIButton> buttons)
+        public Transform AudioPlayerParent { get; private set; }
+        public CoreInitilaizer(SettingLoader settingLoader,CGPlayer cgPlayer,List<UIButton> buttons,Transform audioPlayerParent)
         {
             SettingLoader = settingLoader;
             CGPlayer = cgPlayer;
             Buttons = buttons;
+            AudioPlayerParent = audioPlayerParent;
         }
         public bool InitContext(CoreContext coreContext)
         {
@@ -74,8 +76,78 @@ namespace StateMachine.Core
         }
         public bool InitAudioSystem(AudioDefinitionRepository audioDefinitionRepository, out  AudioSystem audioSystem)
         {
-            audioSystem=new AudioSystem(AssetBundleManager,audioDefinitionRepository);
+            audioSystem = null;
+
+            if (AssetBundleManager == null)
+            {
+                Debug.LogError(
+                    "AudioSystem initialization failed: " +
+                    "AssetBundleManager is null.");
+                return false;
+            }
+
+            if (audioDefinitionRepository == null || !audioDefinitionRepository.IsValid)
+            {
+                Debug.LogError(
+                    "AudioSystem initialization failed: " +
+                    "AudioDefinitionRepository is null or invalid.");
+                return false;
+            }
+
+            List<AudioPlayer> audioPlayers = GetAudioPlayers();
+
+            if (audioPlayers.Count == 0)
+            {
+                return false;
+            }
+
+            bool hasSoundPlayer = audioPlayers.Exists(
+                audioPlayer => audioPlayer is SoundPlayer);
+            bool hasDialogueAudioPlayer = audioPlayers.Exists(
+                audioPlayer => audioPlayer is DialogueAudioPlayer);
+
+            if (!hasSoundPlayer)
+            {
+                Debug.LogError(
+                    "AudioSystem initialization failed: " +
+                    "SoundPlayer was not found.");
+                return false;
+            }
+
+            if (!hasDialogueAudioPlayer)
+            {
+                Debug.LogError(
+                    "AudioSystem initialization failed: " +
+                    "DialogueAudioPlayer was not found.");
+                return false;
+            }
+
+            audioSystem = new AudioSystem(
+                audioPlayers,
+                AssetBundleManager,
+                audioDefinitionRepository);
             return true;
+        }
+        private List<AudioPlayer> GetAudioPlayers()
+        {
+            List<AudioPlayer> audioPlayers = new List<AudioPlayer>();
+            if (AudioPlayerParent == null)
+            {
+                Debug.LogError(
+                    "CoreContext initialization failed: " +
+                    "AudioPlayerParent is null.");
+                return audioPlayers;
+            }
+            AudioPlayer[] players = AudioPlayerParent.GetComponentsInChildren<AudioPlayer>(true);
+            if (players == null || players.Length == 0)
+            {
+                Debug.LogError(
+                    "CoreContext initialization failed: " +
+                    "No AudioPlayers found in AudioPlayerParent.");
+                return audioPlayers;
+            }
+            audioPlayers.AddRange(players);
+            return audioPlayers;
         }
 
         public bool InitAssetBundleManager(string root, out AssetBundleManager assetBundleManager)
@@ -168,8 +240,27 @@ namespace StateMachine.Core
                 audioDefinitionRepository = null;
                 return false;
             }
+
+            if (definitions == null || definitions.AudioDefinitions == null)
+            {
+                Debug.LogError(
+                    "CoreContext initialization failed: " +
+                    "AudioDefinitionCatalog or its AudioDefinitions list is null.");
+                return false;
+            }
+
             //将Definition存入AudioDefinitionRepository
             audioDefinitionRepository = new AudioDefinitionRepository(definitions.AudioDefinitions.ToArray());
+
+            if (!audioDefinitionRepository.IsValid)
+            {
+                Debug.LogError(
+                    "CoreContext initialization failed: " +
+                    "AudioDefinitionRepository contains invalid definitions.");
+                audioDefinitionRepository = null;
+                return false;
+            }
+
             return true;
         }
         public void InitButtons(AudioID audioID,ISoundPlayback soundPlayback)
@@ -177,6 +268,11 @@ namespace StateMachine.Core
             if (Buttons == null || Buttons.Count == 0)
             {
                 Debug.LogWarning("CoreContext initialization warning: Buttons list is null or empty.");
+                return;
+            }
+            if(audioID == null)
+            {
+                Debug.LogWarning("CoreContext initialization warning: AudioID for button sound effects is null.");
                 return;
             }
             foreach (var button in Buttons)

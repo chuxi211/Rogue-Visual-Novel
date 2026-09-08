@@ -5,18 +5,38 @@ using Utility;
 
 namespace Audio
 {
-    public class DialogueAudioPlayer : MonoBehaviour,IVoicePlayer
+    public class DialogueAudioPlayer : AudioPlayer,IVoicePlayer
     {
         [SerializeField] private AudioSource AudioSource;
+        //当前没有对volume进行处理
+        //后续接入Setting系统
 
-        public void PlaySound(AudioClip audio, float volume = 1)
+        public void PlayVoice(AudioClip audio, float volume = 1)
         {
-            AudioSource.PlayOneShot(audio, volume);
+            if (AudioSource == null)
+            {
+                Debug.LogError(
+                    "DialogueAudioPlayer failed to play voice: " +
+                    "AudioSource is null.");
+                return;
+            }
+
+            if (audio == null)
+            {
+                Debug.LogError(
+                    "DialogueAudioPlayer failed to play voice: " +
+                    "AudioClip is null.");
+                return;
+            }
+            AudioSource.Stop();
+            AudioSource.clip = audio;
+            AudioSource.loop = false;
+            AudioSource.Play();
         }
 
-        public void SetSoundVolume(float volume)
+        public void SetVoiceVolume(float volume)
         {
-            throw new System.NotImplementedException();
+            AudioSource.volume = volume;
         }
 
         private void OnEnable()

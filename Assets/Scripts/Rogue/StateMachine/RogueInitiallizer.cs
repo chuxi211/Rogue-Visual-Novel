@@ -1,3 +1,4 @@
+using Audio;
 using Config;
 using Running;
 using StateMachine.Rogue;
@@ -10,9 +11,11 @@ using Utility;
 public class RogueInitiallizer
 {
     private readonly AssetBundleManager AssetBundleManager;
-    public RogueInitiallizer(AssetBundleManager assetBundleManager)
+    private readonly AudioSystem AudioSystem;
+    public RogueInitiallizer(AssetBundleManager assetBundleManager, AudioSystem audioSystem)
     {
         AssetBundleManager = assetBundleManager;
+        AudioSystem = audioSystem;
     }
 
     public void InitContext(RogueContext context)
@@ -53,7 +56,7 @@ public class RogueInitiallizer
         StepBuilder stepBuilder = new StepBuilder();
         ComponentFactory componentFactory = new ComponentFactory();
         RegisterComponentFactory(componentFactory, provideRegistry);
-        stepBuilder.BindComponentFactory(componentFactory);
+        stepBuilder.DependencesInject(componentFactory, AudioSystem);
         nodeBuilder.BindStepBuilder(stepBuilder);
         mapBuilder.BindNodeBuilder(nodeBuilder);
         mapBuilder.BindEdgeBuilder(edgeBuilder);
@@ -94,25 +97,25 @@ public class RogueInitiallizer
         if (playerProvideRegistry.TryGet<DialoguePlayer>(out var dplayer))
         {
             componentFactory.Register<DialogueBehaviour>(
-            DialogueBehaviour => new DialogueComponent(
-                DialogueBehaviour, dplayer));
+            (DialogueBehaviour )=> new DialogueComponent(
+                DialogueBehaviour, dplayer,AudioSystem));
         }
         if (playerProvideRegistry.TryGet<ChoicePlayer>(out var cplayer))
         {
             componentFactory.Register<ChoiceBehaviour>(
-            ChoiceBehaviour => new ChoiceComponent(
+            (ChoiceBehaviour) => new ChoiceComponent(
                 ChoiceBehaviour, cplayer));
         }
         if (playerProvideRegistry.TryGet<CharacterPlayer>(out var charplayer))
         {
             componentFactory.Register<CharacterBehaviour>(
-                CharacterBehaviour => new CharacterComponent(
+                (CharacterBehaviour) => new CharacterComponent(
                     CharacterBehaviour, charplayer));
         }
         if (playerProvideRegistry.TryGet<BGPlayer>(out var bgplayer))
         {
             componentFactory.Register<BGBehaviour>(
-                BGBehaviour => new BGComponent(
+                (BGBehaviour) => new BGComponent(
                     BGBehaviour, bgplayer));
         }
     }

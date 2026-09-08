@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Audio;
 
 namespace Running
 {
     public class StepBuilder
     {
         private ComponentFactory ComponentFactory;
-        public void BindComponentFactory(ComponentFactory componentFactory)
+        public void DependencesInject(ComponentFactory componentFactory,AudioSystem audioSystem)
         {
             this.ComponentFactory = componentFactory;
             if (ComponentFactory == null)

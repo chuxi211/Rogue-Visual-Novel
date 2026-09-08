@@ -32,7 +32,7 @@ public class RogueBootstrap : MonoBehaviour
     }
     private void RegisterStates(CoreContext coreContext)
     {
-        StateMachine.RegisterState(new InitState(StateMachine,coreContext.AssetBundleManager));
+        StateMachine.RegisterState(new InitState(StateMachine, coreContext.AssetBundleManager,coreContext.AudioSystem));
         StateMachine.RegisterState(new IdleState(StateMachine));
     }
 }

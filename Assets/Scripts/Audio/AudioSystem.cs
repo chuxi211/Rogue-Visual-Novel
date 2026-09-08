@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,20 +6,42 @@ using Utility;
 
 namespace Audio
 {
-    public class AudioSystem :ISoundPlayback, IVoicePlayback, IMusicPlayback
+    public class AudioSystem : IVoicePlayback, IMusicPlayback,ISoundPlayback
     {
-        private DialogueAudioPlayer DialogueAudioPlayer;
-        private SoundPlayer SoundPlayer;
+        private readonly Dictionary<Type, AudioPlayer> AudioPlayers = new Dictionary<Type, AudioPlayer>();
 
-        private AudioCache AudioCache;
-        private AudioLoader AudioLoader;
-        private AudioDefinitionRepository AudioDefinitionRepository;
-        public AudioSystem(AssetBundleManager assetBundleManager, AudioDefinitionRepository audioDefinitionRepository)
+        private readonly AudioCache AudioCache;
+        private readonly AudioLoader AudioLoader;
+        private readonly AudioDefinitionRepository AudioDefinitionRepository;
+        public AudioSystem(List<AudioPlayer> audioPlayers, AssetBundleManager assetBundleManager, AudioDefinitionRepository audioDefinitionRepository)
         {
-            //Player通过外部注入
+
+            //全局Player通过外部注入
+            //局部Player通过AudioSystem.RegisterAudioPlayer注册
+
+
+            if (audioPlayers != null)
+            {
+                foreach (AudioPlayer audioPlayer in audioPlayers)
+                {
+                    RegisterAudioPlayer(audioPlayer);
+                }
+            }
+            else
+            {
+                Debug.LogError("AudioPlayers is null");
+            }
             AudioCache = new AudioCache();
-            AudioLoader = new AudioLoader(assetBundleManager);
-            if(audioDefinitionRepository!= null)
+            if (assetBundleManager != null)
+            {
+                AudioLoader = new AudioLoader(assetBundleManager);
+            }
+            else
+            {
+                Debug.LogError("AssetBundleManager is null");
+            }
+
+            if (audioDefinitionRepository != null)
             {
                 AudioDefinitionRepository = audioDefinitionRepository;
             }
@@ -26,57 +49,311 @@ namespace Audio
             {
                 Debug.LogError("AudioDefinitionRepository is null");
             }
-        private bool GetAudioClip(AudioID audioID,out AudioClip audioClip)
+        }
+        public void RegisterAudioPlayer<T>(T audioPlayer) where T : AudioPlayer
         {
-            audioClip = null;
-            if(AudioCache.TryGetAudioClip(audioID, out audioClip))
+            RegisterAudioPlayer((AudioPlayer)audioPlayer);
+        }
+
+        private void RegisterAudioPlayer(AudioPlayer audioPlayer)
+        {
+            if (audioPlayer == null)
             {
-                return true;
+                Debug.LogError("AudioPlayer registration failed: AudioPlayer is null.");
+                return;
             }
-            if (AudioDefinitionRepository.TryGetAudioDefinition(audioID, out var audioDefinition))
+
+            Type audioPlayerType = audioPlayer.GetType();
+
+            if (AudioPlayers.TryGetValue(audioPlayerType, out AudioPlayer registeredPlayer))
             {
-                AudioLoader.TryLoad(audioDefinition.BundleName,audioDefinition.AssetName,out audioClip);
-                if (audioClip != null)
+                if (registeredPlayer == null)
                 {
-                    AudioCache.Add(audioID, audioClip);
-                    return true;
+                    AudioPlayers.Remove(audioPlayerType);
+                }
+                else if (registeredPlayer == audioPlayer)
+                {
+                    Debug.LogWarning(
+                        "AudioPlayer registration skipped: " +
+                        $"'{audioPlayerType.Name}' is already registered.");
+                    return;
+                }
+                else
+                {
+                    Debug.LogError(
+                        "AudioPlayer registration failed: " +
+                        $"Another '{audioPlayerType.Name}' is already registered.");
+                    return;
                 }
             }
-            return false;
+
+            AudioPlayers.Add(audioPlayerType, audioPlayer);
         }
-        //考虑到Sound Effect的播放可能会有多个同时播放的情况，所以SoundPlayer应该是一个可以同时播放多个音效的播放器
-        //Sound Effect和Voice(DialogueAudio)的播放方式是不同的，需要不同的播放器来处理。
-        //已有ISoundPlayback和IVoicePlayback接口进行区分
-        //要怎么动态选择使用哪个播放器？
-        public void PlayMusic(AudioID audioID, float volume = 1)
+
+        public void UnregisterAudioPlayer<T>() where T : AudioPlayer
         {
-            if (GetAudioClip(audioID, out var audioClip))
+            Type audioPlayerType = typeof(T);
+
+            if (!AudioPlayers.Remove(audioPlayerType))
             {
-                //MusicPlayer.PlayMusic(audioClip, volume);
+                Debug.LogWarning(
+                    "AudioPlayer unregistration skipped: " +
+                    $"'{audioPlayerType.Name}' is not registered.");
             }
         }
 
-        public void PlaySound(AudioID audioID, float volume = 1)
+        public void PlayMusic(AudioID audioID, float volume = 1)
         {
-            if(GetAudioClip(audioID, out var audioClip))
+            if(TryGetAudioPlayer<BGMPlayer>(out BGMPlayer bgmPlayer))
             {
-                SoundPlayer.PlaySound(audioClip, volume);
+                if (TryGetAudioClip(audioID, AudioCategory.Music, out AudioClip audioClip))
+                {
+                    bgmPlayer.PlayMusic(audioClip, volume);
+                }
+                else
+                {
+                    Debug.LogError(
+                        "AudioSystem failed to play music: " +
+                        $"AudioClip for AudioID '{audioID?.ID}' was not found.");
+                }
+            }
+            else
+            {
+                Debug.LogError("BGMPlayer not registered in AudioSystem.");
             }
         }
+
+        public void PlayVoice(AudioID audioID, float volume = 1)
+        {
+            if (TryGetAudioPlayer(out DialogueAudioPlayer dialogueAudioPlayer))
+            {
+                if (TryGetAudioClip(audioID, AudioCategory.Dialogue, out AudioClip audioClip))
+                {
+                    dialogueAudioPlayer.PlayVoice(audioClip, volume);
+                }
+                else
+                {
+                    Debug.LogError(
+                        "AudioSystem failed to play voice: " +
+                        $"AudioClip for AudioID '{audioID?.ID}' was not found.");
+                }
+            }
+            else
+            {
+                Debug.LogError("DialogueAudioPlayer not registered in AudioSystem.");
+            }
+        }
+
 
         public void SetMusicVolume(float volume)
         {
-            throw new System.NotImplementedException();
+            if(TryGetAudioPlayer(out BGMPlayer bgmPlayer))
+            {
+                bgmPlayer.SetMusicVolume(volume);
+            }
+            else
+            {
+                Debug.LogError("BGMPlayer not registered in AudioSystem.");
+            }
         }
 
-        public void SetSoundVolume(float volume)
+        public void SetVoiceVolume(float volume)
         {
-            throw new System.NotImplementedException();
+            if(TryGetAudioPlayer<DialogueAudioPlayer>(out DialogueAudioPlayer dialogueAudioPlayer))
+            {
+                dialogueAudioPlayer.SetVoiceVolume(volume);
+            }
+            else
+            {
+                Debug.LogError("DialogueAudioPlayer not registered in AudioSystem.");
+            }
         }
 
         public void StopMusic()
         {
-            throw new System.NotImplementedException();
+            if(TryGetAudioPlayer(out BGMPlayer bgmPlayer))
+            {
+                bgmPlayer.StopMusic();
+            }
+            else
+            {
+                Debug.LogError("BGMPlayer not registered in AudioSystem.");
+            }
+        }
+
+        private bool TryGetAudioClip(
+            AudioID audioID,
+            AudioCategory expectedCategory,
+            out AudioClip audioClip)
+        {
+            audioClip = null;
+
+            if (audioID == null || !audioID.IsValid)
+            {
+                Debug.LogError(
+                    "AudioSystem failed to get AudioClip: " +
+                    "AudioID is null or invalid.");
+                return false;
+            }
+
+            if (AudioCache == null)
+            {
+                Debug.LogError(
+                    "AudioSystem failed to get AudioClip: " +
+                    "AudioCache is null.");
+                return false;
+            }
+
+            if (AudioDefinitionRepository == null)
+            {
+                Debug.LogError(
+                    "AudioSystem failed to get AudioClip: " +
+                    "AudioDefinitionRepository is null.");
+                return false;
+            }
+
+            if (!AudioDefinitionRepository.TryGetAudioDefinition(
+                    audioID,
+                    out AudioDefinition audioDefinition))
+            {
+                Debug.LogError(
+                    "AudioSystem failed to get AudioClip: " +
+                    $"AudioDefinition for AudioID '{audioID.ID}' was not found.");
+                return false;
+            }
+
+            if (audioDefinition == null)
+            {
+                Debug.LogError(
+                    "AudioSystem failed to get AudioClip: " +
+                    $"AudioDefinition for AudioID '{audioID.ID}' is null.");
+                return false;
+            }
+
+            if (audioDefinition.Category != expectedCategory)
+            {
+                Debug.LogError(
+                    "AudioSystem failed to get AudioClip: " +
+                    $"AudioID '{audioID.ID}' has category '{audioDefinition.Category}', " +
+                    $"but '{expectedCategory}' was expected.");
+                return false;
+            }
+
+            if (AudioCache.TryGetAudioClip(audioID, out audioClip))
+            {
+                return true;
+            }
+
+            if (string.IsNullOrEmpty(audioDefinition.BundleName))
+            {
+                Debug.LogError(
+                    "AudioSystem failed to get AudioClip: " +
+                    $"BundleName for AudioID '{audioID.ID}' is null or empty.");
+                return false;
+            }
+
+            if (string.IsNullOrEmpty(audioDefinition.AssetName))
+            {
+                Debug.LogError(
+                    "AudioSystem failed to get AudioClip: " +
+                    $"AssetName for AudioID '{audioID.ID}' is null or empty.");
+                return false;
+            }
+
+            if (AudioLoader == null)
+            {
+                Debug.LogError(
+                    "AudioSystem failed to get AudioClip: " +
+                    "AudioLoader is null.");
+                return false;
+            }
+
+            if (!AudioLoader.TryLoad(
+                    audioDefinition.BundleName,
+                    audioDefinition.AssetName,
+                    out audioClip))
+            {
+                return false;
+            }
+
+            if (audioClip == null)
+            {
+                Debug.LogError(
+                    "AudioSystem failed to get AudioClip: " +
+                    $"Loaded AudioClip for AudioID '{audioID.ID}' is null.");
+                return false;
+            }
+
+            AudioCache.Add(audioID, audioClip);
+            return true;
+        }
+
+        private bool TryGetAudioPlayer<TAudioPlayer>(out TAudioPlayer audioPlayer)
+            where TAudioPlayer : AudioPlayer
+        {
+            audioPlayer = null;
+            Type audioPlayerType = typeof(TAudioPlayer);
+
+            if (!AudioPlayers.TryGetValue(
+                    audioPlayerType,
+                    out AudioPlayer registeredPlayer))
+            {
+                return false;
+            }
+
+            if (registeredPlayer == null)
+            {
+                AudioPlayers.Remove(audioPlayerType);
+                Debug.LogError(
+                    "AudioPlayer lookup failed: " +
+                    $"Registered '{audioPlayerType.Name}' is null or destroyed.");
+                return false;
+            }
+
+            audioPlayer = registeredPlayer as TAudioPlayer;
+
+            if (audioPlayer == null)
+            {
+                Debug.LogError(
+                    "AudioPlayer lookup failed: " +
+                    $"Registered Player cannot be cast to '{audioPlayerType.Name}'.");
+                return false;
+            }
+
+            return true;
+        }
+
+        public void PlaySound(AudioID audioID, float volume = 1)
+        {
+            if(TryGetAudioPlayer<SoundPlayer>(out SoundPlayer soundPlayer))
+            {
+                if (TryGetAudioClip(audioID, AudioCategory.Sound, out AudioClip audioClip))
+                {
+                    soundPlayer.PlaySound(audioClip, volume);
+                }
+                else
+                {
+                    Debug.LogError(
+                        "AudioSystem failed to play sound: " +
+                        $"AudioClip for AudioID '{audioID?.ID}' was not found.");
+                }
+            }
+            else
+            {
+                Debug.LogError("SoundPlayer not registered in AudioSystem.");
+            }
+        }
+
+        public void SetSoundVolume(float volume)
+        {
+            if(TryGetAudioPlayer<SoundPlayer>(out SoundPlayer soundPlayer))
+            {
+                soundPlayer.SetSoundVolume(volume);
+            }
+            else
+            {
+                Debug.LogError("SoundPlayer not registered in AudioSystem.");
+            }
         }
     }
 }

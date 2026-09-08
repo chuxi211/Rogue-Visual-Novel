@@ -5,6 +5,9 @@ using Utility;
 
 namespace Audio
 {
+    //显式接口区分
+    //或显式接口实现
+    //或AudioDefinition Category判断
     public interface ISoundPlayer
     {
         void PlaySound(AudioClip audioClip, float volume = 1.0f);
@@ -17,13 +20,13 @@ namespace Audio
     }
     public interface IVoicePlayer
     {
-        void PlaySound(AudioClip audioClip, float volume = 1.0f);
-        void SetSoundVolume(float volume);
+        void PlayVoice(AudioClip audioClip, float volume = 1.0f);
+        void SetVoiceVolume(float volume);
     }
     public interface IVoicePlayback
     {
-        void PlaySound(AudioID audioID, float volume = 1.0f);
-        void SetSoundVolume(float volume);
+        void PlayVoice(AudioID audioID, float volume = 1.0f);
+        void SetVoiceVolume(float volume);
     }
     public interface IMusicPlayer
     {
@@ -36,5 +39,9 @@ namespace Audio
         void PlayMusic(AudioID audioID, float volume = 1.0f);
         void StopMusic();
         void SetMusicVolume(float volume);
+    }
+    public interface IGetPlayVolume
+    {
+        float GetPlayVolume(float definitionVolume, float settingVolume);
     }
 }

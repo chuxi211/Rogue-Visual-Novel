@@ -10,13 +10,15 @@ namespace Running
         private Config.DialogueBehaviour DialogueBehaviour;
         private DialoguePlayer Player;
         private IPlayerProvider<DialoguePlayer> DialoguePlayerProvider;
-        private ISoundPlayer SoundService;
-        public DialogueComponent(Config.DialogueBehaviour dialogueBehaviour, IPlayerProvider<DialoguePlayer> dialoguePlayerProvider)
+        private IVoicePlayback VoicePlayback;
+        public DialogueComponent(Config.DialogueBehaviour dialogueBehaviour, IPlayerProvider<DialoguePlayer> dialoguePlayerProvider,IVoicePlayback voicePlayback)
         {
             this.DialogueBehaviour = dialogueBehaviour;
             DialoguePlayerProvider = dialoguePlayerProvider;
+            VoicePlayback = voicePlayback;
             if (DialogueBehaviour == null) Debug.LogError("DialogueComponent: Behaviour is null");
             if (DialoguePlayerProvider == null) Debug.LogError("DialogueComponent:PlayerProvider is null");
+            if (VoicePlayback == null) Debug.LogError("DialogueComponent:VoicePlayback is null");
         }
         public void Enter()
         {

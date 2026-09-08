@@ -18,7 +18,7 @@ namespace Audio
     }
     public enum AudioCategory
     {
-        UI,
+        Sound,
         Music,
         Dialogue,
     }
@@ -41,6 +41,14 @@ namespace Audio
         public static bool operator !=(AudioID left, AudioID right)
         {
             return !(left == right);
+        }
+        public override bool Equals(object obj)
+        {
+            return obj is AudioID other && Equals(other);
+        }
+        public override int GetHashCode()
+        {
+            return ID != null ? ID.GetHashCode() : 0;
         }
     }
 }

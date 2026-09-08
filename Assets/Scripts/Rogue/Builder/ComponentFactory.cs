@@ -1,3 +1,4 @@
+using Audio;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,8 +7,8 @@ namespace Running
 {
     public class ComponentFactory
     {
-        private readonly Dictionary<Type,Func<Config.NodeBehaviour, IComponent>> Builders = 
-            new Dictionary<Type, Func<Config.NodeBehaviour, IComponent>>();
+        private readonly Dictionary<Type,Func<Config.NodeBehaviour,IComponent>> Builders = 
+            new Dictionary<Type, Func<Config.NodeBehaviour,IComponent>>();
         public void Register<TBehaviour>(Func<TBehaviour, IComponent> builder) where TBehaviour : Config.NodeBehaviour
         {
             Builders[typeof(TBehaviour)] = (behaviour)=>builder((TBehaviour)behaviour);
@@ -33,12 +34,12 @@ namespace Running
 
             return builder(behaviour);
         }
-        public List<IComponent> BuildComponents(List<Config.NodeBehaviour> behaviours)
+        public List<IComponent> BuildComponents(List<Config.NodeBehaviour> behaviours,AudioSystem audioSystem)
         {
             List<IComponent> components = new List<IComponent>();
             behaviours.ForEach(bahviour =>
             {
-                IComponent component = BuildComponent(bahviour);
+                IComponent component = BuildComponent(bahviour, audioSystem);
                 if (component != null)
                 {
                     components.Add(component);

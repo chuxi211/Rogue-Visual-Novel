@@ -26,6 +26,7 @@ public class CoreBootstrap : MonoBehaviour
         }
         Instance = this;
         DontDestroyOnLoad(Instance);
+        DontDestroyOnLoad(AudioPlayers);
         InitCoreStateMachine();
     }
     private void InitCoreStateMachine()
@@ -39,7 +40,7 @@ public class CoreBootstrap : MonoBehaviour
         }
 
         SettingLoader settingLoader = new SettingLoader(DefaultSettingConfig);
-        CoreInitilaizer coreInitilaizer = new CoreInitilaizer(settingLoader,CGPlayer,Buttons);
+        CoreInitilaizer coreInitilaizer = new CoreInitilaizer(settingLoader,CGPlayer,Buttons,AudioPlayers);
         StateMachine = new CoreStateMachine();
         StateMachine.RegisterState(new InitState(StateMachine,coreInitilaizer));
         StateMachine.RegisterState(new MainMenuState(StateMachine,Menu));

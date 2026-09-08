@@ -1,3 +1,4 @@
+using Audio;
 using Config;
 using Running;
 using StateMachine.Node;
@@ -14,9 +15,11 @@ namespace StateMachine.Rogue
         //后续所有的Init逻辑可以移至RogueInitiallizer
         private RogueInitiallizer RogueInitiallizer;
         private AssetBundleManager AssetBundleManager;
-        public InitState(RogueStateMachine stateMachine,AssetBundleManager assetBundleManager) : base(stateMachine)
+        private AudioSystem AudioSystem;
+        public InitState(RogueStateMachine stateMachine, AssetBundleManager assetBundleManager, AudioSystem audioSystem) : base(stateMachine)
         {
             AssetBundleManager = assetBundleManager;
+            AudioSystem = audioSystem;
         }
         public override void Enter()
         {
@@ -30,7 +33,7 @@ namespace StateMachine.Rogue
         }
         private void Init()
         {
-            RogueInitiallizer = new RogueInitiallizer(AssetBundleManager);
+            RogueInitiallizer = new RogueInitiallizer(AssetBundleManager, AudioSystem);
             RogueInitiallizer.InitContext(StateMachine.Context);
         }
 
