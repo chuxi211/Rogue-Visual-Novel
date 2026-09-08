@@ -34,12 +34,12 @@ namespace Running
 
             return builder(behaviour);
         }
-        public List<IComponent> BuildComponents(List<Config.NodeBehaviour> behaviours,AudioSystem audioSystem)
+        public List<IComponent> BuildComponents(List<Config.NodeBehaviour> behaviours)
         {
             List<IComponent> components = new List<IComponent>();
             behaviours.ForEach(bahviour =>
             {
-                IComponent component = BuildComponent(bahviour, audioSystem);
+                IComponent component = BuildComponent(bahviour);
                 if (component != null)
                 {
                     components.Add(component);
