@@ -21,6 +21,12 @@ namespace Audio
                     "AudioClip is null.");
                 return;
             }
+            if (audioClip == AudioSource.clip && AudioSource.isPlaying)
+            {
+                Debug.LogWarning(
+                    "The auido you want to change is Equals with current:"); 
+                return;
+            }
             AudioSource.clip = audioClip;
             AudioSource.Play();
         }

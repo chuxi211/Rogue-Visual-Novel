@@ -7,7 +7,7 @@ public class LogMessage
 }
 public enum MessageType
 {
-    Normal,
+    Info,
     Waring,
     Error,
     FatalError,

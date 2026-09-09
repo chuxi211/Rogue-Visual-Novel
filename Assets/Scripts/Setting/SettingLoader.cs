@@ -1,7 +1,7 @@
 using Config;
 using UnityEngine;
 
-namespace Running
+namespace Setting
 {
     public sealed class SettingLoader
     {

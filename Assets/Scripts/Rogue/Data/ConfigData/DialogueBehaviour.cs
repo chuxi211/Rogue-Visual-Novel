@@ -1,3 +1,4 @@
+using Audio;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,5 +8,6 @@ namespace Config
     public class DialogueBehaviour : NodeBehaviour
     {
         public string DialogueText;
+        public AudioID DialogueAudioID;
     }
 }

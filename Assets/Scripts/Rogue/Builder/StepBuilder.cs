@@ -8,7 +8,7 @@ namespace Running
     public class StepBuilder
     {
         private ComponentFactory ComponentFactory;
-        public void DependencesInject(ComponentFactory componentFactory,AudioSystem audioSystem)
+        public void DependencesInject(ComponentFactory componentFactory)
         {
             this.ComponentFactory = componentFactory;
             if (ComponentFactory == null)

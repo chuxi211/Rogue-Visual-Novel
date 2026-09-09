@@ -56,7 +56,7 @@ public class RogueInitiallizer
         StepBuilder stepBuilder = new StepBuilder();
         ComponentFactory componentFactory = new ComponentFactory();
         RegisterComponentFactory(componentFactory, provideRegistry);
-        stepBuilder.DependencesInject(componentFactory, AudioSystem);
+        stepBuilder.DependencesInject(componentFactory);
         nodeBuilder.BindStepBuilder(stepBuilder);
         mapBuilder.BindNodeBuilder(nodeBuilder);
         mapBuilder.BindEdgeBuilder(edgeBuilder);
@@ -80,10 +80,6 @@ public class RogueInitiallizer
         ComponentFactory componentFactory,
         PlayerProvideRegistry playerProvideRegistry)
     {
-        //Component的实例化需要Provider提供provider<>
-        //provider又不可能凭空变出来
-        //只能从PlayerProvideRegistry中获取
-        //获取到之后再注册到componentFactory中
         if (componentFactory == null)
         {
             Debug.LogError("RegisterComponentFactory failed: ComponentFactory is null.");
@@ -118,6 +114,9 @@ public class RogueInitiallizer
                 (BGBehaviour) => new BGComponent(
                     BGBehaviour, bgplayer));
         }
+        componentFactory.Register<BGMBehaviour>(
+            (BGMBehaviour)=>new BGMComponent(
+                BGMBehaviour,AudioSystem));
     }
     private void InjectCameraSetting(RogueContext context) =>
             context.Camera.InitAttribute(

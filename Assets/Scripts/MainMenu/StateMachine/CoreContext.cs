@@ -1,5 +1,6 @@
 using Audio;
 using Running;
+using Setting;
 using UnityEngine;
 using Utility;
 

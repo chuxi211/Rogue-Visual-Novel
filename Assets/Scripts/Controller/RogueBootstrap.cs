@@ -1,6 +1,7 @@
 using Running;
 using StateMachine.Rogue;
 using UnityEngine;
+using Setting;
 
 public class RogueBootstrap : MonoBehaviour
 {

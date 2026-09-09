@@ -26,6 +26,7 @@ namespace Running
             Player=DialoguePlayerProvider.GetPlayer();
             Player.SetText(DialogueBehaviour.DialogueText);
             Player.Show();
+            VoicePlayback.PlayVoice(DialogueBehaviour.DialogueAudioID);
         }
 
         public void ExitOnNodeEnd()

@@ -1,6 +1,7 @@
 using UnityEngine;
+using Running;
 
-namespace Running
+namespace Setting
 {
     public class SettingRepository
     {

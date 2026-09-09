@@ -1,6 +1,5 @@
 using Running;
-using System.Collections;
-using System.Collections.Generic;
+using Setting;
 using UnityEngine;
 using Utility;
 namespace StateMachine.Rogue

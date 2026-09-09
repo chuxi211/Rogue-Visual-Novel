@@ -1,5 +1,6 @@
 using Config;
 using Running;
+using Setting;
 using UnityEngine;
 
 public sealed class SettingInitializer

@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using StateMachine.Core;
 using Config;
-using Running;
-using Rogue;
+using Setting;
 using Utility;
 
 public class CoreBootstrap : MonoBehaviour

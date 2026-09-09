@@ -1,6 +1,7 @@
 
 using Audio;
 using Running;
+using Setting;
 using System.Collections.Generic;
 using UnityEngine;
 using Utility;
