@@ -1,10 +1,10 @@
-using Config;
+using Setting.Config;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Audio;
 
-namespace Running
+namespace Setting.Running
 {
     public class OtherSetting:Setting
     {

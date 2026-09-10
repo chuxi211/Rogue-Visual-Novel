@@ -1,9 +1,9 @@
-using Config;
+using Setting.Config;
 using UnityEngine;
 
-namespace Running
+namespace Setting.Running
 {
-    public class TextSetting
+    public class TextSetting:Setting
     {
         public bool TypewriterEnabled = true;
         [Min(0f)]
@@ -18,6 +18,13 @@ namespace Running
             CharactersPerSecond = config.CharactersPerSecond;
             AutoAdvanceDelay = config.AutoAdvanceDelay;
             TextPlaybackSpeed = config.TextPlaybackSpeed;
+        }
+        public void Override(Save.TextSetting textSetting)
+        {
+            TypewriterEnabled=textSetting.TypewriterEnabled;
+            CharactersPerSecond = textSetting.CharactersPerSecond;
+            AutoAdvanceDelay=textSetting.AutoAdvanceDelay;
+            TextPlaybackSpeed=textSetting.TextPlaybackSpeed;
         }
     }
 }

@@ -1,7 +1,8 @@
 using Config;
 using UnityEngine;
+using Setting.Config;
 
-namespace Running
+namespace Setting.Running
 {
     public class AudioSetting:Setting
     {
@@ -22,6 +23,14 @@ namespace Running
             SeVolume=config.SeVolume;
             VoiceVolume = config.VoiceVolume;
             AudioPlaybackSpeed=config.AudioPlaybackSpeed;
+        }
+        public void Override(Save.AudioSetting audioSetting)
+        {
+            MasterVolume = audioSetting.MasterVolume;
+            BgmVolume = audioSetting.BgmVolume;
+            SeVolume = audioSetting.SeVolume;
+            VoiceVolume = audioSetting.VoiceVolume;
+            AudioPlaybackSpeed = audioSetting.AudioPlaybackSpeed;
         }
     }
 }

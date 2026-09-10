@@ -1,11 +1,15 @@
 using Config;
-using Running;
+using Setting.Config;
+using Setting.Running;
 using Setting;
 using UnityEngine;
+using Setting.Save;
+using System.IO;
 
 public sealed class SettingInitializer
 {
     private readonly SettingLoader Loader;
+    private SettingSerializer Serializer;
 
     public SettingInitializer(SettingLoader loader)
     {
@@ -19,11 +23,9 @@ public sealed class SettingInitializer
 
         Loader = loader;
     }
-
-    public bool TryInitSetting(out SettingRepository settingRepository)
+    public bool TryInitSetting(out SettingService settingService)
     {
-        settingRepository = null;
-
+        settingService = null;
         if (Loader == null)
         {
             Debug.LogError(
@@ -36,49 +38,44 @@ public sealed class SettingInitializer
         {
             return false;
         }
+        if (!TryInitSettingRepository(defaultSettingConfig,out SettingRepository repository))
+        {
+            return false;
+        }
+        if (!TryInitSettingSerializer(defaultSettingConfig))
+        {
+            return false;
+        }
+        settingService=new SettingService(repository,defaultSettingConfig,Loader,Serializer);
+        return true;
+    }
 
-        if (!IsValidConfig(defaultSettingConfig))
+    public bool TryInitSettingRepository(DefaultSettingConfig defaultSettingConfig, out SettingRepository settingRepository)
+    {
+        settingRepository = null;
+
+
+        if(!Loader.TryLoadSaved(out SavedSetting savedSetting))
         {
             return false;
         }
 
         SettingData settingData = new SettingData(defaultSettingConfig);
         settingRepository = new SettingRepository(settingData);
+        //不为空则覆盖默认设置
+        if (savedSetting != null)
+        {
+            settingRepository.Override(savedSetting);
+        }
         return settingRepository.SettingData != null;
     }
-
-    private bool IsValidConfig(DefaultSettingConfig defaultSettingConfig)
+    private bool TryInitSettingSerializer(DefaultSettingConfig defaultSettingConfig)
     {
-        if (defaultSettingConfig.AudioSetting == null)
-        {
-            Debug.LogError("Default AudioSettingConfig is null.");
-            return false;
-        }
 
-        if (defaultSettingConfig.DisplaySetting == null)
-        {
-            Debug.LogError("Default DisplaySettingConfig is null.");
-            return false;
-        }
+        string settingDire = defaultSettingConfig.DeveloperSetting.UserSettingDire;
+        string settingName=defaultSettingConfig.DeveloperSetting.UserSettingsFileName;
 
-        if (defaultSettingConfig.InputSetting == null)
-        {
-            Debug.LogError("Default InputSettingConfig is null.");
-            return false;
-        }
-
-        if (defaultSettingConfig.TextSetting == null)
-        {
-            Debug.LogError("Default TextSettingConfig is null.");
-            return false;
-        }
-
-        if (defaultSettingConfig.DeveloperSetting == null)
-        {
-            Debug.LogError("Default DeveloperSettings is null.");
-            return false;
-        }
-
+        Serializer =new SettingSerializer(settingDire,settingName);
         return true;
     }
 }

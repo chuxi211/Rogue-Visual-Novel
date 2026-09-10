@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Config
+namespace Setting.Config
 {
     [CreateAssetMenu(fileName = "DisplaySettingConfig", menuName = "ConfigInfo/Setting/Display")]
     public class DisplaySettingConfig : Setting

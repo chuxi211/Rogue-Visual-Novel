@@ -1,9 +1,6 @@
-using Config;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using Setting.Config;
 
-namespace Running
+namespace Setting.Running
 {
     public class SettingData
     {
@@ -19,6 +16,13 @@ namespace Running
             InputSetting=new InputSetting(config.InputSetting);
             TextSetting=new TextSetting(config.TextSetting);
             OtherSetting=new OtherSetting(config.DeveloperSetting);
+        }
+        public void Override(Save.SavedSetting savedSetting)
+        {
+            AudioSetting.Override(savedSetting.AudioSetting);
+            DisplaySetting.Override(savedSetting.DisplaySetting);
+            InputSetting.Override(savedSetting.InputSetting);
+            TextSetting.Override(savedSetting.TextSetting);
         }
     }
 }

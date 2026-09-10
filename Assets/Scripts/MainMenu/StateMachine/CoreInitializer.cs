@@ -2,6 +2,7 @@
 using Audio;
 using Running;
 using Setting;
+using Setting.Config;
 using System.Collections.Generic;
 using UnityEngine;
 using Utility;
@@ -33,13 +34,19 @@ namespace StateMachine.Core
                     "CoreContext is null.");
                 return false;
             }
-            // Initialize SettingRepository
-            if (!InitSettingRepository(out SettingRepository settingRepository))
+            // Initialize Setting
+            if (!InitSettingService(out SettingService settingService))
             {
                 return false;
             }
-            //Get AssetBundlesRoot from SettingRepository
-            string root = settingRepository.SettingData.OtherSetting.AssetBundlesRoot;
+            //Get AssetBundlesRoot from Setting
+            //string root = settingRepository.SettingData.OtherSetting.AssetBundlesRoot;
+            //DeveloperSetting不参与运行时修改，不参与UserSetting存档，所以OtherSetting拷贝可以删除
+            if(!settingService.GetConfigSetting<DeveloperSettings>(out DeveloperSettings dvlpSetting))
+            {
+                return false;
+            }
+            string root = dvlpSetting.AssetBundlesRoot;
 
             if (string.IsNullOrEmpty(root))
             {
@@ -58,8 +65,8 @@ namespace StateMachine.Core
             {
                 return false;
             }
-            string bundlename = settingRepository.SettingData.OtherSetting.AudioDefinitionCatalogBundle;
-            string assetname = settingRepository.SettingData.OtherSetting.AudioDefinitionCatalogAsset;
+            string bundlename = dvlpSetting.AudioDefinitionCatalogBundle;
+            string assetname = dvlpSetting.AudioDefinitionCatalogAsset;
             if (!InitAudioDefinitionRepository(bundlename,assetname, out AudioDefinitionRepository audioDefinitionRepository))
             {
                 return false;
@@ -68,8 +75,8 @@ namespace StateMachine.Core
             {
                 return false;
             }
-            InitButtons(settingRepository.SettingData.OtherSetting.ButtonSE,audioSystem);
-            coreContext.BindSettingRepository(settingRepository);
+            InitButtons(dvlpSetting.ButtonSE,audioSystem);
+            coreContext.BindSettingService(settingService);
             coreContext.BindABManager(assetBundleManager);
             coreContext.BindAudioSystem(audioSystem);
             coreContext.BindAudioDefinitionRepository(audioDefinitionRepository);
@@ -194,25 +201,24 @@ namespace StateMachine.Core
             return true;
         }
 
-        public bool InitSettingRepository(out SettingRepository settingRepository)
+        public bool InitSettingService(out SettingService settingService)
         {
+            settingService = null;
             if (SettingLoader == null)
             {
                 Debug.LogError(
                     "CoreContext initialization failed: " +
                     "SettingLoader is null.");
-                settingRepository = null;
                 return false;
             }
 
             SettingInitializer = new SettingInitializer(SettingLoader);
 
-            if (!SettingInitializer.TryInitSetting(out settingRepository))
+            if (!SettingInitializer.TryInitSetting(out settingService))
             {
                 Debug.LogError(
                     "CoreContext initialization failed: " +
-                    "SettingRepository initialization failed.");
-                settingRepository = null;
+                    "SettingService initialization failed.");
                 return false;
             }
 

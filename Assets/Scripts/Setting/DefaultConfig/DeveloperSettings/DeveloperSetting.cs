@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Config
+namespace Setting.Config
 {
     //该类中的字段用于开发者编辑器中调整
     //游戏设置系统不向外暴露
@@ -22,15 +22,19 @@ namespace Config
         public int CountPerPage;
         //该属性用于懒加载
         [SerializeField]
-        public string AssetBundlesRoot;
+        public string AssetBundlesRoot;  //AssetBundles
         //全局服务，全局预加载
         [SerializeField]
-        public string AudioDefinitionCatalogDire;
+        public string AudioDefinitionCatalogDire;  //null  所有AssetBundle均位于<platform>\ 路径下
         [SerializeField]
         public string AudioDefinitionCatalogBundle;
         [SerializeField]
         public string AudioDefinitionCatalogAsset;
         [SerializeField]
         public AudioID ButtonSE;
+        [SerializeField]
+        public string UserSettingDire;
+        [SerializeField]
+        public string UserSettingsFileName;
     }
 }

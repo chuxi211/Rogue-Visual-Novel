@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Config
+namespace Setting.Config
 {
     [CreateAssetMenu(fileName = "InputSettingConfig", menuName = "ConfigInfo/Setting/Input")]
     public class InputSettingConfig : Setting

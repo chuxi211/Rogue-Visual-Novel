@@ -1,6 +1,6 @@
 using UnityEngine;
-using Running;
-
+using Setting.Running;
+using Setting.Save;
 namespace Setting
 {
     public class SettingRepository
@@ -17,6 +17,10 @@ namespace Setting
             }
 
             SettingData = settingData;
+        }
+        public void Override(SavedSetting savedSetting)
+        {
+            SettingData.Override(savedSetting);
         }
     }
 }

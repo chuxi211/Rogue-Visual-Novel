@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Config
+namespace Setting.Config
 {
     [CreateAssetMenu(fileName = "AudioSettingConfig", menuName = "ConfigInfo/Setting/Audio")]
     public class AudioSettingConfig : Setting

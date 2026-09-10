@@ -1,25 +1,33 @@
-using Config;
+using Setting.Config;
 using UnityEngine;
 
-namespace Running
+namespace Setting.Running
 {
-    public class DisplaySetting
+    public class DisplaySetting:Setting
     {
         [Min(1)]
-        public int DefaultWidth = 1920;
+        public int Width = 1920;
         [Min(1)]
-        public int DefaultHeight = 1080;
-        public FullScreenMode DefaultFullScreenMode = FullScreenMode.FullScreenWindow;
+        public int Height = 1080;
+        public FullScreenMode FullScreenMode = FullScreenMode.FullScreenWindow;
         [Min(0)]
-        public int DefaultVSyncCount = 1;
-        public int DefaultTargetFrameRate = 60;
+        public int VSyncCount = 1;
+        public int TargetFrameRate = 60;
         public DisplaySetting(DisplaySettingConfig config)
         {
-            DefaultWidth = config.DefaultWidth;
-            DefaultHeight = config.DefaultHeight;
-            DefaultFullScreenMode = config.DefaultFullScreenMode;
-            DefaultVSyncCount =config.DefaultVSyncCount;
-            DefaultTargetFrameRate = config.DefaultTargetFrameRate;
+            Width = config.DefaultWidth;
+            Height = config.DefaultHeight;
+            FullScreenMode = config.DefaultFullScreenMode;
+            VSyncCount =config.DefaultVSyncCount;
+            TargetFrameRate = config.DefaultTargetFrameRate;
+        }
+        public void Override(Save.DisplaySetting displaySetting)
+        {
+            Width=displaySetting.Width;
+            Height=displaySetting.Height;
+            FullScreenMode = displaySetting.FullScreenMode;
+            VSyncCount=displaySetting.VSyncCount;
+            TargetFrameRate = displaySetting.TargetFrameRate;
         }
     }
 }

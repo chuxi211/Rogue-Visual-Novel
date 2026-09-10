@@ -7,13 +7,13 @@ using Utility;
 public class CoreContext
 {
 
-    public SettingRepository SettingRepository { get; private set; }
+    public SettingService SettingService { get; private set; }
     public AssetBundleManager AssetBundleManager { get; private set; }
     public AudioSystem AudioSystem { get; private set; }
     public AudioDefinitionRepository AudioDefinitionRepository { get; private set; }
-    public void BindSettingRepository(SettingRepository settingRepository)
+    public void BindSettingService(SettingService settingService)
     {
-        if (settingRepository == null)
+        if (settingService == null)
         {
             Debug.LogError(
                 "CoreContext failed to bind SettingRepository: " +
@@ -21,7 +21,7 @@ public class CoreContext
             return;
         }
 
-        SettingRepository = settingRepository;
+        SettingService = settingService;
     }
 
     public void BindABManager(AssetBundleManager assetBundleManager)

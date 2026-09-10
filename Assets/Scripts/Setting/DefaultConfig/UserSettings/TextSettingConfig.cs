@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Config
+namespace Setting.Config
 {
     [CreateAssetMenu(fileName = "TextSettingConfig", menuName = "ConfigInfo/Setting/Text")]
     public class TextSettingConfig : Setting

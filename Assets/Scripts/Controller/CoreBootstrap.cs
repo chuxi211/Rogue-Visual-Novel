@@ -2,8 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using StateMachine.Core;
-using Config;
 using Setting;
+using Setting.Config;
 using Utility;
 
 public class CoreBootstrap : MonoBehaviour
@@ -27,6 +27,7 @@ public class CoreBootstrap : MonoBehaviour
         DontDestroyOnLoad(Instance);
         DontDestroyOnLoad(AudioPlayers);
         InitCoreStateMachine();
+        LogApplicationInfo();
     }
     private void InitCoreStateMachine()
     {
@@ -46,5 +47,10 @@ public class CoreBootstrap : MonoBehaviour
         StateMachine.RegisterState(new RogueModeState(StateMachine));
         StateMachine.RegisterState(new GalleryState(StateMachine,GalleryCnvsGrp,CGPlayer));
         StateMachine.SwitchState<InitState>();
+    }
+    public void LogApplicationInfo()
+    {
+        Debug.Log($"DataPath: {Application.dataPath}");
+        Debug.Log($"PersistentDataPath:{Application.persistentDataPath}");
     }
 }
