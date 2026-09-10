@@ -120,6 +120,6 @@ public class RogueInitiallizer
     }
     private void InjectCameraSetting(RogueContext context) =>
             context.Camera.InitAttribute(
-                context.SettingRepository.SettingData.OtherSetting.CameraMovingSpeed,
-                context.SettingRepository.SettingData.OtherSetting.Offset);
+                context.SettingService.Config.DeveloperSetting.CameraMovingSpeed,
+                context.SettingService.Config.DeveloperSetting.Offset);
 }

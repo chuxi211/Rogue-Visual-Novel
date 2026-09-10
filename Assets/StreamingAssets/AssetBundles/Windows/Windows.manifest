@@ -1,0 +1,16 @@
+ManifestFileVersion: 0
+CRC: 1530994301
+AssetBundleManifest:
+  AssetBundleInfos:
+    Info_0:
+      Name: cglist
+      Dependencies: {}
+    Info_1:
+      Name: layermap_1
+      Dependencies: {}
+    Info_2:
+      Name: layermap_2
+      Dependencies: {}
+    Info_3:
+      Name: audiodefinitioncatalog
+      Dependencies: {}

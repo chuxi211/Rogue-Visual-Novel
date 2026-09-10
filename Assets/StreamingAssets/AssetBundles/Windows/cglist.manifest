@@ -1,0 +1,26 @@
+ManifestFileVersion: 0
+CRC: 2096397297
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: a06eca57cb908170dd7bedba45fd5521
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: de76d956c195e35bf42129e9cf444958
+  IncrementalBuildHash:
+    serializedVersion: 2
+    Hash: a06eca57cb908170dd7bedba45fd5521
+HashAppended: 0
+ClassTypes:
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 45c0d41ff011a4646bfe72168154171d, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 213
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/AssetBundles/ConfigInfos/CG/CGList.asset
+Dependencies: []

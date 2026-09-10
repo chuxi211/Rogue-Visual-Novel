@@ -16,12 +16,12 @@ namespace StateMachine.Rogue
         public Transform RogueMapParent { get; private set; }
         public MapProgression MapProgression { get; private set; }
         public LayerProgression LayerProgression { get; private set; }
-        public SettingRepository SettingRepository { get; private set; }
+        public SettingService SettingService { get; private set; }
         public RogueCamera Camera { get; private set; }
-        public void BindSettingRepository(SettingRepository settingRepository)
+        public void BindSettingService(SettingService settingService)
         {
-            SettingRepository = settingRepository;
-            if(SettingRepository == null)
+            SettingService = settingService;
+            if(SettingService == null)
             {
                 Debug.LogError("SettingRepository is null");
             }

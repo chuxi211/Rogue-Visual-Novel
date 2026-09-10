@@ -20,15 +20,15 @@ public class RogueBootstrap : MonoBehaviour
             return;
         }
         StateMachine =new RogueStateMachine();
-        InjectContextDependency(coreContext.SettingRepository);
+        InjectContextDependency(coreContext.SettingService);
         RegisterStates(coreContext);
         StateMachine.SwitchState<InitState>();
     }
-    private void InjectContextDependency(SettingRepository settingRepository)
+    private void InjectContextDependency(SettingService settingService)
     {
         StateMachine.BindPlayerParent(PlayerParent);
         StateMachine.BindMapParent(RogueMapParent);
-        StateMachine.BindSettingRepository(settingRepository);
+        StateMachine.BindSettingService(settingService);
         StateMachine.BindRogueCamera(RogueCamera);
     }
     private void RegisterStates(CoreContext coreContext)

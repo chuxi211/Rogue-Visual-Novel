@@ -8,14 +8,12 @@ namespace Setting.Running
         public Running.DisplaySetting DisplaySetting { get; private set; }
         public Running.InputSetting InputSetting { get;private set; }
         public Running.TextSetting TextSetting { get;private set; }
-        public Running.OtherSetting OtherSetting { get; private set; }
         public SettingData(DefaultSettingConfig config)
         {
             AudioSetting=new AudioSetting(config.AudioSetting);
             DisplaySetting=new DisplaySetting(config.DisplaySetting);
             InputSetting=new InputSetting(config.InputSetting);
             TextSetting=new TextSetting(config.TextSetting);
-            OtherSetting=new OtherSetting(config.DeveloperSetting);
         }
         public void Override(Save.SavedSetting savedSetting)
         {

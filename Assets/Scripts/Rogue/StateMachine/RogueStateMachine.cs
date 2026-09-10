@@ -18,9 +18,9 @@ namespace StateMachine.Rogue
         {
             Context.BindRogueMapParent(parent);
         }
-        public void BindSettingRepository(SettingRepository settingRepository)
+        public void BindSettingService(SettingService settingService)
         {
-            Context.BindSettingRepository(settingRepository);
+            Context.BindSettingService(settingService);
         }
         public void BindRogueCamera(RogueCamera camera)
         {

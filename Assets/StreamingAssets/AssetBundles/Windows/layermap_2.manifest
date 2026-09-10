@@ -1,15 +1,15 @@
 ManifestFileVersion: 0
-CRC: 4202761087
+CRC: 4032810225
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: e499a0fb91e8a70e84eaf09a091dadb3
+    Hash: b2c1fa96f7165a33d881c4eaa69dfcf5
   TypeTreeHash:
     serializedVersion: 2
-    Hash: fb945bd198aefda5bb61899f46d5c69c
+    Hash: e2588d41e10b560bac30aae5b8829322
   IncrementalBuildHash:
     serializedVersion: 2
-    Hash: e499a0fb91e8a70e84eaf09a091dadb3
+    Hash: b2c1fa96f7165a33d881c4eaa69dfcf5
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -29,6 +29,8 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: 18a908217084ac341bda6256e8a5bf80, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: 3a288aa4fef0efb438b94e8283aa67e7, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: f3874aa10058f7c45a8a9abaaf38cf17, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: bb99b96115b64f94183b6f3feaf6bea0, type: 3}
@@ -39,18 +41,32 @@ ClassTypes:
 - Class: 114
   Script: {fileID: 11500000, guid: 759208eb6a0196f4682a33a58ccc63b5, type: 3}
 - Class: 114
+  Script: {fileID: 11500000, guid: bdb6ead7e6dea0045a4fc9aba3da9e87, type: 3}
+- Class: 114
   Script: {fileID: 11500000, guid: b58e9e5d99057fd43a9502df95114268, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 35609a84228028049adafc2fbdcda9b4, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 63416940cba30a54fa6f9788c94195c8, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 38968185c7cc5834d8a2e407104985ec, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 212
   Script: {instanceID: 0}
 - Class: 213
   Script: {instanceID: 0}
-SerializeReferenceClassIdentifiers: []
+SerializeReferenceClassIdentifiers:
+- AssemblyName: Assembly-CSharp
+  ClassName: Config.CharacterAppearance
+- AssemblyName: Assembly-CSharp
+  ClassName: Config.ChoiceInfo
+- AssemblyName: Assembly-CSharp
+  ClassName: Config.NodePosition
+- AssemblyName: Assembly-CSharp
+  ClassName: Config.StepID
+- AssemblyName: Assembly-CSharp
+  ClassName: Config.VisualState
 Assets:
-- Assets/AssetBundles/ConfigInfos/RogueMaps/LayerMaps/LayerMap_1.asset
+- Assets/AssetBundles/ConfigInfos/RogueMaps/LayerMaps/LayerMap_2.asset
 Dependencies: []

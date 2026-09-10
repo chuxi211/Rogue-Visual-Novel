@@ -27,9 +27,10 @@ namespace StateMachine.Rogue
         //每一次构建地图都会生成新的MapProgression
         private void BuildMap()
         {
+            Vector2 nodespacing = StateMachine.Context.SettingService.Config.DeveloperSetting.NodeSpaceing;
             Map map= StateMachine.Context.MapBuilder.BuildMap(
                 ConfigMap, StateMachine.Context.RogueMapParent,
-                StateMachine.Context.SettingRepository.SettingData.OtherSetting.NodeSpaceing);
+                nodespacing);
             MapProgression mapProgression = new MapProgression(map);
             StateMachine.Context.BindMapProgression(mapProgression);
         }
