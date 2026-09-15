@@ -1,3 +1,4 @@
+using Input;
 using Running;
 using Setting;
 using UnityEngine;
@@ -6,6 +7,7 @@ namespace StateMachine.Rogue
 {
     public class RogueContext
     {
+        public InputManager InputManager;
         public PlayerProvideRegistry PlayerProvideRegistry { get; private set; }
         public ConfigRepository ConfigRepository {  get; private set; }
         public MapBuilder MapBuilder { get; private set; }
@@ -18,6 +20,18 @@ namespace StateMachine.Rogue
         public LayerProgression LayerProgression { get; private set; }
         public SettingService SettingService { get; private set; }
         public RogueCamera Camera { get; private set; }
+        public void BindInputManager(InputManager inputManager)
+        {
+            if (inputManager == null)
+            {
+                Debug.LogError(
+                    "RogueContext failed to bind InputManager: " +
+                    "InputManager is null.");
+                return;
+            }
+
+            InputManager = inputManager;
+        }
         public void BindSettingService(SettingService settingService)
         {
             SettingService = settingService;

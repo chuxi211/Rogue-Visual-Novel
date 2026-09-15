@@ -16,6 +16,14 @@ namespace Setting.Running
         public float VoiceVolume = 1f;
         [Range(0.5f, 2f)]
         public float AudioPlaybackSpeed = 1f;
+        public AudioSetting(AudioSetting audioSetting)
+        {
+            MasterVolume = audioSetting.MasterVolume;
+            BgmVolume = audioSetting.BgmVolume;
+            SeVolume = audioSetting.SeVolume;
+            VoiceVolume = audioSetting.VoiceVolume;
+            AudioPlaybackSpeed = audioSetting.AudioPlaybackSpeed;
+        }
         public AudioSetting(AudioSettingConfig config)
         {
             MasterVolume=config.MasterVolume;

@@ -1,61 +1,92 @@
 using Audio;
+using Input;
 using Running;
 using Setting;
+using System.Reflection;
 using UnityEngine;
 using Utility;
-
-public class CoreContext
+namespace StateMachine.Core
 {
 
-    public SettingService SettingService { get; private set; }
-    public AssetBundleManager AssetBundleManager { get; private set; }
-    public AudioSystem AudioSystem { get; private set; }
-    public AudioDefinitionRepository AudioDefinitionRepository { get; private set; }
-    public void BindSettingService(SettingService settingService)
+    public class CoreContext
     {
-        if (settingService == null)
+
+        public SettingService SettingService { get; private set; }
+        public AssetBundleManager AssetBundleManager { get; private set; }
+        public AudioSystem AudioSystem { get; private set; }
+        public AudioDefinitionRepository AudioDefinitionRepository { get; private set; }
+
+        public InputManager InputManager { get; private set; }
+        public void BindSettingService(SettingService settingService)
         {
-            Debug.LogError(
-                "CoreContext failed to bind SettingRepository: " +
-                "SettingRepository is null.");
-            return;
+            if (settingService == null)
+            {
+                Debug.LogError(
+                    "CoreContext failed to bind SettingRepository: " +
+                    "SettingRepository is null.");
+                return;
+            }
+
+            SettingService = settingService;
         }
 
-        SettingService = settingService;
-    }
+        public void BindABManager(AssetBundleManager assetBundleManager)
+        {
+            if (assetBundleManager == null)
+            {
+                Debug.LogError(
+                    "CoreContext failed to bind AssetBundleManager: " +
+                    "AssetBundleManager is null.");
+                return;
+            }
 
-    public void BindABManager(AssetBundleManager assetBundleManager)
-    {
-        if (assetBundleManager == null)
+            AssetBundleManager = assetBundleManager;
+        }
+        public void BindAudioSystem(AudioSystem audioSystem)
         {
-            Debug.LogError(
-                "CoreContext failed to bind AssetBundleManager: " +
-                "AssetBundleManager is null.");
-            return;
+            if (audioSystem == null)
+            {
+                Debug.LogError(
+                    "CoreContext failed to bind AudioSystem: " +
+                    "AudioSystem is null.");
+                return;
+            }
+            AudioSystem = audioSystem;
+        }
+        public void BindAudioDefinitionRepository(AudioDefinitionRepository audioDefinitionRepository)
+        {
+            if (audioDefinitionRepository == null)
+            {
+                Debug.LogError(
+                    "CoreContext failed to bind AudioDefinitionRepository: " +
+                    "AudioDefinitionRepository is null.");
+                return;
+            }
+            AudioDefinitionRepository = audioDefinitionRepository;
         }
 
-        AssetBundleManager = assetBundleManager;
-    }
-    public void BindAudioSystem(AudioSystem audioSystem)
-    {
-        if (audioSystem == null)
+        public void BindInputManager(InputManager inputManager)
         {
-            Debug.LogError(
-                "CoreContext failed to bind AudioSystem: " +
-                "AudioSystem is null.");
-            return;
+            if (inputManager == null)
+            {
+                Debug.LogError(
+                    "CoreContext failed to bind InputManager: " +
+                    "InputManager is null.");
+                return;
+            }
+
+            InputManager = inputManager;
         }
-        AudioSystem = audioSystem;
-    }
-    public void BindAudioDefinitionRepository(AudioDefinitionRepository audioDefinitionRepository)
-    {
-        if (audioDefinitionRepository == null)
+        public void OnExit()
         {
-            Debug.LogError(
-                "CoreContext failed to bind AudioDefinitionRepository: " +
-                "AudioDefinitionRepository is null.");
-            return;
+            //foreach(var field in this.GetType().GetFields())
+            //{
+            //    field.OnExit();
+            //如果要用这种方法，需要显式让field property实现interface OnExit
+            //我会考虑
+            //}
+            SettingService?.OnExit();
+            AudioSystem?.Dispose();
         }
-        AudioDefinitionRepository = audioDefinitionRepository;
     }
 }

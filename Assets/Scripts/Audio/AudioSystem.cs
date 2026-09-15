@@ -1,3 +1,5 @@
+using Setting.Events;
+using Setting.Running;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,14 +8,23 @@ using Utility;
 
 namespace Audio
 {
-    public class AudioSystem : IVoicePlayback, IMusicPlayback,ISoundPlayback
+    public class AudioSystem : IVoicePlayback, IMusicPlayback,ISoundPlayback,IGetPlayVolume
     {
         private readonly Dictionary<Type, AudioPlayer> AudioPlayers = new Dictionary<Type, AudioPlayer>();
 
         private readonly AudioCache AudioCache;
         private readonly AudioLoader AudioLoader;
         private readonly AudioDefinitionRepository AudioDefinitionRepository;
-        public AudioSystem(List<AudioPlayer> audioPlayers, AssetBundleManager assetBundleManager, AudioDefinitionRepository audioDefinitionRepository)
+        private Setting.Running.AudioSetting AudioSetting;
+
+
+        private AudioDefinition CurrentBGM;
+        private AudioDefinition CurrentVoice;
+        public AudioSystem(
+            List<AudioPlayer> audioPlayers,
+            AssetBundleManager assetBundleManager,
+            AudioDefinitionRepository audioDefinitionRepository,
+            AudioSetting audioSetting)
         {
 
             //全局Player通过外部注入
@@ -24,6 +35,7 @@ namespace Audio
             {
                 foreach (AudioPlayer audioPlayer in audioPlayers)
                 {
+                    if(audioPlayer != null)
                     RegisterAudioPlayer(audioPlayer);
                 }
             }
@@ -49,6 +61,24 @@ namespace Audio
             {
                 Debug.LogError("AudioDefinitionRepository is null");
             }
+            if (audioSetting == null)
+            {
+                Debug.LogError("AudioSetting is null");
+            }
+            else
+            {
+                ApplyAudioSetting(audioSetting);
+            }
+            Subscribe();
+        }
+        public void Subscribe()
+        {
+            EventBus.Subscript<ESettingChanged>(OnSettingChanged);
+        }
+
+        public void Dispose()
+        {
+            EventBus.Unsubscript<ESettingChanged>(OnSettingChanged);
         }
         public void RegisterAudioPlayer<T>(T audioPlayer) where T : AudioPlayer
         {
@@ -101,13 +131,53 @@ namespace Audio
                     $"'{audioPlayerType.Name}' is not registered.");
             }
         }
-
-        public void PlayMusic(AudioID audioID, float volume = 1)
+        private void OnSettingChanged(ESettingChanged e)
         {
+            if (e == null || e.SettingData == null)
+            {
+                Debug.LogError(
+                    "AudioSystem failed to apply changed settings: " +
+                    "event or SettingData is null.");
+                return;
+            }
+
+            if ((e.Scope & SettingChangeScope.Audio) == 0)
+            {
+                return;
+            }
+
+            ApplyAudioSetting(e.SettingData.AudioSetting);
+        }
+
+        private void ApplyAudioSetting(AudioSetting audioSetting)
+        {
+            if (audioSetting == null)
+            {
+                Debug.LogError(
+                    "AudioSystem failed to apply AudioSetting: " +
+                    "AudioSetting is null.");
+                return;
+            }
+
+            AudioSetting = new AudioSetting(audioSetting);
+
+            SetMusicVolume();
+            SetVoiceVolume();
+            SetSoundVolume();
+        }
+        public void PlayMusic(AudioID audioID)
+        {
+            if (!HasValidAudioSetting())
+            {
+                return;
+            }
+
             if(TryGetAudioPlayer<BGMPlayer>(out BGMPlayer bgmPlayer))
             {
-                if (TryGetAudioClip(audioID, AudioCategory.Music, out AudioClip audioClip))
+                if (TryGetAudio(audioID, AudioCategory.Music,out AudioDefinition audioDefinition, out AudioClip audioClip))
                 {
+                    float volume = GetBGMVolume(audioDefinition.volume, AudioSetting);
+                    CurrentBGM = audioDefinition;
                     bgmPlayer.PlayMusic(audioClip, volume);
                 }
                 else
@@ -123,12 +193,19 @@ namespace Audio
             }
         }
 
-        public void PlayVoice(AudioID audioID, float volume = 1)
+        public void PlayVoice(AudioID audioID)
         {
+            if (!HasValidAudioSetting())
+            {
+                return;
+            }
+
             if (TryGetAudioPlayer(out DialogueAudioPlayer dialogueAudioPlayer))
             {
-                if (TryGetAudioClip(audioID, AudioCategory.Dialogue, out AudioClip audioClip))
+                if (TryGetAudio(audioID, AudioCategory.Dialogue,out AudioDefinition audioDefinition, out AudioClip audioClip))
                 {
+                    float volume = GetVoiceVolume(audioDefinition.volume, AudioSetting);
+                    CurrentVoice = audioDefinition;
                     dialogueAudioPlayer.PlayVoice(audioClip, volume);
                 }
                 else
@@ -145,10 +222,20 @@ namespace Audio
         }
 
 
-        public void SetMusicVolume(float volume)
+        public void SetMusicVolume()
         {
+            if (!HasValidAudioSetting())
+            {
+                return;
+            }
+
             if(TryGetAudioPlayer(out BGMPlayer bgmPlayer))
             {
+                if(CurrentBGM == null)
+                {
+                    return;
+                }
+                float volume = GetBGMVolume(CurrentBGM.volume, AudioSetting);
                 bgmPlayer.SetMusicVolume(volume);
             }
             else
@@ -157,10 +244,20 @@ namespace Audio
             }
         }
 
-        public void SetVoiceVolume(float volume)
+        public void SetVoiceVolume()
         {
+            if (!HasValidAudioSetting())
+            {
+                return;
+            }
+
             if(TryGetAudioPlayer<DialogueAudioPlayer>(out DialogueAudioPlayer dialogueAudioPlayer))
             {
+                if(CurrentVoice == null)
+                {
+                    return;
+                }
+                float volume = GetVoiceVolume(CurrentVoice.volume, AudioSetting);
                 dialogueAudioPlayer.SetVoiceVolume(volume);
             }
             else
@@ -174,6 +271,7 @@ namespace Audio
             if(TryGetAudioPlayer(out BGMPlayer bgmPlayer))
             {
                 bgmPlayer.StopMusic();
+                CurrentBGM = null;
             }
             else
             {
@@ -181,11 +279,13 @@ namespace Audio
             }
         }
 
-        private bool TryGetAudioClip(
+        private bool TryGetAudio(
             AudioID audioID,
             AudioCategory expectedCategory,
+            out AudioDefinition audioDefinition,
             out AudioClip audioClip)
         {
+            audioDefinition = null;
             audioClip = null;
 
             if (audioID == null || !audioID.IsValid)
@@ -214,7 +314,7 @@ namespace Audio
 
             if (!AudioDefinitionRepository.TryGetAudioDefinition(
                     audioID,
-                    out AudioDefinition audioDefinition))
+                    out audioDefinition))
             {
                 Debug.LogError(
                     "AudioSystem failed to get AudioClip: " +
@@ -323,13 +423,18 @@ namespace Audio
             return true;
         }
 
-        public void PlaySound(AudioID audioID, float volume = 1)
+        public void PlaySound(AudioID audioID)
         {
+            if (!HasValidAudioSetting())
+            {
+                return;
+            }
+
             if(TryGetAudioPlayer<SoundPlayer>(out SoundPlayer soundPlayer))
             {
-                if (TryGetAudioClip(audioID, AudioCategory.Sound, out AudioClip audioClip))
+                if (TryGetAudio(audioID, AudioCategory.Sound,out AudioDefinition audioDefinition, out AudioClip audioClip))
                 {
-                    soundPlayer.PlaySound(audioClip, volume);
+                    soundPlayer.PlaySound(audioClip,audioDefinition.volume);
                 }
                 else
                 {
@@ -344,16 +449,55 @@ namespace Audio
             }
         }
 
-        public void SetSoundVolume(float volume)
+        public void SetSoundVolume()
         {
+            if (!HasValidAudioSetting())
+            {
+                return;
+            }
+
             if(TryGetAudioPlayer<SoundPlayer>(out SoundPlayer soundPlayer))
             {
+                float volume = AudioSetting.MasterVolume * AudioSetting.SeVolume;
                 soundPlayer.SetSoundVolume(volume);
             }
             else
             {
                 Debug.LogError("SoundPlayer not registered in AudioSystem.");
             }
+        }
+
+        public float GetPlayVolume(float definitionVolume, AudioSetting audioSetting)
+        {
+            return definitionVolume*audioSetting.MasterVolume;
+        }
+
+        public float GetBGMVolume(float definitionVolume, AudioSetting audioSetting)
+        {
+            return definitionVolume * audioSetting.MasterVolume * audioSetting.BgmVolume;
+        }
+
+        public float GetVoiceVolume(float definitionVolume, AudioSetting audioSetting)
+        {
+            return definitionVolume*audioSetting.MasterVolume*audioSetting.VoiceVolume;
+        }
+
+        public float GetSEVolume(float definitionVolume, AudioSetting audioSetting)
+        {
+            return audioSetting.MasterVolume*audioSetting.SeVolume;
+        }
+
+        private bool HasValidAudioSetting()
+        {
+            if (AudioSetting != null)
+            {
+                return true;
+            }
+
+            Debug.LogError(
+                "AudioSystem failed to process audio volume: " +
+                "AudioSetting is null.");
+            return false;
         }
     }
 }

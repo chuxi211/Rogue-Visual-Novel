@@ -2,20 +2,22 @@ using Running;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class EnterNodeClick : MonoBehaviour, INodeClick
+namespace Input
 {
-    private NodeActor Actor;
-    public void BindActor(NodeActor nodeActor)
+    public class EnterNodeClick : MonoBehaviour, INodeClick
     {
-        Actor = nodeActor;
-        if(Actor == null)
+        private NodeActor Actor;
+        public void BindActor(NodeActor nodeActor)
         {
-            Debug.LogError("EnterNodeClick BindActor Actor is null");
+            Actor = nodeActor;
+            if (Actor == null)
+            {
+                Debug.LogError("EnterNodeClick BindActor Actor is null");
+            }
         }
-    }
-    public void Click()
-    {
-        EventBus.Publish(new ERequestEnterNode(Actor));
+        public void Click()
+        {
+            EventBus.Publish(new ERequestEnterNode(Actor));
+        }
     }
 }

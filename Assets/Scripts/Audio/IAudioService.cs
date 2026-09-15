@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Utility;
 
 namespace Audio
 {
@@ -10,13 +7,13 @@ namespace Audio
     //或AudioDefinition Category判断
     public interface ISoundPlayer
     {
-        void PlaySound(AudioClip audioClip, float volume = 1.0f);
+        void PlaySound(AudioClip audioClip, float volumescale = 1.0f);
         void SetSoundVolume(float volume);
     }
     public interface ISoundPlayback
     {
-        void PlaySound(AudioID audioID, float volume = 1.0f);
-        void SetSoundVolume(float volume);
+        void PlaySound(AudioID audioID);
+        void SetSoundVolume();
     }
     public interface IVoicePlayer
     {
@@ -25,8 +22,8 @@ namespace Audio
     }
     public interface IVoicePlayback
     {
-        void PlayVoice(AudioID audioID, float volume = 1.0f);
-        void SetVoiceVolume(float volume);
+        void PlayVoice(AudioID audioID);
+        void SetVoiceVolume();
     }
     public interface IMusicPlayer
     {
@@ -36,12 +33,15 @@ namespace Audio
     }
     public interface IMusicPlayback
     {
-        void PlayMusic(AudioID audioID, float volume = 1.0f);
+        void PlayMusic(AudioID audioID);
         void StopMusic();
-        void SetMusicVolume(float volume);
+        void SetMusicVolume();
     }
     public interface IGetPlayVolume
     {
-        float GetPlayVolume(float definitionVolume, float settingVolume);
+        float GetPlayVolume(float definitionVolume, Setting.Running.AudioSetting audioSetting);
+        float GetBGMVolume(float definitionVolume, Setting.Running.AudioSetting audioSetting);
+        float GetVoiceVolume(float definitionVolume, Setting.Running.AudioSetting audioSetting);
+        float GetSEVolume(float definitionVolume, Setting.Running.AudioSetting audioSetting);
     }
 }

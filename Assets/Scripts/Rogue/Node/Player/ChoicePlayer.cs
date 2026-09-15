@@ -1,4 +1,5 @@
 using Config;
+using Input;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,8 +9,53 @@ public class ChoicePlayer : MonoBehaviour
 {
     public ChoiceContainer Template;
     public List<ChoiceContainer> ChoiceContainers=new List<ChoiceContainer>();
+    private InputManager InputManager;
+    public void BindInput(InputManager inputManager)
+    {
+        if (inputManager == null)
+        {
+            Debug.LogError(
+                "ChoicePlayer failed to bind input: InputManager is null.");
+            return;
+        }
+
+        InputManager = inputManager;
+
+        ChoiceContainers.ForEach(container =>
+        {
+            if (container == null)
+            {
+                Debug.LogWarning(
+                    "ChoicePlayer could not bind input to a null ChoiceContainer.");
+                return;
+            }
+
+            container.BindInput(inputManager);
+        });
+    }
     public void SetChoicesAndShow(List<ChoiceInfo> choices)
     {
+        if (choices == null)
+        {
+            Debug.LogError(
+                "ChoicePlayer failed to show choices: Choices is null.");
+            return;
+        }
+
+        if (InputManager == null)
+        {
+            Debug.LogError(
+                "ChoicePlayer failed to show choices: InputManager is null.");
+            return;
+        }
+
+        if (Template == null)
+        {
+            Debug.LogError(
+                "ChoicePlayer failed to show choices: Template is null.");
+            return;
+        }
+
         int ActiveCount = choices.Count;
 
         while (ChoiceContainers.Count < ActiveCount)
@@ -22,7 +68,7 @@ public class ChoicePlayer : MonoBehaviour
                     "ChoicePlayer: Failed to create ChoiceContainer.");
                 return;
             }
-
+            NewChoiceContainer.BindInput(InputManager);
             ChoiceContainers.Add(NewChoiceContainer);
         }
 

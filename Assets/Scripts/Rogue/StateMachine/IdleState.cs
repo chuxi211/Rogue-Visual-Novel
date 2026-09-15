@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Input;
 namespace StateMachine.Rogue
 {
     public class IdleState : RogueState
@@ -11,7 +12,16 @@ namespace StateMachine.Rogue
         public override void Enter()
         {
             base.Enter();
-            InputManager.Instance.InputStateMachine.SwitchState(new MapInputState());
+
+            InputManager inputManager = StateMachine?.Context?.InputManager;
+            if (inputManager == null)
+            {
+                Debug.LogError(
+                    "Rogue IdleState failed to enter: InputManager is null.");
+                return;
+            }
+
+            inputManager.Switch(new MapInputState());
             EventBus.Subscript<ERequestEnterNode>(OnRequestEnterNode);
         }
         public override void Exit()

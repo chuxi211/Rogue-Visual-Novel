@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Running;
+using Input;
 
 namespace StateMachine.Node
 {
@@ -22,7 +23,7 @@ namespace StateMachine.Node
             base.Enter();
             EventBus.Subscript<ERequestStepByID>(OnRequestStepByID);
             EventBus.Subscript<ERequestNextStep>(OnRequestNextStep);
-            InputManager.Instance.InputStateMachine.SwitchState(new StepInputState());
+            
             Step.ComponentsList.ForEach(component =>
             {
                 if(component == null)

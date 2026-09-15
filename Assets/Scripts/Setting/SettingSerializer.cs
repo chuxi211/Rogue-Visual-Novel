@@ -1,8 +1,10 @@
 using Setting.Config;
 using Setting.Running;
 using Setting.Save;
+using System;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Setting
@@ -19,17 +21,65 @@ namespace Setting
 
         //Transfor SettingData to SavedSetting and
         //Serailize to Json
-        public void SerializeSetting(SettingData settingData)
+        public bool TrySerializeSetting(SettingData settingData)
         {
             string jsonPath = Path.Combine(Application.persistentDataPath, UserSettingDire,UserSettingName);
-            string jsonDire=Path.GetDirectoryName(jsonPath);
-            if (!Directory.Exists(jsonDire))
-            {
-                Directory.CreateDirectory(jsonDire);
-            }
+            string dire = Path.GetDirectoryName(jsonPath);
             SavedSetting savedSetting = new SavedSetting(settingData);
             string jsonFile=JsonUtility.ToJson(savedSetting);
-            File.WriteAllText(jsonPath, jsonFile, Encoding.UTF8);
+            return SafeWriteAllText(jsonPath, jsonFile);
+        }
+        private bool SafeWriteAllText(string path,string text)
+        {
+            string directory = Path.GetDirectoryName(path);
+            string tmp = Path.Combine(
+          directory,
+          $"{Path.GetFileName(path)}.{Guid.NewGuid():N}.tmp");
+            try
+            {
+                Directory.CreateDirectory(directory);
+                FileStream stream = new FileStream(tmp, FileMode.CreateNew, FileAccess.Write, FileShare.None);
+                using (StreamWriter writer=new StreamWriter(stream ,new UTF8Encoding(false)))
+                {
+                    writer.Write(text);
+                    writer.Flush();
+                }
+                if (File.Exists(path))
+                {
+                    File.Replace(tmp, path,null);
+                }
+                else
+                {
+                    File.Move(tmp, path);
+                }
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Debug.LogError($"FatalError: Unauthorize to write file:{path}");
+                return false;
+            }
+            catch (IOException)
+            {
+                Debug.LogError("FatalError: ");
+                return false;
+            }
+            finally
+            {
+                if (File.Exists(tmp))
+                {
+                    try
+                    {
+                        File.Delete(tmp);
+                    }
+                    catch (Exception exception)
+                    {
+                        Debug.LogWarning(
+                            $"Failed to delete temporary setting file " +
+                            $"'{tmp}': {exception.Message}");
+                    }
+                }
+            }
         }
     }
 }

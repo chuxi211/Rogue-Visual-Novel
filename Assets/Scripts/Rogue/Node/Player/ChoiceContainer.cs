@@ -1,5 +1,6 @@
 
 using Config;
+using Input;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -11,6 +12,7 @@ public class ChoiceContainer : MonoBehaviour
     public TextMeshProUGUI Choice;
     public Image BG;
     public StepID NextID { get; private set; }
+    public InputManager InputManager { get; private set; }
     private void Awake()
     {
         if(Choice == null)
@@ -25,6 +27,17 @@ public class ChoiceContainer : MonoBehaviour
     public void BindID(StepID nextID)
     {
         NextID = nextID;
+    }
+    public void BindInput(InputManager inputManager)
+    {
+        if (inputManager == null)
+        {
+            Debug.LogError(
+                "ChoiceContainer failed to bind input: InputManager is null.");
+            return;
+        }
+
+        InputManager = inputManager;
     }
     public void SetChoiceText(string text)
     {

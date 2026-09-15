@@ -1,4 +1,4 @@
-using Running;
+using StateMachine.Core;
 using StateMachine.Rogue;
 using UnityEngine;
 using Setting;
@@ -22,7 +22,7 @@ public class RogueBootstrap : MonoBehaviour
         StateMachine =new RogueStateMachine();
         InjectContextDependency(coreContext.SettingService);
         RegisterStates(coreContext);
-        StateMachine.SwitchState<InitState>();
+        StateMachine.SwitchState<StateMachine.Rogue.InitState>();
     }
     private void InjectContextDependency(SettingService settingService)
     {
@@ -33,7 +33,11 @@ public class RogueBootstrap : MonoBehaviour
     }
     private void RegisterStates(CoreContext coreContext)
     {
-        StateMachine.RegisterState(new InitState(StateMachine, coreContext.AssetBundleManager,coreContext.AudioSystem));
+        StateMachine.RegisterState(new StateMachine.Rogue.InitState(
+            StateMachine,
+            coreContext.AssetBundleManager,
+            coreContext.AudioSystem,
+            coreContext.InputManager));
         StateMachine.RegisterState(new IdleState(StateMachine));
     }
 }

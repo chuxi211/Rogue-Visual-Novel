@@ -30,12 +30,21 @@ namespace Audio
             }
             AudioSource.Stop();
             AudioSource.clip = audio;
+            AudioSource.volume = volume;
             AudioSource.loop = false;
             AudioSource.Play();
         }
 
         public void SetVoiceVolume(float volume)
         {
+            if (AudioSource == null)
+            {
+                Debug.LogError(
+                    "DialogueAudioPlayer failed to set voice volume: " +
+                    "AudioSource is null.");
+                return;
+            }
+
             AudioSource.volume = volume;
         }
 

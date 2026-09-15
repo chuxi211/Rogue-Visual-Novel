@@ -3,22 +3,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
-
-public class NextDialogueClick : MonoBehaviour, IStepClick, IPointerClickHandler
+namespace Input
 {
-    public void Click()
-    {
-        EventBus.Publish(new ERequestNextStep());
-    }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public class NextDialogueClick : MonoBehaviour, IStepClick, IPointerClickHandler
     {
-        if (InputManager.Instance == null)
+        private InputManager InputManager;
+        public void BindInput(InputManager inputManager)
         {
-            Debug.LogError(
-                "ContinueDialogueClick failed: InputManager.Instance is null.");
-            return;
+            if (inputManager == null)
+            {
+                Debug.LogError(
+                    "NextDialogueClick failed to bind: InputManager is null.");
+                return;
+            }
+
+            InputManager = inputManager;
         }
-        InputManager.Instance.InputStateMachine.Push(new InputCommand(this));
+        public void Click()
+        {
+            EventBus.Publish(new ERequestNextStep());
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (InputManager == null)
+            {
+                Debug.LogError(
+                    "NextDialogueClick failed: InputManager is null.");
+                return;
+            }
+            InputManager.InputStateMachine.Push(new InputCommand(this));
+        }
     }
 }

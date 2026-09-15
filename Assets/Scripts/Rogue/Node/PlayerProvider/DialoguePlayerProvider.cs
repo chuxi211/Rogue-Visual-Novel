@@ -1,3 +1,4 @@
+using Input;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,38 +11,89 @@ namespace Running
         public PlayerCache PlayerCache { get; private set; }
         public PrefabLoader PrefabLoader { get; private set; }
         public PlayerFactory PlayerFactory { get; private set; }
+        public InputManager InputManager { get; private set; }
         public Transform PlayerParent { get; private set; }
-        public DialoguePlayerProvider(PlayerCache playerCache, PrefabLoader prefabLoader, 
-                                      PlayerFactory playerFactory,Transform parent)
+        public DialoguePlayerProvider(
+            PlayerCache playerCache,
+            PrefabLoader prefabLoader,
+            PlayerFactory playerFactory,
+            InputManager inputManager,
+            Transform parent)
         {
             PlayerCache = playerCache;
             PrefabLoader = prefabLoader;
             PlayerFactory = playerFactory;
+            InputManager = inputManager;
             PlayerParent = parent;
         }
 
         public DialoguePlayer GetPlayer()
         {
-            //≥¢ ‘¥”ª∫¥Ê¡–±Ì÷–≤È’“≤¢∑µªÿ
+            if (InputManager == null)
+            {
+                Debug.LogError(
+                    "DialoguePlayerProvider failed: InputManager is null.");
+                return null;
+            }
+
+            if (PlayerCache == null)
+            {
+                Debug.LogError(
+                    "DialoguePlayerProvider failed: PlayerCache is null.");
+                return null;
+            }
+
+            //Â∞ùËØï‰ªéÁºìÂ≠òÂàóË°®‰∏≠Êü•ÊâæÂπ∂ËøîÂõû
             if(PlayerCache.TryGet<DialoguePlayer>(out var player))
             {
+                player.BindInput(InputManager);
                 return player;
             }
-            //¥”≥°æ∞÷–ªÒ»°≤¢◊¢≤·
+            //‰ªéÂú∫ÊôØ‰∏≠Ëé∑ÂèñÂπ∂Ê≥®ÂÜå
             player = GameObject.FindFirstObjectByType<DialoguePlayer>();
             if (player != null)
             {
+                player.BindInput(InputManager);
                 PlayerCache.Set<DialoguePlayer>(player);
                 return player;
             }
-            // 2. PrefabLoader º”‘ÿ‘§÷∆ÃÂ°£
+            // 2. PrefabLoader Âä†ËΩΩÈ¢ÑÂà∂‰Ωì„ÄÇ
+            if (PrefabLoader == null)
+            {
+                Debug.LogError(
+                    "DialoguePlayerProvider failed: PrefabLoader is null.");
+                return null;
+            }
+
             if(PrefabLoader.TryLoad("path","DialoguePlayer",out GameObject result))
             {
-                // 3. PlayerFactory  µ¿˝ªØ DialoguePlayer°£
+                if (PlayerFactory == null)
+                {
+                    Debug.LogError(
+                        "DialoguePlayerProvider failed: PlayerFactory is null.");
+                    return null;
+                }
+
+                if (PlayerParent == null)
+                {
+                    Debug.LogError(
+                        "DialoguePlayerProvider failed: PlayerParent is null.");
+                    return null;
+                }
+
+                // 3. PlayerFactory ÂÆû‰æãÂåñ DialoguePlayer„ÄÇ
                 DialoguePlayer dialoguePlayer = PlayerFactory.CreatePlayer<DialoguePlayer>(result, PlayerParent);
-                // 4. –¥»Îª∫¥Ê°£
+                if (dialoguePlayer == null)
+                {
+                    Debug.LogError(
+                        "DialoguePlayerProvider failed to create DialoguePlayer.");
+                    return null;
+                }
+
+                // 4. ÂÜôÂÖ•ÁºìÂ≠ò„ÄÇ
+                dialoguePlayer.BindInput(InputManager);
                 PlayerCache.Set<DialoguePlayer>(dialoguePlayer);
-                // 5. ∑µªÿ DialoguePlayer°£
+                // 5. ËøîÂõû DialoguePlayer„ÄÇ
                 return dialoguePlayer;
             }
             return null;

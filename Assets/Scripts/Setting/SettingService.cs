@@ -1,37 +1,114 @@
+using System;
 using Setting.Config;
 using Setting.Events;
 using Setting.Running;
-using Setting.Save;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Setting
 {
-    public class SettingService
+    public class SettingService : ISettingEditor
     {
-        public SettingRepository Repository { get;private set; }
+        public SettingRepository Repository { get; private set; }
         public DefaultSettingConfig Config { get; private set; }
         public SettingLoader SettingLoader { get; private set; }
         public SettingSerializer SettingSerializer { get; private set; }
-        public SettingService(SettingRepository repository,DefaultSettingConfig config, SettingLoader settingLoader, SettingSerializer settingSerializer)
+
+        public SettingService(
+            SettingRepository repository,
+            DefaultSettingConfig config,
+            SettingLoader settingLoader,
+            SettingSerializer settingSerializer)
         {
             Repository = repository;
             Config = config;
             SettingLoader = settingLoader;
             SettingSerializer = settingSerializer;
         }
+        public void OnExit()
+        {
+
+        }
+
+        public void BeginUpdate()
+        {
+            if (!TryGetRepository(out SettingRepository repository))
+            {
+                return;
+            }
+
+            repository.BeginUpdate();
+        }
+
+        public bool TryUpdateAudio(Action<AudioSetting> update)
+        {
+            return TryGetRepository(out SettingRepository repository)
+                && repository.TryUpdateAudio(update);
+        }
+
+        public bool TryUpdateDisplay(Action<DisplaySetting> update)
+        {
+            return TryGetRepository(out SettingRepository repository)
+                && repository.TryUpdateDisplay(update);
+        }
+
+        public bool TryUpdateInput(Action<InputSetting> update)
+        {
+            return TryGetRepository(out SettingRepository repository)
+                && repository.TryUpdateInput(update);
+        }
+
+        public bool TryUpdateText(Action<TextSetting> update)
+        {
+            return TryGetRepository(out SettingRepository repository)
+                && repository.TryUpdateText(update);
+        }
+
+        public void ConfirmUpdate()
+        {
+            if (!TryGetRepository(out SettingRepository repository) ||
+                !TryGetSerializer(out SettingSerializer serializer))
+            {
+                return;
+            }
+
+            if (!repository.TryConfirmUpdate(out SettingChangeScope changeScope))
+            {
+                return;
+            }
+
+            if (!serializer.TrySerializeSetting(repository.SettingData))
+            {
+                repository.UndoUpdate();
+                return;
+            }
+
+            repository.ClearPreviousData();
+
+            EventBus.Publish(
+                new ESettingChanged(repository.SettingData, changeScope));
+        }
+
+        public void CancelUpdate()
+        {
+            if (!TryGetRepository(out SettingRepository repository))
+            {
+                return;
+            }
+
+            repository.CancelUpdate();
+        }
+
         public bool GetConfigSetting<T>(out T setting) where T : Config.Setting
         {
             setting = default;
             if (Config == null)
             {
                 Debug.LogError(
-              "SettingService failed to get config setting: " +
-              "DefaultSettingConfig is null.");
+                    "SettingService failed to get config setting: " +
+                    "DefaultSettingConfig is null.");
                 return false;
             }
+
             if (!Config.TryGetSetting(out setting))
             {
                 Debug.LogError(
@@ -42,9 +119,31 @@ namespace Setting
 
             return true;
         }
-        private void OnExit()
+
+        private bool TryGetSerializer(out SettingSerializer serializer)
         {
-            //EventBus.Unsubscript<ERequestChangeMasterAudioVolume>();
+            serializer = SettingSerializer;
+            if(serializer != null)
+            {
+                return true;
+            }
+
+            Debug.LogError("SettingSerializer is null");
+            return false;
+        }
+
+        private bool TryGetRepository(out SettingRepository repository)
+        {
+            repository = Repository;
+            if (repository != null)
+            {
+                return true;
+            }
+
+            Debug.LogError(
+                "SettingService failed to edit settings: " +
+                "SettingRepository is null.");
+            return false;
         }
     }
 }

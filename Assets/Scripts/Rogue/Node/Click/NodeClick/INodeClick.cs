@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public interface INodeClick:IClick
+namespace Input
 {
-    void BindActor(NodeActor nodeActor);
+    public interface INodeClick : IClick
+    {
+        void BindActor(NodeActor nodeActor);
+    }
 }

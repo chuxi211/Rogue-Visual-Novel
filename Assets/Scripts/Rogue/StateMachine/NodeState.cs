@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Running;
 using Config;
+using Input;
 namespace StateMachine.Rogue
 {
     public class NodeState : RogueState
@@ -20,6 +21,16 @@ namespace StateMachine.Rogue
         public override void Enter()
         {
             base.Enter();
+
+            InputManager inputManager = StateMachine?.Context?.InputManager;
+            if (inputManager == null)
+            {
+                Debug.LogError(
+                    "Rogue NodeState failed to enter: InputManager is null.");
+                return;
+            }
+
+            inputManager.Switch(new StepInputState());
             EventBus.Subscript<ENodeCompleted>(OnNodeCompleted);
             if (CurrentNode != null)
             {

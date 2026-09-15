@@ -9,7 +9,7 @@ namespace Audio
     {
         [SerializeField] private AudioSource AudioSource;
 
-        public void PlaySound(AudioClip audio, float volume = 1)
+        public void PlaySound(AudioClip audio, float volumescale = 1)
         {
             if (AudioSource == null)
             {
@@ -27,11 +27,19 @@ namespace Audio
                 return;
             }
 
-            AudioSource.PlayOneShot(audio, volume);
+            AudioSource.PlayOneShot(audio,volumescale);
         }
 
         public void SetSoundVolume(float volume)
         {
+            if (AudioSource == null)
+            {
+                Debug.LogError(
+                    "SoundPlayer failed to set sound volume: " +
+                    "AudioSource is null.");
+                return;
+            }
+
             AudioSource.volume = volume;
         }
 

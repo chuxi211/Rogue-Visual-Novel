@@ -1,8 +1,10 @@
 
 using Audio;
+using Input;
 using Running;
 using Setting;
 using Setting.Config;
+using Setting.Running;
 using System.Collections.Generic;
 using UnityEngine;
 using Utility;
@@ -18,12 +20,22 @@ namespace StateMachine.Core
         public CGLoader CGLoader { get; private set; }
         public List<UIButton> Buttons { get; private set; }
         public Transform AudioPlayerParent { get; private set; }
-        public CoreInitilaizer(SettingLoader settingLoader,CGPlayer cgPlayer,List<UIButton> buttons,Transform audioPlayerParent)
+        public InputCollector InputCollector { get; private set; }
+        public InputManager InputManager { get; private set; }
+        public CoreInitilaizer(
+            SettingLoader settingLoader,
+            CGPlayer cgPlayer,
+            List<UIButton> buttons,
+            Transform audioPlayerParent,
+            InputCollector inputCollector,
+            InputManager inputManager)
         {
             SettingLoader = settingLoader;
             CGPlayer = cgPlayer;
             Buttons = buttons;
             AudioPlayerParent = audioPlayerParent;
+            InputCollector = inputCollector;
+            InputManager = inputManager;
         }
         public bool InitContext(CoreContext coreContext)
         {
@@ -71,18 +83,29 @@ namespace StateMachine.Core
             {
                 return false;
             }
-            if (!InitAudioSystem(audioDefinitionRepository, out AudioSystem audioSystem))
+            if (!InitAudioSystem(
+                audioDefinitionRepository,
+                settingService.Repository.SettingData.AudioSetting,
+                out AudioSystem audioSystem))
             {
                 return false;
             }
             InitButtons(dvlpSetting.ButtonSE,audioSystem);
+            if (!InitInput())
+            {
+                return false;
+            }
             coreContext.BindSettingService(settingService);
             coreContext.BindABManager(assetBundleManager);
             coreContext.BindAudioSystem(audioSystem);
             coreContext.BindAudioDefinitionRepository(audioDefinitionRepository);
+            coreContext.BindInputManager(InputManager);
             return true;
         }
-        public bool InitAudioSystem(AudioDefinitionRepository audioDefinitionRepository, out  AudioSystem audioSystem)
+        public bool InitAudioSystem(
+            AudioDefinitionRepository audioDefinitionRepository,
+            AudioSetting audioSetting,
+            out AudioSystem audioSystem)
         {
             audioSystem = null;
 
@@ -133,7 +156,8 @@ namespace StateMachine.Core
             audioSystem = new AudioSystem(
                 audioPlayers,
                 AssetBundleManager,
-                audioDefinitionRepository);
+                audioDefinitionRepository,
+                audioSetting);
             return true;
         }
         private List<AudioPlayer> GetAudioPlayers()
@@ -291,6 +315,26 @@ namespace StateMachine.Core
                 }
                 button.InitSE(audioID,soundPlayback);
             }
+        }
+        public bool InitInput()
+        {
+            if (InputManager == null)
+            {
+                Debug.LogError(
+                    "Input initialization failed: InputManager is null.");
+                return false;
+            }
+
+            if (InputCollector == null)
+            {
+                Debug.LogError(
+                    "Input initialization failed: InputCollector is null.");
+                return false;
+            }
+
+            InputManager.Init();
+            InputCollector.Bind(InputManager);
+            return true;
         }
     }
 }

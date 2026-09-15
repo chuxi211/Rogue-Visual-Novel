@@ -1,5 +1,6 @@
 using Audio;
 using Config;
+using Input;
 using Running;
 using StateMachine.Rogue;
 using System.Collections;
@@ -12,10 +13,12 @@ public class RogueInitiallizer
 {
     private readonly AssetBundleManager AssetBundleManager;
     private readonly AudioSystem AudioSystem;
-    public RogueInitiallizer(AssetBundleManager assetBundleManager, AudioSystem audioSystem)
+    private readonly InputManager InputManager;
+    public RogueInitiallizer(AssetBundleManager assetBundleManager, AudioSystem audioSystem,InputManager inputManager)
     {
         AssetBundleManager = assetBundleManager;
         AudioSystem = audioSystem;
+        InputManager = inputManager;
     }
 
     public void InitContext(RogueContext context)
@@ -26,10 +29,16 @@ public class RogueInitiallizer
         PlayerCache playerCache = new PlayerCache();
         PlayerFactory playerFactory = new PlayerFactory();
         PlayerProvideRegistry playerProvideRegistry = InitPlayerProviderRegistry
-            (playerCache, prefabLoader, playerFactory, context.PlayerParent);
+            (playerCache, prefabLoader, playerFactory,InputManager, context.PlayerParent);
         MapBuilder mapBuilder = InitMapBuilder(playerProvideRegistry);
         LayerProgression layerProgression = new LayerProgression();
-        ContextDependencyInject(context, configRepository, mapBuilder, playerProvideRegistry, layerProgression);
+        ContextDependencyInject(
+            context,
+            configRepository,
+            mapBuilder,
+            playerProvideRegistry,
+            layerProgression,
+            InputManager);
         InjectCameraSetting(context);
     }
 
@@ -37,12 +46,15 @@ public class RogueInitiallizer
         RogueContext context,
         ConfigRepository configRepository,
         MapBuilder mapBuilder,
-        PlayerProvideRegistry playerProvideRegistry, LayerProgression layerProgression)
+        PlayerProvideRegistry playerProvideRegistry,
+        LayerProgression layerProgression,
+        InputManager inputManager)
     {
         context.BindConfigRepository(configRepository);
         context.BindMapBuilder(mapBuilder);
         context.BindPlayerRegistry(playerProvideRegistry);
         context.BindLayerProgression(layerProgression);
+        context.BindInputManager(inputManager);
     }
     private Utility.LayerMapLoader InitLayerMapLoader(AssetBundleManager abManager)
     {
@@ -66,12 +78,13 @@ public class RogueInitiallizer
         PlayerCache playerCache,
         PrefabLoader prefabLoader,
         PlayerFactory playerFactory,
+        InputManager inputManager,
         Transform playerParent
         )
     {
         PlayerProvideRegistry playerProviderRegistry = new PlayerProvideRegistry();
-        playerProviderRegistry.Register<DialoguePlayer>(new DialoguePlayerProvider(playerCache, prefabLoader, playerFactory, playerParent));
-        playerProviderRegistry.Register<ChoicePlayer>(new ChoicePlayerProvider(playerCache, prefabLoader, playerFactory, playerParent));
+        playerProviderRegistry.Register<DialoguePlayer>(new DialoguePlayerProvider(playerCache, prefabLoader, playerFactory,inputManager, playerParent));
+        playerProviderRegistry.Register<ChoicePlayer>(new ChoicePlayerProvider(playerCache, prefabLoader, playerFactory,inputManager, playerParent));
         playerProviderRegistry.Register<CharacterPlayer>(new CharacterPlayerProvider(playerCache, prefabLoader, playerFactory, playerParent));
         playerProviderRegistry.Register<BGPlayer>(new BGPlayerProvider(playerCache, prefabLoader, playerFactory, playerParent));
         return playerProviderRegistry;

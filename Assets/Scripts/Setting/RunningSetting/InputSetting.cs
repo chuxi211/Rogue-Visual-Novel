@@ -7,6 +7,10 @@ namespace Setting.Running
     {
         [Min(0f)]
         public float StepAdvanceInterval = 0.2f;
+        public InputSetting(InputSetting inputSetting)
+        {
+            StepAdvanceInterval = inputSetting.StepAdvanceInterval;
+        }
         public InputSetting(InputSettingConfig config)
         {
             StepAdvanceInterval=config.StepAdvanceInterval;

@@ -13,6 +13,14 @@ namespace Setting.Running
         [Min(0)]
         public int VSyncCount = 1;
         public int TargetFrameRate = 60;
+        public DisplaySetting(DisplaySetting displaySetting)
+        {
+            Width = displaySetting.Width;
+            Height = displaySetting.Height;
+            FullScreenMode = displaySetting.FullScreenMode;
+            VSyncCount = displaySetting.VSyncCount;
+            TargetFrameRate = displaySetting.TargetFrameRate;
+        }
         public DisplaySetting(DisplaySettingConfig config)
         {
             Width = config.DefaultWidth;

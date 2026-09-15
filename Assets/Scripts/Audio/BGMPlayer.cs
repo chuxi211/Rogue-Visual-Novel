@@ -28,16 +28,33 @@ namespace Audio
                 return;
             }
             AudioSource.clip = audioClip;
+            AudioSource.volume = volume;
             AudioSource.Play();
         }
 
         public void SetMusicVolume(float volume)
         {
+            if (AudioSource == null)
+            {
+                Debug.LogError(
+                    "BGMPlayer failed to set music volume: " +
+                    "AudioSource is null.");
+                return;
+            }
+
             AudioSource.volume = volume;
         }
 
         public void StopMusic()
         {
+            if (AudioSource == null)
+            {
+                Debug.LogError(
+                    "BGMPlayer failed to stop music: " +
+                    "AudioSource is null.");
+                return;
+            }
+
             AudioSource.Stop();
         }
         public void OnEnable()

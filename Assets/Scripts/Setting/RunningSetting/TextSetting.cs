@@ -12,6 +12,13 @@ namespace Setting.Running
         public float AutoAdvanceDelay = 1f;
         [Range(0.5f, 2f)]
         public float TextPlaybackSpeed = 1f;
+        public TextSetting(TextSetting textSetting)
+        {
+            TypewriterEnabled = textSetting.TypewriterEnabled;
+            CharactersPerSecond = textSetting.CharactersPerSecond;
+            AutoAdvanceDelay = textSetting.AutoAdvanceDelay;
+            TextPlaybackSpeed = textSetting.TextPlaybackSpeed;
+        }
         public TextSetting(TextSettingConfig config)
         {
             TypewriterEnabled = config.TypewriterEnabled;
