@@ -1,14 +1,13 @@
 using Setting.Events;
 using Setting.Running;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Utility;
 
 namespace Audio
 {
-    public class AudioSystem : IVoicePlayback, IMusicPlayback,ISoundPlayback,IGetPlayVolume
+    public class AudioSystem : IVoicePlayback, IMusicPlayback, ISoundPlayback, IGetPlayVolume
     {
         private readonly Dictionary<Type, AudioPlayer> AudioPlayers = new Dictionary<Type, AudioPlayer>();
 
@@ -35,8 +34,8 @@ namespace Audio
             {
                 foreach (AudioPlayer audioPlayer in audioPlayers)
                 {
-                    if(audioPlayer != null)
-                    RegisterAudioPlayer(audioPlayer);
+                    if (audioPlayer != null)
+                        RegisterAudioPlayer(audioPlayer);
                 }
             }
             else
@@ -172,9 +171,9 @@ namespace Audio
                 return;
             }
 
-            if(TryGetAudioPlayer<BGMPlayer>(out BGMPlayer bgmPlayer))
+            if (TryGetAudioPlayer<BGMPlayer>(out BGMPlayer bgmPlayer))
             {
-                if (TryGetAudio(audioID, AudioCategory.Music,out AudioDefinition audioDefinition, out AudioClip audioClip))
+                if (TryGetAudio(audioID, AudioCategory.Music, out AudioDefinition audioDefinition, out AudioClip audioClip))
                 {
                     float volume = GetBGMVolume(audioDefinition.volume, AudioSetting);
                     CurrentBGM = audioDefinition;
@@ -202,7 +201,7 @@ namespace Audio
 
             if (TryGetAudioPlayer(out DialogueAudioPlayer dialogueAudioPlayer))
             {
-                if (TryGetAudio(audioID, AudioCategory.Dialogue,out AudioDefinition audioDefinition, out AudioClip audioClip))
+                if (TryGetAudio(audioID, AudioCategory.Dialogue, out AudioDefinition audioDefinition, out AudioClip audioClip))
                 {
                     float volume = GetVoiceVolume(audioDefinition.volume, AudioSetting);
                     CurrentVoice = audioDefinition;
@@ -229,9 +228,9 @@ namespace Audio
                 return;
             }
 
-            if(TryGetAudioPlayer(out BGMPlayer bgmPlayer))
+            if (TryGetAudioPlayer(out BGMPlayer bgmPlayer))
             {
-                if(CurrentBGM == null)
+                if (CurrentBGM == null)
                 {
                     return;
                 }
@@ -251,9 +250,9 @@ namespace Audio
                 return;
             }
 
-            if(TryGetAudioPlayer<DialogueAudioPlayer>(out DialogueAudioPlayer dialogueAudioPlayer))
+            if (TryGetAudioPlayer<DialogueAudioPlayer>(out DialogueAudioPlayer dialogueAudioPlayer))
             {
-                if(CurrentVoice == null)
+                if (CurrentVoice == null)
                 {
                     return;
                 }
@@ -268,7 +267,7 @@ namespace Audio
 
         public void StopMusic()
         {
-            if(TryGetAudioPlayer(out BGMPlayer bgmPlayer))
+            if (TryGetAudioPlayer(out BGMPlayer bgmPlayer))
             {
                 bgmPlayer.StopMusic();
                 CurrentBGM = null;
@@ -430,11 +429,11 @@ namespace Audio
                 return;
             }
 
-            if(TryGetAudioPlayer<SoundPlayer>(out SoundPlayer soundPlayer))
+            if (TryGetAudioPlayer<SoundPlayer>(out SoundPlayer soundPlayer))
             {
-                if (TryGetAudio(audioID, AudioCategory.Sound,out AudioDefinition audioDefinition, out AudioClip audioClip))
+                if (TryGetAudio(audioID, AudioCategory.Sound, out AudioDefinition audioDefinition, out AudioClip audioClip))
                 {
-                    soundPlayer.PlaySound(audioClip,audioDefinition.volume);
+                    soundPlayer.PlaySound(audioClip, audioDefinition.volume);
                 }
                 else
                 {
@@ -456,7 +455,7 @@ namespace Audio
                 return;
             }
 
-            if(TryGetAudioPlayer<SoundPlayer>(out SoundPlayer soundPlayer))
+            if (TryGetAudioPlayer<SoundPlayer>(out SoundPlayer soundPlayer))
             {
                 float volume = AudioSetting.MasterVolume * AudioSetting.SeVolume;
                 soundPlayer.SetSoundVolume(volume);
@@ -469,7 +468,7 @@ namespace Audio
 
         public float GetPlayVolume(float definitionVolume, AudioSetting audioSetting)
         {
-            return definitionVolume*audioSetting.MasterVolume;
+            return definitionVolume * audioSetting.MasterVolume;
         }
 
         public float GetBGMVolume(float definitionVolume, AudioSetting audioSetting)
@@ -479,12 +478,12 @@ namespace Audio
 
         public float GetVoiceVolume(float definitionVolume, AudioSetting audioSetting)
         {
-            return definitionVolume*audioSetting.MasterVolume*audioSetting.VoiceVolume;
+            return definitionVolume * audioSetting.MasterVolume * audioSetting.VoiceVolume;
         }
 
         public float GetSEVolume(float definitionVolume, AudioSetting audioSetting)
         {
-            return audioSetting.MasterVolume*audioSetting.SeVolume;
+            return audioSetting.MasterVolume * audioSetting.SeVolume;
         }
 
         private bool HasValidAudioSetting()

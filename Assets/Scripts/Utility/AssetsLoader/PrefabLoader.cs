@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Config;
 namespace Utility
 {
     public class PrefabLoader : IAssetLoader<GameObject>
@@ -24,8 +21,8 @@ namespace Utility
                 Debug.LogError($"Fail to load AssetBundle:{path}");
                 return null;
             }
-            GameObject prefab= bundle.LoadAsset<GameObject>(assetName);
-            if(prefab == null)
+            GameObject prefab = bundle.LoadAsset<GameObject>(assetName);
+            if (prefab == null)
             {
                 Debug.LogError($"Fail to load Prefab:{assetName} from {path}");
                 return null;
@@ -42,17 +39,17 @@ namespace Utility
         public bool TryLoad(string path, string assetName, out GameObject result)
         {
             AssetBundle bundle = AssetBundle.LoadFromFile(path);
-            if(bundle == null)
+            if (bundle == null)
             {
                 Debug.LogError($"Fail to load AssetBundle:{path}");
                 result = null;
                 return false;
             }
-            GameObject prefab=bundle.LoadAsset<GameObject>(assetName);
-            if(prefab == null)
+            GameObject prefab = bundle.LoadAsset<GameObject>(assetName);
+            if (prefab == null)
             {
                 Debug.LogError($"Fail to load Prefab:{assetName} from {path}");
-                result=null;
+                result = null;
                 return false;
             }
             result = prefab;

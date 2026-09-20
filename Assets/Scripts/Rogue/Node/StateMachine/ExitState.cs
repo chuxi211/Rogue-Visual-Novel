@@ -1,8 +1,4 @@
-using Config;
 using Running;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace StateMachine.Node
 {
@@ -20,9 +16,9 @@ namespace StateMachine.Node
         }
         private void ClearAllVisual()
         {
-            while(StateMachine.Node.EnteredComponents.Count > 0)
+            while (StateMachine.Node.EnteredComponents.Count > 0)
             {
-                IComponent cmp=StateMachine.Node.EnteredComponents.Dequeue();
+                IComponent cmp = StateMachine.Node.EnteredComponents.Dequeue();
                 cmp.ExitOnNodeEnd();
             }
         }

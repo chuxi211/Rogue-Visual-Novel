@@ -1,12 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
+using Input;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 namespace StateMachine.Core
 {
     public class MainMenuState : CoreState
     {
         private CanvasGroup Menu;
+        private InputManager InputManager { get => StateMachine.Context.InputManager; }
         public MainMenuState(CoreStateMachine stateMachine, CanvasGroup menu) : base(stateMachine)
         {
             Menu = menu;
@@ -15,18 +14,21 @@ namespace StateMachine.Core
         {
             EventBus.Subscript<ERequestNewGame>(OnNewGame);
             EventBus.Subscript<ERequestGallery>(OnGallery);
+            EventBus.Subscript<ERequestSetting>(OnSetting);
             if (Menu == null)
             {
                 Debug.LogError("Menu is null");
                 return;
             }
-            Menu.blocksRaycasts=true;
-            Menu.interactable=true;
+            Menu.blocksRaycasts = true;
+            Menu.interactable = true;
+            InputManager.Switch(new MainMenu.Input.MainMenuState());
         }
         public override void Exit()
         {
             EventBus.Unsubscript<ERequestNewGame>(OnNewGame);
             EventBus.Unsubscript<ERequestGallery>(OnGallery);
+            EventBus.Unsubscript<ERequestSetting>(OnSetting);
         }
         private void OnNewGame(ERequestNewGame e)
         {
@@ -37,6 +39,12 @@ namespace StateMachine.Core
             Menu.interactable = false;
             Menu.blocksRaycasts = false;
             StateMachine.SwitchState<GalleryState>();
+        }
+        private void OnSetting(ERequestSetting e)
+        {
+            Menu.interactable = false;
+            Menu.blocksRaycasts = false;
+            StateMachine.SwitchState<SettingState>();
         }
     }
 }

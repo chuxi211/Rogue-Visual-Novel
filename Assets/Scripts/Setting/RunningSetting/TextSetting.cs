@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Setting.Running
 {
-    public class TextSetting:Setting
+    public class TextSetting : Setting
     {
         public bool TypewriterEnabled = true;
         [Min(0f)]
@@ -28,10 +28,10 @@ namespace Setting.Running
         }
         public void Override(Save.TextSetting textSetting)
         {
-            TypewriterEnabled=textSetting.TypewriterEnabled;
+            TypewriterEnabled = textSetting.TypewriterEnabled;
             CharactersPerSecond = textSetting.CharactersPerSecond;
-            AutoAdvanceDelay=textSetting.AutoAdvanceDelay;
-            TextPlaybackSpeed=textSetting.TextPlaybackSpeed;
+            AutoAdvanceDelay = textSetting.AutoAdvanceDelay;
+            TextPlaybackSpeed = textSetting.TextPlaybackSpeed;
         }
     }
 }

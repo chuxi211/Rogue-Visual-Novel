@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Input;
+using UnityEngine;
 namespace StateMachine.Rogue
 {
     public class IdleState : RogueState
@@ -36,7 +34,7 @@ namespace StateMachine.Rogue
                 return;
             }
             StateMachine.Context.Camera.StartMoveTo(e.Actor.gameObject.transform.position);
-            StateMachine.PushState(new NodeState(StateMachine,e.Actor.NodeRunning));
+            StateMachine.PushState(new NodeState(StateMachine, e.Actor.NodeRunning));
         }
     }
 }

@@ -1,8 +1,4 @@
-using Config;
-using System;
-using System.Collections.Generic;
 using UnityEngine;
-using Utility;
 namespace Running
 {
     public class NodeBuilder
@@ -16,16 +12,16 @@ namespace Running
                 Debug.LogError("StepBuilder is null");
             }
         }
-        public Node BuildNode(Config.Node configNode, Transform parent,Vector2 nodeSpacing)
+        public Node BuildNode(Config.Node configNode, Transform parent, Vector2 nodeSpacing)
         {
             if (configNode == null)
             {
                 Debug.LogError("ConfigNode is null");
                 return null;
             }
-            Node node = new Node(configNode.Position,configNode.AdvanceType);
-            Vector3 position = new Vector3(configNode.Position.X*nodeSpacing.x,configNode.Position.Y*nodeSpacing.y);
-            GameObject go=GameObject.Instantiate(configNode.NodePrefab,position,Quaternion.identity,parent);
+            Node node = new Node(configNode.Position, configNode.AdvanceType);
+            Vector3 position = new Vector3(configNode.Position.X * nodeSpacing.x, configNode.Position.Y * nodeSpacing.y);
+            GameObject go = GameObject.Instantiate(configNode.NodePrefab, position, Quaternion.identity, parent);
             NodeActor nodeActor = go.GetComponent<NodeActor>();
 
             if (nodeActor == null)

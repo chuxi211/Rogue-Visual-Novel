@@ -8,7 +8,7 @@ namespace Config
     //OnNodeEnd统一清理
     //而非OnStepEnd
     [Serializable]
-    [CreateAssetMenu(fileName ="BGMBhaviour",menuName = "ConfigInfo/Rogue/NodeBehaviours/BGMBehaviour")]
+    [CreateAssetMenu(fileName = "BGMBhaviour", menuName = "ConfigInfo/Rogue/NodeBehaviours/BGMBehaviour")]
     public class BGMBehaviour : NodeBehaviour
     {
         public AudioID AudioID = new AudioID();

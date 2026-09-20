@@ -1,7 +1,4 @@
 using Config;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace Running
 {
@@ -18,7 +15,7 @@ namespace Running
 
         public void Enter()
         {
-            Player= PlayerProvider.GetPlayer();
+            Player = PlayerProvider.GetPlayer();
             Player.SetBG(BGBehaviour.BG);
             Player.Show();
         }
@@ -31,7 +28,7 @@ namespace Running
 
         public void ExitOnStepEnd()
         {
-            
+
         }
     }
 }

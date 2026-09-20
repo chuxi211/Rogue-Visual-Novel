@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +7,7 @@ namespace Running
     public class PlayerProvideRegistry
     {
         private readonly Dictionary<Type, IPlayerProvider> Providers = new Dictionary<Type, IPlayerProvider>();
-        public void Register<TPlayer> (IPlayerProvider<TPlayer> playerProvider)where TPlayer: class
+        public void Register<TPlayer>(IPlayerProvider<TPlayer> playerProvider) where TPlayer : class
         {
             if (playerProvider == null)
             {
@@ -17,14 +16,14 @@ namespace Running
                     $"{typeof(TPlayer).Name} provider is null.");
                 return;
             }
-            Providers[typeof (TPlayer)] = playerProvider;
+            Providers[typeof(TPlayer)] = playerProvider;
         }
-        public bool TryGet<TPlayer>(out IPlayerProvider<TPlayer> playerProvider)where TPlayer : class
+        public bool TryGet<TPlayer>(out IPlayerProvider<TPlayer> playerProvider) where TPlayer : class
         {
             playerProvider = null;
-            if(Providers.TryGetValue(typeof(TPlayer),out IPlayerProvider provider))
+            if (Providers.TryGetValue(typeof(TPlayer), out IPlayerProvider provider))
             {
-                playerProvider=provider as IPlayerProvider<TPlayer>;
+                playerProvider = provider as IPlayerProvider<TPlayer>;
             }
             if (playerProvider == null)
             {

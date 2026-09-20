@@ -6,7 +6,7 @@ namespace StateMachine.Core
     {
         private CanvasGroup GalleryCnvsGrp;
         private CGPlayer CGPlayer;
-        public GalleryState(CoreStateMachine stateMachine,CanvasGroup canvas,CGPlayer player) : base(stateMachine)
+        public GalleryState(CoreStateMachine stateMachine, CanvasGroup canvas, CGPlayer player) : base(stateMachine)
         {
             GalleryCnvsGrp = canvas;
             CGPlayer = player;

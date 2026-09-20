@@ -12,7 +12,7 @@ public static class EventBus
         {
             Events[type] = null;
         }
-        Events[type] = (Action<T>) Events[type] + callback;
+        Events[type] = (Action<T>)Events[type] + callback;
     }
     public static void Unsubscript<T>(Action<T> callback)
     {

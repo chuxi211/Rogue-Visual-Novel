@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Utility;
 
 namespace Audio
 {
-    public class DialogueAudioPlayer : AudioPlayer,IVoicePlayer
+    public class DialogueAudioPlayer : AudioPlayer, IVoicePlayer
     {
         [SerializeField] private AudioSource AudioSource;
         //当前没有对volume进行处理

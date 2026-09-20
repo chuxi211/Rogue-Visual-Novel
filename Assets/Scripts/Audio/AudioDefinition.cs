@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Audio
@@ -23,7 +21,7 @@ namespace Audio
         Dialogue,
     }
     [Serializable]
-    public class AudioID:IEquatable<AudioID>
+    public class AudioID : IEquatable<AudioID>
     {
         public string ID;
         public bool IsValid => !string.IsNullOrEmpty(ID);
@@ -32,7 +30,7 @@ namespace Audio
         {
             return other != null && ID == other.ID;
         }
-        public static bool operator == (AudioID left, AudioID right)
+        public static bool operator ==(AudioID left, AudioID right)
         {
             if (left is null && right is null) return true;
             if (left is null || right is null) return false;

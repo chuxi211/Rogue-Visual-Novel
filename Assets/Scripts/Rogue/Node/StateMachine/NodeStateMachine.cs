@@ -21,7 +21,7 @@ namespace StateMachine.Node
             if (Node.Steps.Count > 0)
             {
                 CurrentStep = Node.Steps[CurrentStepIndex];
-                SwitchState(new AdvanceState(this,CurrentStep));
+                SwitchState(new AdvanceState(this, CurrentStep));
                 return true;
             }
             else
@@ -32,7 +32,7 @@ namespace StateMachine.Node
         }
         public void Advance(StepID nextID)
         {
-            if(Node.StepsMap.TryGetValue(nextID, out Running.Step nextStep))
+            if (Node.StepsMap.TryGetValue(nextID, out Running.Step nextStep))
             {
                 CurrentStep = nextStep;
                 CurrentStepIndex = Node.Steps.IndexOf(nextStep);

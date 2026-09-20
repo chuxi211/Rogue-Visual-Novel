@@ -1,6 +1,6 @@
-using System;
 using Setting.Events;
 using Setting.Running;
+using System;
 using UnityEngine;
 using SavedSetting = Setting.Save.SavedSetting;
 
@@ -8,7 +8,7 @@ namespace Setting
 {
     public class SettingRepository
     {
-        public SettingData PreviousData { get;private set; }
+        public SettingData PreviousData { get; private set; }
         public SettingData SettingData { get; private set; }
         public bool IsUpdating => Snapshot != null;
 
@@ -141,7 +141,7 @@ namespace Setting
             }
 
             changeScope = GetChangeScope(SettingData, Snapshot);
-            PreviousData=SettingData;
+            PreviousData = SettingData;
             SettingData = Snapshot;
             Snapshot = null;
             return true;
@@ -230,10 +230,8 @@ namespace Setting
 
         private static bool IsValid(DisplaySetting setting)
         {
-            return setting.Width >= 1
-                && setting.Height >= 1
+            return Enum.IsDefined(typeof(PixelSize),setting.PixelSize)
                 && Enum.IsDefined(typeof(FullScreenMode), setting.FullScreenMode)
-                && setting.VSyncCount >= 0
                 && (setting.TargetFrameRate == -1 || setting.TargetFrameRate >= 1);
         }
 
@@ -302,10 +300,8 @@ namespace Setting
 
         private static bool AreEqual(DisplaySetting left, DisplaySetting right)
         {
-            return left.Width == right.Width
-                && left.Height == right.Height
+            return left.PixelSize == right.PixelSize
                 && left.FullScreenMode == right.FullScreenMode
-                && left.VSyncCount == right.VSyncCount
                 && left.TargetFrameRate == right.TargetFrameRate;
         }
 

@@ -42,9 +42,9 @@ namespace Setting
                 return true;
             }
             //若存在则加载并反序列化
-            string json = File.ReadAllText(userSetting,Encoding.UTF8);
-            savedSetting=JsonUtility.FromJson<SavedSetting>(json);
-            return savedSetting!=null ;
+            string json = File.ReadAllText(userSetting, Encoding.UTF8);
+            savedSetting = JsonUtility.FromJson<SavedSetting>(json);
+            return savedSetting != null;
         }
         public bool TryLoadConfig(out DefaultSettingConfig defaultSettingConfig)
         {

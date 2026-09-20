@@ -1,6 +1,4 @@
 using Input;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Utility;
 
@@ -44,7 +42,7 @@ namespace Running
             }
 
             //尝试从缓存列表中查找并返回
-            if(PlayerCache.TryGet<DialoguePlayer>(out var player))
+            if (PlayerCache.TryGet<DialoguePlayer>(out var player))
             {
                 player.BindInput(InputManager);
                 return player;
@@ -65,7 +63,7 @@ namespace Running
                 return null;
             }
 
-            if(PrefabLoader.TryLoad("path","DialoguePlayer",out GameObject result))
+            if (PrefabLoader.TryLoad("path", "DialoguePlayer", out GameObject result))
             {
                 if (PlayerFactory == null)
                 {

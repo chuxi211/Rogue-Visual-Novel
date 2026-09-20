@@ -1,19 +1,18 @@
 using StateMachine.Node;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 namespace Running
 {
     /// <summary>
-    /// 根据Component创建State的工厂类
+    /// 鏍规嵁Component鍒涘缓State鐨勫伐鍘傜被
     /// </summary>
     public class NodeStateFactory
     {
-        private readonly Dictionary<Type,Func<NodeStateMachine,IComponent,NodeState>> StateCreators = 
+        private readonly Dictionary<Type, Func<NodeStateMachine, IComponent, NodeState>> StateCreators =
             new Dictionary<Type, Func<NodeStateMachine, IComponent, NodeState>>();
         public NodeStateFactory() { }
-        public void RegisterState<TComponent>(Func<NodeStateMachine, TComponent, NodeState> creator) where TComponent :class, IComponent
+        public void RegisterState<TComponent>(Func<NodeStateMachine, TComponent, NodeState> creator) where TComponent : class, IComponent
         {
             StateCreators[typeof(TComponent)] = (nodeStateMachine, component) =>
             {
@@ -29,12 +28,12 @@ namespace Running
                 return;
             }
             Type componentType = component.GetType();
-            if (!StateCreators.TryGetValue(componentType, out Func<NodeStateMachine,IComponent, NodeState> creator))
+            if (!StateCreators.TryGetValue(componentType, out Func<NodeStateMachine, IComponent, NodeState> creator))
             {
                 Debug.LogError($"BuildState failed: no state creator registered for {componentType.Name}.");
                 return;
             }
-            NodeState state = creator(node.StateMachine,component);
+            NodeState state = creator(node.StateMachine, component);
             if (state != null)
             {
                 //node.StateMachine.AddConsumeState(state);

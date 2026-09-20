@@ -1,5 +1,5 @@
 ManifestFileVersion: 0
-CRC: 1530994301
+CRC: 2104443598
 AssetBundleManifest:
   AssetBundleInfos:
     Info_0:
@@ -13,4 +13,7 @@ AssetBundleManifest:
       Dependencies: {}
     Info_3:
       Name: audiodefinitioncatalog
+      Dependencies: {}
+    Info_4:
+      Name: uiaudio
       Dependencies: {}

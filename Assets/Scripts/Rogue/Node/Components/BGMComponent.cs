@@ -8,7 +8,7 @@ namespace Running
     {
         private readonly BGMBehaviour Behaviour;
         private readonly IMusicPlayback MusicPlayback;
-        public BGMComponent(BGMBehaviour behaviour,  IMusicPlayback musicPlayback)
+        public BGMComponent(BGMBehaviour behaviour, IMusicPlayback musicPlayback)
         {
             Behaviour = behaviour;
             MusicPlayback = musicPlayback;

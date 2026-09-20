@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Utility;
 
@@ -21,17 +19,17 @@ namespace Running
 
         public BGPlayer GetPlayer()
         {
-            if(PlayerCache.TryGet(out BGPlayer player))
+            if (PlayerCache.TryGet(out BGPlayer player))
             {
                 return player;
             }
             player = GameObject.FindFirstObjectByType<BGPlayer>();
-            if(player != null)
+            if (player != null)
             {
                 PlayerCache.Set(player);
                 return player;
             }
-            if(PrefabLoader.TryLoad("path", "BGPlayer", out GameObject result))
+            if (PrefabLoader.TryLoad("path", "BGPlayer", out GameObject result))
             {
                 BGPlayer bgPlayer = PlayerFactory.CreatePlayer<BGPlayer>(result, PlayerParent);
                 PlayerCache.Set(bgPlayer);

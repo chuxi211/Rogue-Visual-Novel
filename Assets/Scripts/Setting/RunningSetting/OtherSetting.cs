@@ -1,12 +1,10 @@
-using Setting.Config;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Audio;
+using Setting.Config;
+using UnityEngine;
 
 namespace Setting.Running
 {
-    public class OtherSetting:Setting
+    public class OtherSetting : Setting
     {
         [Min(1)]
         public int CameraMovingSpeed;

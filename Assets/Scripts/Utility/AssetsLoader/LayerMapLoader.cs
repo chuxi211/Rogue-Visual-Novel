@@ -20,7 +20,7 @@ namespace Utility
             AssetBundleManager = assetBundleManager;
         }
 
-        public bool TryLoad(string bundleName,string assetName,out LayerMapGroup result)
+        public bool TryLoad(string bundleName, string assetName, out LayerMapGroup result)
         {
             result = null;
 

@@ -1,5 +1,3 @@
-using Utility;
-using System.Collections.Generic;
 using Audio;
 using UnityEngine;
 namespace Utility
@@ -49,13 +47,13 @@ namespace Utility
                     "AssetBundleManager is null.");
                 return false;
             }
-            if(!AssetBundleManager.TryGetBundleWithDependencies(bundleName, out AssetBundle bundle))
+            if (!AssetBundleManager.TryGetBundleWithDependencies(bundleName, out AssetBundle bundle))
             {
                 Debug.LogError($"Failed to load bundle '{bundleName}' with dependencies.");
                 return false;
             }
             result = bundle.LoadAsset<AudioDefinitionCatalog>(assetName);
-            if(result == null)
+            if (result == null)
             {
                 Debug.LogError($"Failed to load asset '{assetName}' from bundle '{bundleName}'.");
                 return false;

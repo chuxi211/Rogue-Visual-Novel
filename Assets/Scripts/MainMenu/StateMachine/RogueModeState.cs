@@ -18,8 +18,8 @@ namespace StateMachine.Core
             if (scene.name == "Game")
             {
                 SceneManager.sceneLoaded -= OnSceneLoaded;
-                RogueBootstrap rogueBootstrap=UnityEngine.GameObject.FindFirstObjectByType<RogueBootstrap>();
-                if(rogueBootstrap != null)
+                RogueBootstrap rogueBootstrap = UnityEngine.GameObject.FindFirstObjectByType<RogueBootstrap>();
+                if (rogueBootstrap != null)
                 {
                     rogueBootstrap.InitStateMachine(StateMachine.Context);
                 }

@@ -4,6 +4,6 @@ namespace Audio
 {
     public abstract class AudioPlayer : MonoBehaviour
     {
-        
+
     }
 }

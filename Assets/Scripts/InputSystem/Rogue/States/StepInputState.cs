@@ -1,6 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 namespace Input
 {
@@ -17,7 +14,7 @@ namespace Input
         }
         public void Handle(InputCommand command)
         {
-            if(command?.Input is not IStepClick stepclick)
+            if (command?.Input is not IStepClick stepclick)
             {
                 Debug.LogError(
              "StepInputState cannot handle input because it is not IStepClick.");

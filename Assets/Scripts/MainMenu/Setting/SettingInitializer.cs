@@ -1,10 +1,8 @@
-using Config;
+using Setting;
 using Setting.Config;
 using Setting.Running;
-using Setting;
-using UnityEngine;
 using Setting.Save;
-using System.IO;
+using UnityEngine;
 
 public sealed class SettingInitializer
 {
@@ -38,7 +36,7 @@ public sealed class SettingInitializer
         {
             return false;
         }
-        if (!TryInitSettingRepository(defaultSettingConfig,out SettingRepository repository))
+        if (!TryInitSettingRepository(defaultSettingConfig, out SettingRepository repository))
         {
             return false;
         }
@@ -46,7 +44,7 @@ public sealed class SettingInitializer
         {
             return false;
         }
-        settingService=new SettingService(repository,defaultSettingConfig,Loader,Serializer);
+        settingService = new SettingService(repository, defaultSettingConfig, Loader, Serializer);
         return true;
     }
 
@@ -55,7 +53,7 @@ public sealed class SettingInitializer
         settingRepository = null;
 
 
-        if(!Loader.TryLoadSaved(out SavedSetting savedSetting))
+        if (!Loader.TryLoadSaved(out SavedSetting savedSetting))
         {
             return false;
         }
@@ -73,9 +71,9 @@ public sealed class SettingInitializer
     {
 
         string settingDire = defaultSettingConfig.DeveloperSetting.UserSettingDire;
-        string settingName=defaultSettingConfig.DeveloperSetting.UserSettingsFileName;
+        string settingName = defaultSettingConfig.DeveloperSetting.UserSettingsFileName;
 
-        Serializer =new SettingSerializer(settingDire,settingName);
+        Serializer = new SettingSerializer(settingDire, settingName);
         return true;
     }
 }

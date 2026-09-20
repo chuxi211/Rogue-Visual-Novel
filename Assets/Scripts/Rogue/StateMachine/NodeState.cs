@@ -1,10 +1,6 @@
-using StateMachine.Node;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using Running;
-using Config;
 using Input;
+using Running;
+using UnityEngine;
 namespace StateMachine.Rogue
 {
     public class NodeState : RogueState
@@ -53,8 +49,8 @@ namespace StateMachine.Rogue
             //若完成，执行以下操作
             else
             {
-                int currentlayer=StateMachine.Context.LayerProgression.CurrentLayer;
-                if(StateMachine.Context.ConfigRepository.TryGetMap(currentlayer+1, out var map))
+                int currentlayer = StateMachine.Context.LayerProgression.CurrentLayer;
+                if (StateMachine.Context.ConfigRepository.TryGetMap(currentlayer + 1, out var map))
                 {
                     StateMachine.SwitchState(new BuildMapState(StateMachine, map));
                     StateMachine.Context.LayerProgression.AddLayer();

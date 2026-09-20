@@ -1,14 +1,12 @@
 using Config;
 using Input;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ChoicePlayer : MonoBehaviour
 {
     public ChoiceContainer Template;
-    public List<ChoiceContainer> ChoiceContainers=new List<ChoiceContainer>();
+    public List<ChoiceContainer> ChoiceContainers = new List<ChoiceContainer>();
     private InputManager InputManager;
     public void BindInput(InputManager inputManager)
     {
@@ -103,6 +101,6 @@ public class ChoicePlayer : MonoBehaviour
     }
     public void ClearAllChoicesText()
     {
-        ChoiceContainers.ForEach(container=>container.SetChoiceText(string.Empty));
+        ChoiceContainers.ForEach(container => container.SetChoiceText(string.Empty));
     }
 }

@@ -1,8 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 namespace Input
 {
+    //InputStateMachine Init 时的默认状态
+    //后续需根据业务切换
     public class IdleInputState : IInputState
     {
         public bool CanBuffer(InputCommand command)

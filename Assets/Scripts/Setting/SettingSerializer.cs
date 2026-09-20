@@ -1,10 +1,8 @@
-using Setting.Config;
 using Setting.Running;
 using Setting.Save;
 using System;
 using System.IO;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace Setting
@@ -23,13 +21,13 @@ namespace Setting
         //Serailize to Json
         public bool TrySerializeSetting(SettingData settingData)
         {
-            string jsonPath = Path.Combine(Application.persistentDataPath, UserSettingDire,UserSettingName);
+            string jsonPath = Path.Combine(Application.persistentDataPath, UserSettingDire, UserSettingName);
             string dire = Path.GetDirectoryName(jsonPath);
             SavedSetting savedSetting = new SavedSetting(settingData);
-            string jsonFile=JsonUtility.ToJson(savedSetting);
+            string jsonFile = JsonUtility.ToJson(savedSetting);
             return SafeWriteAllText(jsonPath, jsonFile);
         }
-        private bool SafeWriteAllText(string path,string text)
+        private bool SafeWriteAllText(string path, string text)
         {
             string directory = Path.GetDirectoryName(path);
             string tmp = Path.Combine(
@@ -39,14 +37,14 @@ namespace Setting
             {
                 Directory.CreateDirectory(directory);
                 FileStream stream = new FileStream(tmp, FileMode.CreateNew, FileAccess.Write, FileShare.None);
-                using (StreamWriter writer=new StreamWriter(stream ,new UTF8Encoding(false)))
+                using (StreamWriter writer = new StreamWriter(stream, new UTF8Encoding(false)))
                 {
                     writer.Write(text);
                     writer.Flush();
                 }
                 if (File.Exists(path))
                 {
-                    File.Replace(tmp, path,null);
+                    File.Replace(tmp, path, null);
                 }
                 else
                 {

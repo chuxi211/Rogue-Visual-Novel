@@ -1,13 +1,10 @@
-using Running;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 namespace StateMachine.Core
 {
     public class InitState : CoreState
     {
         private CoreInitilaizer CoreInitilaizer;
-        public InitState(CoreStateMachine stateMachine,CoreInitilaizer coreInitilaizer) : base(stateMachine)
+        public InitState(CoreStateMachine stateMachine, CoreInitilaizer coreInitilaizer) : base(stateMachine)
         {
             CoreInitilaizer = coreInitilaizer;
         }

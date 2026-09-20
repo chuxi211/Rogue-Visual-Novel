@@ -1,10 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Utility
 {
-    public class AudioLoader:IAssetLoader<AudioClip>
+    public class AudioLoader : IAssetLoader<AudioClip>
     {
         private AssetBundleManager AssetBundleManager;
         public AudioLoader(AssetBundleManager assetBundleManager)
@@ -83,7 +81,7 @@ namespace Utility
                 return false;
             }
 
-            if(AssetBundleManager.TryGetBundleWithDependencies(bundleName, out AssetBundle bundle))
+            if (AssetBundleManager.TryGetBundleWithDependencies(bundleName, out AssetBundle bundle))
             {
                 if (bundle == null)
                 {

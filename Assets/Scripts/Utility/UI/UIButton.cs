@@ -1,10 +1,8 @@
 using Audio;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 namespace Utility
 {
-    public class UIButton : MonoBehaviour 
+    public class UIButton : MonoBehaviour
     {
         protected ISoundPlayback SoundPlayback;
         protected AudioID AudioID;
@@ -12,7 +10,7 @@ namespace Utility
         {
             Debug.LogWarning("UIButton OnClick is not implemented. Please use UIButton<T> instead.");
         }
-        public void InitSE(AudioID audioID,ISoundPlayback soundPlayback)
+        public void InitSE(AudioID audioID, ISoundPlayback soundPlayback)
         {
             if (audioID == null || !audioID.IsValid)
             {
@@ -33,7 +31,7 @@ namespace Utility
             SoundPlayback = soundPlayback;
         }
     }
-    public class UIButton<T> : UIButton where T: new()
+    public class UIButton<T> : UIButton where T : new()
     {
         public override void OnClick()
         {

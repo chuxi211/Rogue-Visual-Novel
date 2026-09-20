@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 namespace StateMachine.Node
 {
     public abstract class NodeState : IState
     {
-        public NodeStateMachine StateMachine { get;private set; }
+        public NodeStateMachine StateMachine { get; private set; }
         public NodeState(NodeStateMachine stateMachine)
         {
             this.StateMachine = stateMachine;

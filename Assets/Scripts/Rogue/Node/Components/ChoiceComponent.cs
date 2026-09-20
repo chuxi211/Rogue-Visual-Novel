@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Running
@@ -27,7 +25,7 @@ namespace Running
 
         public void ExitOnNodeEnd()
         {
-            
+
         }
 
         public void ExitOnStepEnd()

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Setting.Save
 {
     [Serializable]
-    public class AudioSetting: Setting
+    public class AudioSetting : Setting
     {
         [Range(0f, 1f)]
         public float MasterVolume = 1f;

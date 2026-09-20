@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Setting.Running
 {
-    public class InputSetting:Setting
+    public class InputSetting : Setting
     {
         [Min(0f)]
         public float StepAdvanceInterval = 0.2f;
@@ -13,11 +13,11 @@ namespace Setting.Running
         }
         public InputSetting(InputSettingConfig config)
         {
-            StepAdvanceInterval=config.StepAdvanceInterval;
+            StepAdvanceInterval = config.StepAdvanceInterval;
         }
         public void Override(Save.InputSetting inputSetting)
         {
-            StepAdvanceInterval=inputSetting.StepAdvanceInterval;
+            StepAdvanceInterval = inputSetting.StepAdvanceInterval;
         }
     }
 }

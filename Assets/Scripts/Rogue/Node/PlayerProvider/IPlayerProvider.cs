@@ -1,25 +1,21 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace Running
 {
-    //Îª·ÀÖ¹¸÷¸öComponentËæÒâFindObject£¬GetPlayer£¬»ò´ÓPrefabLoaderÖ±½Ó¼ÓÔØ
-    //³éÏó³öÒ»¸öÍ³Ò»µÄ½Ó¿Ú£¬ÎªComponentÌá¹©»ñÈ¡PlayerµÄÄÜÁ¦
+    //ä¸ºé˜²æ­¢å„ä¸ªComponentéšæ„FindObjectï¼ŒGetPlayerï¼Œæˆ–ä»PrefabLoaderç›´æ¥åŠ è½½
+    //æŠ½è±¡å‡ºä¸€ä¸ªç»Ÿä¸€çš„æ¥å£ï¼Œä¸ºComponentæä¾›è·å–Playerçš„èƒ½åŠ›
 
-    //¸Ã½Ó¿ÚÌá¹©Í³Ò»µÄ¸¸Àà³éÏó
+    //è¯¥æ¥å£æä¾›ç»Ÿä¸€çš„çˆ¶ç±»æŠ½è±¡
     public interface IPlayerProvider
     {
-        
+
     }
-    //¸Ã½Ó¿ÚÎª²»Í¬PlayerÌá¹©Í¨ÓÃ·ºĞÍ½Ó¿Ú
-    // ·ºĞÍ½Ó¿ÚÌá¹©ÀàĞÍ°²È«µÄPlayer»ñÈ¡ÄÜÁ¦£¬
-    // ±ÜÃâµ÷ÓÃ·½Í¨¹ıobject»òComponent»ñÈ¡ºóÔÙ½øĞĞÇ¿ÖÆ×ª»»¡£
-    public interface IPlayerProvider<TPlayer>:IPlayerProvider where TPlayer : class
+    //è¯¥æ¥å£ä¸ºä¸åŒPlayeræä¾›é€šç”¨æ³›å‹æ¥å£
+    // æ³›å‹æ¥å£æä¾›ç±»å‹å®‰å…¨çš„Playerè·å–èƒ½åŠ›ï¼Œ
+    // é¿å…è°ƒç”¨æ–¹é€šè¿‡objectæˆ–Componentè·å–åå†è¿›è¡Œå¼ºåˆ¶è½¬æ¢ã€‚
+    public interface IPlayerProvider<TPlayer> : IPlayerProvider where TPlayer : class
     {
         TPlayer GetPlayer();
     }
 
-    //ÈôÉáÆúIPlayerProvider£¬Ôò¸÷·ºĞÍÖ®¼äÃ»ÓĞÍ³Ò»µÄ·Ç·ºĞÍ¸¸ÀàĞÍ£¬µ¼ÖÂÎŞ·¨Í³Ò»¹ÜÀí
-    //ÈôÉáÆúIPlayerProvider<TPlayer>£¬ÔòÎŞ·¨Îª²»Í¬PlayerÌá¹©Í³Ò»µÄ½Ó¿Ú
+    //è‹¥èˆå¼ƒIPlayerProviderï¼Œåˆ™å„æ³›å‹ä¹‹é—´æ²¡æœ‰ç»Ÿä¸€çš„éæ³›å‹çˆ¶ç±»å‹ï¼Œå¯¼è‡´æ— æ³•ç»Ÿä¸€ç®¡ç†
+    //è‹¥èˆå¼ƒIPlayerProvider<TPlayer>ï¼Œåˆ™æ— æ³•ä¸ºä¸åŒPlayeræä¾›ç»Ÿä¸€çš„æ¥å£
 }

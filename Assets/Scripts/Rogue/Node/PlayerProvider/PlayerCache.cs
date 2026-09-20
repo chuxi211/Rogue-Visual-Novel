@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,8 +6,8 @@ namespace Running
 {
     public class PlayerCache
     {
-        public Dictionary<Type,Component> Players { get; private set; } = new Dictionary<Type,Component>();
-        //ºÃºÃÏëÏëÕâÀïµÄ¼üÖµ¶Ôµ½µ×Ó¦¸ÃÊÇÊ²Ã´
+        public Dictionary<Type, Component> Players { get; private set; } = new Dictionary<Type, Component>();
+        //å¥½å¥½æƒ³æƒ³è¿™é‡Œçš„é”®å€¼å¯¹åˆ°åº•åº”è¯¥æ˜¯ä»€ä¹ˆ
         public bool TryGet<TPlayer>(out TPlayer Player) where TPlayer : Component
         {
             Player = null;

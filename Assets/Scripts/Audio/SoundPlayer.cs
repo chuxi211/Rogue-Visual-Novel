@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Utility;
 
 namespace Audio
 {
-    public class SoundPlayer :AudioPlayer,ISoundPlayer
+    public class SoundPlayer : AudioPlayer, ISoundPlayer
     {
         [SerializeField] private AudioSource AudioSource;
 
@@ -27,7 +24,7 @@ namespace Audio
                 return;
             }
 
-            AudioSource.PlayOneShot(audio,volumescale);
+            AudioSource.PlayOneShot(audio, volumescale);
         }
 
         public void SetSoundVolume(float volume)
@@ -45,11 +42,11 @@ namespace Audio
 
         private void OnEnable()
         {
-            if(AudioSource == null)
+            if (AudioSource == null)
             {
                 AudioSource = GetComponentInChildren<AudioSource>();
             }
-            if(AudioSource == null)
+            if (AudioSource == null)
             {
                 Debug.LogError("AudioSource is not assigned and not found in children.");
             }

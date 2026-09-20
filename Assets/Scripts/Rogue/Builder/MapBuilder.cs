@@ -1,7 +1,4 @@
-using Running;
-using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 namespace Running
 {
@@ -19,13 +16,13 @@ namespace Running
         {
             this.EdgeBuilder = edgeBuilder;
         }
-        public Running.Map BuildMap(Config.Map configmap, Transform parent,Vector2 nodeSpacing)
+        public Running.Map BuildMap(Config.Map configmap, Transform parent, Vector2 nodeSpacing)
         {
             Map map = new Map();
             Dictionary<Config.Node, Running.Node> NodeDict = new Dictionary<Config.Node, Running.Node>();
             configmap.Nodes.ForEach(node =>
             {
-                Node runnode = NodeBuilder.BuildNode(node,parent,nodeSpacing);
+                Node runnode = NodeBuilder.BuildNode(node, parent, nodeSpacing);
                 if (runnode != null)
                 {
                     map.Nodes.Add(runnode);
@@ -34,8 +31,8 @@ namespace Running
             });
             configmap.Edges.ForEach(edge =>
             {
-                if(edge != null)
-                map.TryAddEdge(EdgeBuilder.BuildEdge(edge,NodeDict));
+                if (edge != null)
+                    map.TryAddEdge(EdgeBuilder.BuildEdge(edge, NodeDict));
             });
             parent.gameObject.SetActive(true);
             return map;
@@ -43,7 +40,7 @@ namespace Running
         public void ClearMap(Transform mapparent)
         {
             mapparent.gameObject.SetActive(false);
-            foreach(Transform child in mapparent)
+            foreach (Transform child in mapparent)
             {
                 GameObject.Destroy(child.gameObject);
             }

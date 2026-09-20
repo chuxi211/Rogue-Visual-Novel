@@ -1,17 +1,17 @@
-using Config;
 using Input;
 using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class DialoguePlayer : MonoBehaviour
 {
     public Transform DialogueContainer;
+    public TextMeshProUGUI TextMeshPro;
+    private Coroutine TypingCoro;
     public InputManager InputManager;
     private void Awake()
     {
-        if(DialogueContainer == null)
+        if (DialogueContainer == null)
         {
             DialogueContainer = GetComponentInChildren<Transform>();
         }
@@ -45,21 +45,57 @@ public class DialoguePlayer : MonoBehaviour
         InputManager = inputManager;
         click.BindInput(InputManager);
     }
-    public void SetText(string text)
+    public void SetText(string text, bool typewriterEnable = true,int charPerSec=30)
     {
-        DialogueContainer.GetComponentInChildren<TextMeshProUGUI>().text = text;
+        if(TextMeshPro == null)
+        {
+            TextMeshPro = DialogueContainer.GetComponentInChildren<TextMeshProUGUI>();
+            if (TextMeshPro == null)
+            {
+                return;
+            }
+        }
+        if (TypingCoro != null)
+        {
+            StopCoroutine(TypingCoro);
+        }
+        if (typewriterEnable)
+        {
+            TypingCoro = StartCoroutine(Typing(TextMeshPro, text, charPerSec));
+        }
+        else
+        {
+            TextMeshPro.text = text;
+        }
     }
     public void ClearText()
     {
-        DialogueContainer.GetComponentInChildren<TextMeshProUGUI>().text = string.Empty;
+        if (TypingCoro != null)
+        {
+            StopCoroutine(TypingCoro);
+        }
+        TextMeshPro.text= string.Empty;
     }
     public void Hide()
     {
+        if (TypingCoro != null)
+        {
+            StopCoroutine(TypingCoro);
+        }
         DialogueContainer.gameObject.SetActive(false);
     }
     public void Show()
     {
 
         DialogueContainer.gameObject.SetActive(true);
+    }
+    private IEnumerator Typing(TextMeshProUGUI textMesh, string text,int charPerSec)
+    {
+        for (int i = 0; i < text.Length; i++)
+        {
+            textMesh.text += text[i];
+            yield return new WaitForSeconds(1f/charPerSec);
+        }
+        TypingCoro = null;
     }
 }

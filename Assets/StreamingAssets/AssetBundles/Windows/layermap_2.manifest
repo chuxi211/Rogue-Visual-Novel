@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 4032810225
+CRC: 2727766837
 Hashes:
   AssetFileHash:
     serializedVersion: 2
     Hash: b2c1fa96f7165a33d881c4eaa69dfcf5
   TypeTreeHash:
     serializedVersion: 2
-    Hash: e2588d41e10b560bac30aae5b8829322
+    Hash: 0cde9c488deaf9c166acb7445e6a6254
   IncrementalBuildHash:
     serializedVersion: 2
     Hash: b2c1fa96f7165a33d881c4eaa69dfcf5
@@ -57,6 +57,8 @@ ClassTypes:
 - Class: 213
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers:
+- AssemblyName: Assembly-CSharp
+  ClassName: Audio.AudioID
 - AssemblyName: Assembly-CSharp
   ClassName: Config.CharacterAppearance
 - AssemblyName: Assembly-CSharp

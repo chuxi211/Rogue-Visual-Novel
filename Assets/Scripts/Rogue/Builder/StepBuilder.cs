@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Audio;
 
 namespace Running
 {
@@ -23,7 +21,7 @@ namespace Running
                 Debug.LogError("ConfigStep is null");
                 return null;
             }
-            Step step = new Step(configStep.ID,configStep.NextID);
+            Step step = new Step(configStep.ID, configStep.NextID);
             configStep.Behaviours.ForEach(bahaviour =>
             {
                 IComponent component = ComponentFactory.BuildComponent(bahaviour);

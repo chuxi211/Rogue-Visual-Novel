@@ -1,12 +1,13 @@
-using System;
 using Setting.Config;
 using Setting.Events;
 using Setting.Running;
+using System;
 using UnityEngine;
 
 namespace Setting
 {
-    public class SettingService : ISettingEditor
+    public class SettingService : ISettingEditor,IAudioEditor,ITextEditor,IDisplayEditor,IInputEditor,
+                                                 IAudioReader, ITextReader, IDisplayReader, IInputReader
     {
         public SettingRepository Repository { get; private set; }
         public DefaultSettingConfig Config { get; private set; }
@@ -28,7 +29,7 @@ namespace Setting
         {
 
         }
-
+        //Reference when Open SettingPanel
         public void BeginUpdate()
         {
             if (!TryGetRepository(out SettingRepository repository))
@@ -88,6 +89,7 @@ namespace Setting
                 new ESettingChanged(repository.SettingData, changeScope));
         }
 
+        //Reference when CanacelUpdate or Close SettingPanel
         public void CancelUpdate()
         {
             if (!TryGetRepository(out SettingRepository repository))
@@ -123,7 +125,7 @@ namespace Setting
         private bool TryGetSerializer(out SettingSerializer serializer)
         {
             serializer = SettingSerializer;
-            if(serializer != null)
+            if (serializer != null)
             {
                 return true;
             }
@@ -144,6 +146,62 @@ namespace Setting
                 "SettingService failed to edit settings: " +
                 "SettingRepository is null.");
             return false;
+        }
+
+        public AudioSetting GetAudioSetting()
+        {
+            if (!TryGetRepository(out SettingRepository repository) ||
+                repository.SettingData?.AudioSetting == null)
+            {
+                Debug.LogError(
+                    "SettingService failed to read AudioSetting: " +
+                    "AudioSetting is null.");
+                return null;
+            }
+
+            return new AudioSetting(repository.SettingData.AudioSetting);
+        }
+
+        public TextSetting GetTextSetting()
+        {
+            if (!TryGetRepository(out SettingRepository repository) ||
+                repository.SettingData?.TextSetting == null)
+            {
+                Debug.LogError(
+                    "SettingService failed to read TextSetting: " +
+                    "TextSetting is null.");
+                return null;
+            }
+
+            return new TextSetting(repository.SettingData.TextSetting);
+        }
+
+        public DisplaySetting GetDisplaySetting()
+        {
+            if (!TryGetRepository(out SettingRepository repository) ||
+                repository.SettingData?.DisplaySetting == null)
+            {
+                Debug.LogError(
+                    "SettingService failed to read DisplaySetting: " +
+                    "DisplaySetting is null.");
+                return null;
+            }
+
+            return new DisplaySetting(repository.SettingData.DisplaySetting);
+        }
+
+        public InputSetting GetInputSetting()
+        {
+            if (!TryGetRepository(out SettingRepository repository) ||
+                repository.SettingData?.InputSetting == null)
+            {
+                Debug.LogError(
+                    "SettingService failed to read InputSetting: " +
+                    "InputSetting is null.");
+                return null;
+            }
+
+            return new InputSetting(repository.SettingData.InputSetting);
         }
     }
 }

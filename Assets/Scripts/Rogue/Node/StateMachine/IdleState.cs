@@ -1,11 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace StateMachine.Node
 {
     /// <summary>
-    /// ÔİÊ±ÓÃ×÷Õ¼Î»·û
+    /// æš‚æ—¶ç”¨ä½œå ä½ç¬¦
     /// </summary>
     public class IdleState : NodeState
     {

@@ -1,7 +1,7 @@
 
 using Audio;
 using Input;
-using Running;
+using MainMenu.Input;
 using Setting;
 using Setting.Config;
 using Setting.Running;
@@ -18,24 +18,36 @@ namespace StateMachine.Core
         public AssetBundleManager AssetBundleManager { get; private set; }
         public CGPlayer CGPlayer { get; private set; }
         public CGLoader CGLoader { get; private set; }
-        public List<UIButton> Buttons { get; private set; }
+        public List<MainMenuInput> MainMenuInputs { get; private set; }
         public Transform AudioPlayerParent { get; private set; }
         public InputCollector InputCollector { get; private set; }
         public InputManager InputManager { get; private set; }
+        public AudioArea AudioArea { get; private set; }
+        public DisplayArea DisplayArea { get; private set; }
+        public InputArea InputArea { get; private set; }
+        public TextArea TextArea { get; private set; }
         public CoreInitilaizer(
             SettingLoader settingLoader,
             CGPlayer cgPlayer,
-            List<UIButton> buttons,
+            List<MainMenuInput> inputs,
             Transform audioPlayerParent,
             InputCollector inputCollector,
-            InputManager inputManager)
+            InputManager inputManager,
+            AudioArea audioArea,
+            DisplayArea displayArea,
+            InputArea inputArea,
+            TextArea textArea)
         {
             SettingLoader = settingLoader;
             CGPlayer = cgPlayer;
-            Buttons = buttons;
+            MainMenuInputs = inputs;
             AudioPlayerParent = audioPlayerParent;
             InputCollector = inputCollector;
             InputManager = inputManager;
+            AudioArea = audioArea;
+            DisplayArea = displayArea;
+            InputArea = inputArea;
+            TextArea = textArea;
         }
         public bool InitContext(CoreContext coreContext)
         {
@@ -54,10 +66,11 @@ namespace StateMachine.Core
             //Get AssetBundlesRoot from Setting
             //string root = settingRepository.SettingData.OtherSetting.AssetBundlesRoot;
             //DeveloperSetting不参与运行时修改，不参与UserSetting存档，所以OtherSetting拷贝可以删除
-            if(!settingService.GetConfigSetting<DeveloperSettings>(out DeveloperSettings dvlpSetting))
+            if (!settingService.GetConfigSetting<DeveloperSettings>(out DeveloperSettings dvlpSetting))
             {
                 return false;
             }
+
             string root = dvlpSetting.AssetBundlesRoot;
 
             if (string.IsNullOrEmpty(root))
@@ -73,13 +86,13 @@ namespace StateMachine.Core
                 return false;
             }
 
-            if(!InitCGPlayer())
+            if (!InitCGPlayer())
             {
                 return false;
             }
             string bundlename = dvlpSetting.AudioDefinitionCatalogBundle;
             string assetname = dvlpSetting.AudioDefinitionCatalogAsset;
-            if (!InitAudioDefinitionRepository(bundlename,assetname, out AudioDefinitionRepository audioDefinitionRepository))
+            if (!InitAudioDefinitionRepository(bundlename, assetname, out AudioDefinitionRepository audioDefinitionRepository))
             {
                 return false;
             }
@@ -90,16 +103,26 @@ namespace StateMachine.Core
             {
                 return false;
             }
-            InitButtons(dvlpSetting.ButtonSE,audioSystem);
+            InitInputs(InputManager, dvlpSetting.ButtonSE, audioSystem);
             if (!InitInput())
             {
                 return false;
             }
+
+            if (!InitSettingAreas(InputManager, settingService))
+            {
+                return false;
+            }
+
             coreContext.BindSettingService(settingService);
             coreContext.BindABManager(assetBundleManager);
             coreContext.BindAudioSystem(audioSystem);
             coreContext.BindAudioDefinitionRepository(audioDefinitionRepository);
             coreContext.BindInputManager(InputManager);
+            coreContext.BindAudioArea(AudioArea);
+            coreContext.BindDisplayArea(DisplayArea);
+            coreContext.BindInputArea(InputArea);
+            coreContext.BindTextArea(TextArea);
             return true;
         }
         public bool InitAudioSystem(
@@ -250,7 +273,7 @@ namespace StateMachine.Core
         }
         public bool InitCGPlayer()
         {
-            if(CGPlayer == null)
+            if (CGPlayer == null)
             {
                 Debug.LogError("CoreContext initialization failed: CGPlayer is null.");
                 return false;
@@ -259,13 +282,13 @@ namespace StateMachine.Core
             CGPlayer.InitCGLoader(CGLoader);
             return true;
         }
-        public bool InitAudioDefinitionRepository(string bundlename,string assetname, out AudioDefinitionRepository audioDefinitionRepository)
+        public bool InitAudioDefinitionRepository(string bundlename, string assetname, out AudioDefinitionRepository audioDefinitionRepository)
         {
             audioDefinitionRepository = null;
             //实例AssetDefinitionLoader
             AudioDefinitionsLoader audioDefinitionsLoader = new AudioDefinitionsLoader(AssetBundleManager);
             //加载所有Definition
-            if(!audioDefinitionsLoader.TryLoad(bundlename,assetname, out AudioDefinitionCatalog definitions))
+            if (!audioDefinitionsLoader.TryLoad(bundlename, assetname, out AudioDefinitionCatalog definitions))
             {
                 Debug.LogError("CoreContext initialization failed: AudioDefinitionRepository initialization failed.");
                 audioDefinitionRepository = null;
@@ -294,26 +317,27 @@ namespace StateMachine.Core
 
             return true;
         }
-        public void InitButtons(AudioID audioID,ISoundPlayback soundPlayback)
+        public void InitInputs(InputManager inputManager, AudioID audioID, ISoundPlayback soundPlayback)
         {
-            if (Buttons == null || Buttons.Count == 0)
+            if (MainMenuInputs == null || MainMenuInputs.Count == 0)
             {
                 Debug.LogWarning("CoreContext initialization warning: Buttons list is null or empty.");
                 return;
             }
-            if(audioID == null)
+            if (audioID == null)
             {
                 Debug.LogWarning("CoreContext initialization warning: AudioID for button sound effects is null.");
                 return;
             }
-            foreach (var button in Buttons)
+            foreach (var input in MainMenuInputs)
             {
-                if (button == null)
+                if (input == null)
                 {
                     Debug.LogWarning("CoreContext initialization warning: A button in the list is null.");
                     continue;
                 }
-                button.InitSE(audioID,soundPlayback);
+                input.InitSE(audioID, soundPlayback);
+                input.BindInput(inputManager);
             }
         }
         public bool InitInput()
@@ -335,6 +359,54 @@ namespace StateMachine.Core
             InputManager.Init();
             InputCollector.Bind(InputManager);
             return true;
+        }
+        public bool InitSettingAreas(
+            InputManager inputManager,
+            SettingService settingService)
+        {
+            if (inputManager == null)
+            {
+                Debug.LogError(
+                    "Setting areas initialization failed: " +
+                    "InputManager is null.");
+                return false;
+            }
+
+            if (settingService == null)
+            {
+                Debug.LogError(
+                    "Setting areas initialization failed: " +
+                    "SettingService is null.");
+                return false;
+            }
+
+            if (AudioArea == null || DisplayArea == null ||
+                InputArea == null || TextArea == null)
+            {
+                Debug.LogError(
+                    "Setting areas initialization failed: " +
+                    "one or more setting areas are null.");
+                return false;
+            }
+
+            bool success = true;
+            success &= AudioArea.Init(
+                inputManager,
+                settingService,
+                settingService);
+            success &= DisplayArea.Init(
+                inputManager,
+                settingService,
+                settingService);
+            success &= InputArea.Init(
+                inputManager,
+                settingService,
+                settingService);
+            success &= TextArea.Init(
+                inputManager,
+                settingService,
+                settingService);
+            return success;
         }
     }
 }

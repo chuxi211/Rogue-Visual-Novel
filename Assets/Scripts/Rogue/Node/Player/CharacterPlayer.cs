@@ -1,8 +1,5 @@
-using Config;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
 
 /*     由于其他的Behaviour模型为：
@@ -41,7 +38,7 @@ namespace Running
         public CharacterContainer Template;
         private Dictionary<string, CharacterContainer> Cache = new Dictionary<string, CharacterContainer>();
         public List<CharacterContainer> Containers { get; private set; } = new List<CharacterContainer>();
-        
+
         public void SetCharacter(string characterID, Sprite visual, Vector2 normalizedPosition)
         {
             if (!Cache.TryGetValue(characterID, out var container))
@@ -50,7 +47,7 @@ namespace Running
                 Cache[characterID] = container;
                 Containers.Add(container);
             }
-            
+
             container.SetSprite(visual);
             container.SetPosition(normalizedPosition);
             container.gameObject.SetActive(true);

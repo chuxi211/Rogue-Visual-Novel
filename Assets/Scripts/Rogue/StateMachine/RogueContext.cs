@@ -9,7 +9,7 @@ namespace StateMachine.Rogue
     {
         public InputManager InputManager;
         public PlayerProvideRegistry PlayerProvideRegistry { get; private set; }
-        public ConfigRepository ConfigRepository {  get; private set; }
+        public ConfigRepository ConfigRepository { get; private set; }
         public MapBuilder MapBuilder { get; private set; }
         public PlayerCache PlayerCache { get; private set; }
         public PrefabLoader PrefabLoader { get; private set; }
@@ -35,7 +35,7 @@ namespace StateMachine.Rogue
         public void BindSettingService(SettingService settingService)
         {
             SettingService = settingService;
-            if(SettingService == null)
+            if (SettingService == null)
             {
                 Debug.LogError("SettingRepository is null");
             }
@@ -43,7 +43,7 @@ namespace StateMachine.Rogue
         public void BindConfigRepository(ConfigRepository configRepository)
         {
             this.ConfigRepository = configRepository;
-            if(ConfigRepository == null)
+            if (ConfigRepository == null)
             {
                 Debug.LogError("ConfigRepository is null");
             }
@@ -51,7 +51,7 @@ namespace StateMachine.Rogue
         public void BindMapBuilder(MapBuilder mapBuilder)
         {
             this.MapBuilder = mapBuilder;
-            if(MapBuilder == null)
+            if (MapBuilder == null)
             {
                 Debug.LogError("MapBuilder is null");
             }
@@ -59,7 +59,7 @@ namespace StateMachine.Rogue
         public void BindPlayerRegistry(PlayerProvideRegistry playerProvideRegistry)
         {
             this.PlayerProvideRegistry = playerProvideRegistry;
-            if(PlayerProvideRegistry == null)
+            if (PlayerProvideRegistry == null)
             {
                 Debug.LogError("PlayerProviderRegistry is null");
             }
@@ -76,7 +76,7 @@ namespace StateMachine.Rogue
         }
         public void BindRogueMapParent(Transform rogueMapParent)
         {
-            if(rogueMapParent == null)
+            if (rogueMapParent == null)
             {
                 return;
             }

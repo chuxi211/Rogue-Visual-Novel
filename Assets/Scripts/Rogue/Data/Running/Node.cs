@@ -1,6 +1,4 @@
 using Config;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 namespace Running
@@ -23,7 +21,7 @@ namespace Running
         //因此该属性不由Node本身直接设置，而由MapProgression的TryMoveTo方法来判断。
         public bool IsCompleted { get; private set; } = false;
         public StateMachine.Node.NodeStateMachine StateMachine { get; private set; }
-        public Node(NodePosition position,NodeAdvanceType advanceType)
+        public Node(NodePosition position, NodeAdvanceType advanceType)
         {
             StateMachine = new StateMachine.Node.NodeStateMachine(this);
             Position = position;
@@ -39,12 +37,12 @@ namespace Running
         }
         internal void AddOutgoingEdge(Edge edge)
         {
-            if(edge!=null)
+            if (edge != null)
                 OutgoingEdges.Add(edge);
-        } 
+        }
         internal void AddIncomingEdge(Edge edge)
         {
-            if(edge!=null)
+            if (edge != null)
                 IncomingEdges.Add(edge);
         }
         public void MarkCompleted()

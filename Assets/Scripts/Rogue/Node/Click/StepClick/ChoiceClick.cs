@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+using Running;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using Running;
 namespace Input
 {
 
@@ -44,6 +42,11 @@ namespace Input
                 return;
             }
             ChoiceContainer.InputManager.InputStateMachine.Push(new InputCommand(this));
+        }
+
+        public void Execute()
+        {
+            Click();
         }
     }
 }

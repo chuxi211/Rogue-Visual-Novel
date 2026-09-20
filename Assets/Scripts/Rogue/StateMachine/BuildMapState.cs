@@ -1,6 +1,4 @@
 using Running;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace StateMachine.Rogue
@@ -8,7 +6,7 @@ namespace StateMachine.Rogue
     public class BuildMapState : RogueState
     {
         private Config.Map ConfigMap;
-        public BuildMapState(RogueStateMachine stateMachine,Config.Map map) : base(stateMachine)
+        public BuildMapState(RogueStateMachine stateMachine, Config.Map map) : base(stateMachine)
         {
             ConfigMap = map;
         }
@@ -28,7 +26,7 @@ namespace StateMachine.Rogue
         private void BuildMap()
         {
             Vector2 nodespacing = StateMachine.Context.SettingService.Config.DeveloperSetting.NodeSpaceing;
-            Map map= StateMachine.Context.MapBuilder.BuildMap(
+            Map map = StateMachine.Context.MapBuilder.BuildMap(
                 ConfigMap, StateMachine.Context.RogueMapParent,
                 nodespacing);
             MapProgression mapProgression = new MapProgression(map);

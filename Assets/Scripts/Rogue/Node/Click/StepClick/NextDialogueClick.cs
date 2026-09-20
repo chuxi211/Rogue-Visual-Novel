@@ -1,6 +1,4 @@
 using Running;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 namespace Input
@@ -23,6 +21,11 @@ namespace Input
         public void Click()
         {
             EventBus.Publish(new ERequestNextStep());
+        }
+
+        public void Execute()
+        {
+            Click();
         }
 
         public void OnPointerClick(PointerEventData eventData)

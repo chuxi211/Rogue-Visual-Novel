@@ -1,10 +1,9 @@
-using Config;
-using UnityEngine;
 using Setting.Config;
+using UnityEngine;
 
 namespace Setting.Running
 {
-    public class AudioSetting:Setting
+    public class AudioSetting : Setting
     {
         [Range(0f, 1f)]
         public float MasterVolume = 1f;
@@ -26,11 +25,11 @@ namespace Setting.Running
         }
         public AudioSetting(AudioSettingConfig config)
         {
-            MasterVolume=config.MasterVolume;
-            BgmVolume=config.BgmVolume;
-            SeVolume=config.SeVolume;
+            MasterVolume = config.MasterVolume;
+            BgmVolume = config.BgmVolume;
+            SeVolume = config.SeVolume;
             VoiceVolume = config.VoiceVolume;
-            AudioPlaybackSpeed=config.AudioPlaybackSpeed;
+            AudioPlaybackSpeed = config.AudioPlaybackSpeed;
         }
         public void Override(Save.AudioSetting audioSetting)
         {

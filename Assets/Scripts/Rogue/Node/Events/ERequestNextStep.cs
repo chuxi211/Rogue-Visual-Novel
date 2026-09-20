@@ -1,14 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace Running
 {
-    //ÓïÒåÉÏ£¬ÕâÀïÊÇÇëÇóÏÂÒ»Ìõ¶Ô°×µÄÊÂ¼ş
-    //µ«Êµ¼ÊÖ»ÊÇÔÚDialogueStateÏÂÇëÇóÏÂÒ»¸öÖ¸Áî
-    //¶ø²»ÔÚºõÏÂÒ»ÌõÊÇDialouge£¬Choice»òÊÇ±ğµÄÊ²Ã´
+    //è¯­ä¹‰ä¸Šï¼Œè¿™é‡Œæ˜¯è¯·æ±‚ä¸‹ä¸€æ¡å¯¹ç™½çš„äº‹ä»¶
+    //ä½†å®é™…åªæ˜¯åœ¨DialogueStateä¸‹è¯·æ±‚ä¸‹ä¸€ä¸ªæŒ‡ä»¤
+    //è€Œä¸åœ¨ä¹ä¸‹ä¸€æ¡æ˜¯Dialougeï¼ŒChoiceæˆ–æ˜¯åˆ«çš„ä»€ä¹ˆ
 
-    //Õâ¾ÍÒªÇóÒ»¸öStepÖ»ÄÜÓĞÒ»¸ö×èÈûComponent
-    //·ñÔò£¬¶à¸ö×èÈûComponent»áÍ¬Ê±¶©ÔÄÕâ¸öÊÂ¼ş
+    //è¿™å°±è¦æ±‚ä¸€ä¸ªStepåªèƒ½æœ‰ä¸€ä¸ªé˜»å¡Component
+    //å¦åˆ™ï¼Œå¤šä¸ªé˜»å¡Componentä¼šåŒæ—¶è®¢é˜…è¿™ä¸ªäº‹ä»¶
     public class ERequestNextStep { }
 }

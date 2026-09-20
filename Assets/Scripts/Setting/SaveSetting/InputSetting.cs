@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Setting.Save
 {
-    [ System.Serializable]
+    [System.Serializable]
     public class InputSetting : Setting
     {
         [Min(0f)]
@@ -10,7 +10,7 @@ namespace Setting.Save
         public InputSetting() { }
         public InputSetting(Running.InputSetting inputSetting)
         {
-            StepAdvanceInterval=inputSetting.StepAdvanceInterval;
+            StepAdvanceInterval = inputSetting.StepAdvanceInterval;
         }
     }
 }

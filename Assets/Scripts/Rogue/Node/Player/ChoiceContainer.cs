@@ -1,8 +1,6 @@
 
 using Config;
 using Input;
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,11 +13,11 @@ public class ChoiceContainer : MonoBehaviour
     public InputManager InputManager { get; private set; }
     private void Awake()
     {
-        if(Choice == null)
+        if (Choice == null)
         {
             Choice = GetComponentInChildren<TextMeshProUGUI>();
         }
-        if(BG == null)
+        if (BG == null)
         {
             BG = GetComponentInChildren<Image>();
         }

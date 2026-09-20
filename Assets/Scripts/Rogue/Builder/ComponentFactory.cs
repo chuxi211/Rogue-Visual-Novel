@@ -1,4 +1,3 @@
-using Audio;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,11 +6,11 @@ namespace Running
 {
     public class ComponentFactory
     {
-        private readonly Dictionary<Type,Func<Config.NodeBehaviour,IComponent>> Builders = 
-            new Dictionary<Type, Func<Config.NodeBehaviour,IComponent>>();
+        private readonly Dictionary<Type, Func<Config.NodeBehaviour, IComponent>> Builders =
+            new Dictionary<Type, Func<Config.NodeBehaviour, IComponent>>();
         public void Register<TBehaviour>(Func<TBehaviour, IComponent> builder) where TBehaviour : Config.NodeBehaviour
         {
-            Builders[typeof(TBehaviour)] = (behaviour)=>builder((TBehaviour)behaviour);
+            Builders[typeof(TBehaviour)] = (behaviour) => builder((TBehaviour)behaviour);
         }
         public IComponent BuildComponent(Config.NodeBehaviour behaviour)
         {
@@ -23,7 +22,7 @@ namespace Running
 
             Type behaviourType = behaviour.GetType();
 
-            if (!Builders.TryGetValue( behaviourType,out Func<Config.NodeBehaviour, IComponent> builder))
+            if (!Builders.TryGetValue(behaviourType, out Func<Config.NodeBehaviour, IComponent> builder))
             {
                 Debug.LogError(
                     $"BuildComponent failed: no builder registered for " +

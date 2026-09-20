@@ -1,12 +1,5 @@
 using Audio;
-using Config;
 using Input;
-using Running;
-using StateMachine.Node;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using UnityEngine;
 using Utility;
 
 namespace StateMachine.Rogue
@@ -40,14 +33,14 @@ namespace StateMachine.Rogue
         }
         private void Init()
         {
-            RogueInitiallizer = new RogueInitiallizer(AssetBundleManager, AudioSystem,InputManager);
+            RogueInitiallizer = new RogueInitiallizer(AssetBundleManager, AudioSystem, InputManager,StateMachine.Context.SettingService);
             RogueInitiallizer.InitContext(StateMachine.Context);
         }
 
         private void NewGame()
         {
             StateMachine.Context.LayerProgression.SetLayer(1);
-            if(StateMachine.Context.ConfigRepository.TryGetMap(
+            if (StateMachine.Context.ConfigRepository.TryGetMap(
                 StateMachine.Context.LayerProgression.CurrentLayer, out Config.Map map))
             {
                 StateMachine.SwitchState(new BuildMapState(StateMachine, map));

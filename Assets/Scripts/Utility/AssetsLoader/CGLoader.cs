@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using UnityEngine;
+using MainMenu;
 
 namespace Utility
 {
@@ -43,12 +41,12 @@ namespace Utility
                 return false;
             }
             AssetBundleManager.TryGetBundleWithDependencies(bundleName, out AssetBundle bundle);
-            if(bundle == null)
+            if (bundle == null)
             {
                 return false;
             }
             result = bundle.LoadAsset<CGList>(assetName);
-            if(result == null)
+            if (result == null)
             {
                 return false;
             }

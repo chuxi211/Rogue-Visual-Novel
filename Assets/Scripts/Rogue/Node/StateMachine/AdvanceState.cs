@@ -1,16 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Running;
-using Input;
+using UnityEngine;
 
 namespace StateMachine.Node
 {
     public class AdvanceState : NodeState
     {
         private Step Step;
-        private bool HasRequestedAdvance=false;
-        public AdvanceState(NodeStateMachine stateMachine,Step step) : base(stateMachine)
+        private bool HasRequestedAdvance = false;
+        public AdvanceState(NodeStateMachine stateMachine, Step step) : base(stateMachine)
         {
             Step = step;
             if (step == null)
@@ -23,10 +20,10 @@ namespace StateMachine.Node
             base.Enter();
             EventBus.Subscript<ERequestStepByID>(OnRequestStepByID);
             EventBus.Subscript<ERequestNextStep>(OnRequestNextStep);
-            
+
             Step.ComponentsList.ForEach(component =>
             {
-                if(component == null)
+                if (component == null)
                 {
                     Debug.LogError("Some Component is null");
                     return;

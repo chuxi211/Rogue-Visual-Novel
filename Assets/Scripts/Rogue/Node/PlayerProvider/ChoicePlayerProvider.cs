@@ -1,11 +1,9 @@
 using Input;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Utility;
 namespace Running
 {
-    public class ChoicePlayerProvider:IPlayerProvider<ChoicePlayer>
+    public class ChoicePlayerProvider : IPlayerProvider<ChoicePlayer>
     {
         public PlayerCache PlayerCache { get; private set; }
         public PrefabLoader PrefabLoader { get; private set; }
@@ -48,7 +46,7 @@ namespace Running
                 return player;
             }
             player = GameObject.FindFirstObjectByType<ChoicePlayer>();
-            if(player != null)
+            if (player != null)
             {
                 player.BindInput(InputManager);
                 PlayerCache.Set<ChoicePlayer>(player);
@@ -61,7 +59,7 @@ namespace Running
                 return null;
             }
 
-            if(PrefabLoader.TryLoad("path", "ChoicePlayer", out GameObject result))
+            if (PrefabLoader.TryLoad("path", "ChoicePlayer", out GameObject result))
             {
                 if (PlayerFactory == null)
                 {

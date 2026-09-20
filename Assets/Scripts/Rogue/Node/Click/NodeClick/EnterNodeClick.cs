@@ -1,6 +1,3 @@
-using Running;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 namespace Input
 {
@@ -18,6 +15,11 @@ namespace Input
         public void Click()
         {
             EventBus.Publish(new ERequestEnterNode(Actor));
+        }
+
+        public void Execute()
+        {
+            Click();
         }
     }
 }

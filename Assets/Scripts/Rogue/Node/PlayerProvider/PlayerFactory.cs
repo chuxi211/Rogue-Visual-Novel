@@ -1,11 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 namespace Running
 {
     public class PlayerFactory
     {
-        public TPlayer CreatePlayer<TPlayer>(GameObject playerPrefab,Transform parent)where TPlayer:Component
+        public TPlayer CreatePlayer<TPlayer>(GameObject playerPrefab, Transform parent) where TPlayer : Component
         {
             if (playerPrefab == null)
             {
