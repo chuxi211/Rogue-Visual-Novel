@@ -1,7 +1,9 @@
 
 using Audio;
+using Display;
 using Input;
 using MainMenu.Input;
+using Running;
 using Setting;
 using Setting.Config;
 using Setting.Running;
@@ -16,9 +18,12 @@ namespace StateMachine.Core
         private readonly SettingLoader SettingLoader;
         public SettingInitializer SettingInitializer { get; private set; }
         public AssetBundleManager AssetBundleManager { get; private set; }
+        public SavedInfoSerializer SavedInfoSerializer { get; private set; }
+        public SavedInfoDeserializer SavedInfoDeserializer { get; private set; }
         public CGPlayer CGPlayer { get; private set; }
         public CGLoader CGLoader { get; private set; }
         public List<MainMenuInput> MainMenuInputs { get; private set; }
+        public List<SettingInput> SettingInputs { get; private set; }
         public Transform AudioPlayerParent { get; private set; }
         public InputCollector InputCollector { get; private set; }
         public InputManager InputManager { get; private set; }
@@ -29,7 +34,8 @@ namespace StateMachine.Core
         public CoreInitilaizer(
             SettingLoader settingLoader,
             CGPlayer cgPlayer,
-            List<MainMenuInput> inputs,
+            List<MainMenuInput> minputs,
+            List<SettingInput> sinputs,
             Transform audioPlayerParent,
             InputCollector inputCollector,
             InputManager inputManager,
@@ -40,7 +46,8 @@ namespace StateMachine.Core
         {
             SettingLoader = settingLoader;
             CGPlayer = cgPlayer;
-            MainMenuInputs = inputs;
+            MainMenuInputs = minputs;
+            SettingInputs = sinputs;
             AudioPlayerParent = audioPlayerParent;
             InputCollector = inputCollector;
             InputManager = inputManager;
@@ -51,6 +58,7 @@ namespace StateMachine.Core
         }
         public bool InitContext(CoreContext coreContext)
         {
+
             if (coreContext == null)
             {
                 Debug.LogError(
@@ -58,14 +66,12 @@ namespace StateMachine.Core
                     "CoreContext is null.");
                 return false;
             }
-            // Initialize Setting
+            #region Initialize Setting
             if (!InitSettingService(out SettingService settingService))
             {
                 return false;
             }
-            //Get AssetBundlesRoot from Setting
-            //string root = settingRepository.SettingData.OtherSetting.AssetBundlesRoot;
-            //DeveloperSetting不参与运行时修改，不参与UserSetting存档，所以OtherSetting拷贝可以删除
+            #endregion
             if (!settingService.GetConfigSetting<DeveloperSettings>(out DeveloperSettings dvlpSetting))
             {
                 return false;
@@ -80,31 +86,45 @@ namespace StateMachine.Core
                     "AssetBundlesRoot is null or empty.");
                 return false;
             }
-            // Initialize AssetBundleManager
+            #region Initialize AssetBundleManager
             if (!InitAssetBundleManager(root, out AssetBundleManager assetBundleManager))
             {
                 return false;
             }
-
+            #endregion
+            #region Initialize CGPlayer
             if (!InitCGPlayer())
             {
                 return false;
             }
+            #endregion
             string bundlename = dvlpSetting.AudioDefinitionCatalogBundle;
             string assetname = dvlpSetting.AudioDefinitionCatalogAsset;
+            #region Initialize Audio
             if (!InitAudioDefinitionRepository(bundlename, assetname, out AudioDefinitionRepository audioDefinitionRepository))
             {
                 return false;
             }
             if (!InitAudioSystem(
                 audioDefinitionRepository,
-                settingService.Repository.SettingData.AudioSetting,
+                settingService.GetAudioSetting(),
                 out AudioSystem audioSystem))
             {
                 return false;
             }
+            #endregion
+            #region Initialize Display
+            if (!InitDisplaySystem(settingService.GetDisplaySetting(), out DisplaySystem displaySystem))
+            {
+                return false;
+            }
+            #endregion
+            if (!InitSavedServices(dvlpSetting.SavedInfoDire, dvlpSetting.SavedInfoName, dvlpSetting.AutoSavedInfoName))
+            {
+                return false;
+            }
             InitInputs(InputManager, dvlpSetting.ButtonSE, audioSystem);
-            if (!InitInput())
+            if (!InitInputSystem())
             {
                 return false;
             }
@@ -117,12 +137,14 @@ namespace StateMachine.Core
             coreContext.BindSettingService(settingService);
             coreContext.BindABManager(assetBundleManager);
             coreContext.BindAudioSystem(audioSystem);
+            coreContext.BindDisplaySystem(displaySystem);
             coreContext.BindAudioDefinitionRepository(audioDefinitionRepository);
             coreContext.BindInputManager(InputManager);
             coreContext.BindAudioArea(AudioArea);
             coreContext.BindDisplayArea(DisplayArea);
             coreContext.BindInputArea(InputArea);
             coreContext.BindTextArea(TextArea);
+            coreContext.BindSavedInfoService(SavedInfoSerializer, SavedInfoDeserializer);
             return true;
         }
         public bool InitAudioSystem(
@@ -181,6 +203,17 @@ namespace StateMachine.Core
                 AssetBundleManager,
                 audioDefinitionRepository,
                 audioSetting);
+            return true;
+        }
+
+        private bool InitDisplaySystem(DisplaySetting displaySetting,out DisplaySystem displaySystem)
+        {
+            displaySystem = null;
+            if (displaySetting == null)
+            {
+                return false;
+            }
+            displaySystem=new DisplaySystem(displaySetting);
             return true;
         }
         private List<AudioPlayer> GetAudioPlayers()
@@ -319,7 +352,8 @@ namespace StateMachine.Core
         }
         public void InitInputs(InputManager inputManager, AudioID audioID, ISoundPlayback soundPlayback)
         {
-            if (MainMenuInputs == null || MainMenuInputs.Count == 0)
+            if (MainMenuInputs == null || MainMenuInputs.Count == 0
+                ||SettingInputs==null||SettingInputs.Count==0)
             {
                 Debug.LogWarning("CoreContext initialization warning: Buttons list is null or empty.");
                 return;
@@ -339,8 +373,18 @@ namespace StateMachine.Core
                 input.InitSE(audioID, soundPlayback);
                 input.BindInput(inputManager);
             }
+            foreach(var input in SettingInputs)
+            {
+                if(input == null)
+                {
+                    Debug.LogWarning("CoreContext initialization warning: A button in the list is null.");
+                    continue;
+                }
+                input.BindInput(inputManager);
+            }
+
         }
-        public bool InitInput()
+        public bool InitInputSystem()
         {
             if (InputManager == null)
             {
@@ -407,6 +451,12 @@ namespace StateMachine.Core
                 settingService,
                 settingService);
             return success;
+        }
+        public bool InitSavedServices(string direName,string savedInfoName,string autoSavedInfoName)
+        {
+            SavedInfoSerializer = new SavedInfoSerializer(direName,savedInfoName,autoSavedInfoName);
+            SavedInfoDeserializer = new SavedInfoDeserializer(direName,savedInfoName,autoSavedInfoName);
+            return true;
         }
     }
 }

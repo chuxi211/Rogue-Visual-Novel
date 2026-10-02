@@ -64,29 +64,31 @@ namespace Setting
                 && repository.TryUpdateText(update);
         }
 
-        public void ConfirmUpdate()
+        public bool ConfirmUpdate()
         {
             if (!TryGetRepository(out SettingRepository repository) ||
                 !TryGetSerializer(out SettingSerializer serializer))
             {
-                return;
+                return false;
             }
 
             if (!repository.TryConfirmUpdate(out SettingChangeScope changeScope))
             {
-                return;
+                return false;
             }
 
             if (!serializer.TrySerializeSetting(repository.SettingData))
             {
                 repository.UndoUpdate();
-                return;
+                return false;
             }
 
             repository.ClearPreviousData();
 
             EventBus.Publish(
                 new ESettingChanged(repository.SettingData, changeScope));
+
+            return true;
         }
 
         //Reference when CanacelUpdate or Close SettingPanel

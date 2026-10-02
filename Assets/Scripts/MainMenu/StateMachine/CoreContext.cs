@@ -1,6 +1,8 @@
 using Audio;
+using Display;
 using Input;
 using MainMenu.Input;
+using Running;
 using Setting;
 using UnityEngine;
 using Utility;
@@ -18,9 +20,13 @@ namespace StateMachine.Core
         public TextArea TextArea { get; private set; }
         public AssetBundleManager AssetBundleManager { get; private set; }
         public AudioSystem AudioSystem { get; private set; }
+        public DisplaySystem DisplaySystem { get; private set; }
         public AudioDefinitionRepository AudioDefinitionRepository { get; private set; }
 
         public InputManager InputManager { get; private set; }
+
+        public SavedInfoSerializer SavedInfoSerializer { get; private set; }
+        public SavedInfoDeserializer SavedInfoDeserializer { get; private set; }
         public void BindSettingService(SettingService settingService)
         {
             if (settingService == null)
@@ -132,6 +138,26 @@ namespace StateMachine.Core
 
             TextArea = textArea;
         }
+        public void BindDisplaySystem(DisplaySystem displaySystem)
+        {
+            if (displaySystem == null)
+            {
+                return;
+            }
+            DisplaySystem = displaySystem;
+        }
+        public void BindSavedInfoService(SavedInfoSerializer savedInfoSerializer, SavedInfoDeserializer savedInfoDeserializer)
+        {
+            if (savedInfoSerializer == null || savedInfoDeserializer == null)
+            {
+                Debug.LogError(
+                    "CoreContext failed to bind SavedInfoService: " +
+                    "SavedInfoSerializer or SavedInfoDeserializer is null.");
+                return;
+            }
+            SavedInfoSerializer = savedInfoSerializer;
+            SavedInfoDeserializer = savedInfoDeserializer;
+        }
         public void OnExit()
         {
             //foreach(var field in this.GetType().GetFields())
@@ -142,6 +168,7 @@ namespace StateMachine.Core
             //}
             SettingService?.OnExit();
             AudioSystem?.Dispose();
+            DisplaySystem?.Dispose();
         }
     }
 }

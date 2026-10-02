@@ -12,7 +12,7 @@ namespace StateMachine.Core
         }
         public override void Enter()
         {
-            EventBus.Subscript<ERequestNewGame>(OnNewGame);
+            EventBus.Subscript<ERequestEnterRogue>(OnNewGame);
             EventBus.Subscript<ERequestGallery>(OnGallery);
             EventBus.Subscript<ERequestSetting>(OnSetting);
             if (Menu == null)
@@ -26,13 +26,13 @@ namespace StateMachine.Core
         }
         public override void Exit()
         {
-            EventBus.Unsubscript<ERequestNewGame>(OnNewGame);
+            EventBus.Unsubscript<ERequestEnterRogue>(OnNewGame);
             EventBus.Unsubscript<ERequestGallery>(OnGallery);
             EventBus.Unsubscript<ERequestSetting>(OnSetting);
         }
-        private void OnNewGame(ERequestNewGame e)
+        private void OnNewGame(ERequestEnterRogue e)
         {
-            StateMachine.SwitchState<RogueModeState>();
+            StateMachine.SwitchState(new RogueModeState(StateMachine,e.EnterRogueMode,e.LoadIndex));
         }
         private void OnGallery(ERequestGallery e)
         {

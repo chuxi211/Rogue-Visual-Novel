@@ -18,7 +18,7 @@ namespace Running
         }
         public Running.Map BuildMap(Config.Map configmap, Transform parent, Vector2 nodeSpacing)
         {
-            Map map = new Map();
+            Map map = new Map(configmap.ID);
             Dictionary<Config.Node, Running.Node> NodeDict = new Dictionary<Config.Node, Running.Node>();
             configmap.Nodes.ForEach(node =>
             {

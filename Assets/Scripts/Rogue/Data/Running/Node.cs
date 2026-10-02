@@ -68,9 +68,34 @@ namespace Running
                 }
             }
         }
+        public GetStepCode TryGetStep(StepID stepID, out Step step)
+        {
+            step = null;
+            if (!stepID.IsValid)
+            {
+                return GetStepCode.InvalidID;
+            }
+            if(!StepsMap.TryGetValue(stepID,out step))
+            {
+                return GetStepCode.Failed;
+            }
+            if(StepsMap.TryGetValue(stepID,out step)){
+                return GetStepCode.Succeeded;
+            }
+            return GetStepCode.Ended;
+            //stepID==null
+            //step不存在是两个概念
+        }
         public void AddEnteredComponent(IComponent component)
         {
             EnteredComponents.Enqueue(component);
         }
+    }
+    public enum GetStepCode
+    {
+        Succeeded,
+        Failed,
+        InvalidID,
+        Ended
     }
 }

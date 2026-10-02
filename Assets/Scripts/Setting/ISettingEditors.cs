@@ -23,7 +23,7 @@ namespace Setting
     {
         void BeginUpdate();
 
-        void ConfirmUpdate();
+        bool ConfirmUpdate();
         void CancelUpdate();
     }
 }

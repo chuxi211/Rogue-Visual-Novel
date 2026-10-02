@@ -53,10 +53,11 @@ namespace StateMachine.Node
             {
                 return;
             }
-            //if (e.NextID == null)
-            //{
-            //    return;
-            //}
+            if (IsCompleted())
+            {
+                StateMachine.Complete();
+                return;
+            }
             HasRequestedAdvance = true;
             StateMachine.Advance(e.NextID);
         }
@@ -64,16 +65,25 @@ namespace StateMachine.Node
         {
             if (HasRequestedAdvance)
             {
-                Debug.Log("");
+                return;
+            }
+
+            if (IsCompleted())
+            {
+                StateMachine.Complete();
                 return;
             }
             if (!Step.NextID.IsValid)
             {
-                Debug.Log("");
+                StateMachine.SwitchState(new FailureState(StateMachine,NodeErrorCode.InvalidNextStepID));
                 return;
             }
             HasRequestedAdvance = true;
             StateMachine.Advance(Step.NextID);
+        }
+        private bool IsCompleted()
+        {
+            return Step != null && Step.AdvanceType == Config.StepAdvanceType.End;
         }
     }
 }

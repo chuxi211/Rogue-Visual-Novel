@@ -26,11 +26,11 @@ namespace StateMachine.Rogue
                 return;
             }
 
-            inputManager.Switch(new StepInputState());
+            inputManager.Switch(new StepInputState(StateMachine.Context.SettingService));
             EventBus.Subscript<ENodeCompleted>(OnNodeCompleted);
-            if (CurrentNode != null)
+            if (CurrentNode == null || !CurrentNode.TryStart())
             {
-                CurrentNode.TryStart();
+                StateMachine.SwitchState(new FailureState(StateMachine));
             }
         }
         public override void Exit()
@@ -50,14 +50,23 @@ namespace StateMachine.Rogue
             else
             {
                 int currentlayer = StateMachine.Context.LayerProgression.CurrentLayer;
-                if (StateMachine.Context.ConfigRepository.TryGetMap(currentlayer + 1, out var map))
+                int maxlayer = StateMachine.Context.LayerProgression.MaxLayer;
+                switch (StateMachine.Context.ConfigRepository.TryGetMap(currentlayer + 1, maxlayer, out var map))
                 {
-                    StateMachine.SwitchState(new BuildMapState(StateMachine, map));
-                    StateMachine.Context.LayerProgression.AddLayer();
-                }
-                else
-                {
-                    Debug.LogError("Fatal Error: Fail to get next map.");
+                    case GetMapCode.SucceededToGet:
+                        StateMachine.SwitchState(new BuildMapState(StateMachine, map));
+                        StateMachine.Context.LayerProgression.AddLayer();
+                        break;
+                    case GetMapCode.FailedToGet:
+                        StateMachine.SwitchState(new FailureState(StateMachine));
+                        break;
+                    case GetMapCode.InvaildLayer:
+                        StateMachine.SwitchState(new FailureState(StateMachine));
+                        break;
+                    case GetMapCode.Ended:
+                        StateMachine.SwitchState<ExitState>();
+                        break;
+
                 }
             }
         }

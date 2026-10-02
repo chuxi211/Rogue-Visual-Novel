@@ -35,7 +35,7 @@ public class RogueInitiallizer
         PlayerProvideRegistry playerProvideRegistry = InitPlayerProviderRegistry
             (playerCache, prefabLoader, playerFactory, InputManager, context.PlayerParent);
         MapBuilder mapBuilder = InitMapBuilder(playerProvideRegistry);
-        LayerProgression layerProgression = new LayerProgression();
+        LayerProgression layerProgression = new LayerProgression(SettingService.Config.DeveloperSetting.MaxRogueLayer);
         ContextDependencyInject(
             context,
             configRepository,

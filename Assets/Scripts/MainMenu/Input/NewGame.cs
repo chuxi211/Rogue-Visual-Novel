@@ -6,7 +6,7 @@ namespace MainMenu.Input
         //static Instance隐式依赖
         public override void Click()
         {
-            EventBus.Publish(new ERequestNewGame());
+            EventBus.Publish(new ERequestEnterRogue(EnterRogueMode.New));
         }
 
         //通过Unity Inspector 显式绑定OnClick

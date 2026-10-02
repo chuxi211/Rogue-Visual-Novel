@@ -1,3 +1,4 @@
+using MainMenu;
 using UnityEngine;
 
 namespace StateMachine.Core
@@ -27,6 +28,31 @@ namespace StateMachine.Core
                 return;
             }
 
+            if (!RefreshUIAndBeginUpdate())
+            {
+                return;
+            }
+            
+            EventBus.Subscript<ERequestSettingOperation>(OnRequestSettingOperation);
+            StateMachine.Context.InputManager.Push(new MainMenu.Input.SettingState());
+            Setting.alpha = 1f;
+            Setting.interactable = true;
+            Setting.blocksRaycasts = true;
+            //Pop 需要后续CloseSetting+EventBus接入
+            //Confirm & Cancel需要等待UI接入
+        }
+        public override void Exit()
+        {
+            base.Exit();
+            Setting.alpha = 0f;
+            Setting.interactable = false;
+            Setting.blocksRaycasts = false;
+            EventBus.Unsubscript<ERequestSettingOperation>(OnRequestSettingOperation);
+            CoreContext context = StateMachine.Context;
+            context.InputManager.Pop();
+        }
+        private bool RefreshUIAndBeginUpdate()
+        {
             CoreContext context = StateMachine.Context;
             if (context.InputManager == null || context.SettingService == null ||
                 context.AudioArea == null || context.DisplayArea == null ||
@@ -35,7 +61,7 @@ namespace StateMachine.Core
                 Debug.LogError(
                     "SettingState failed to enter: " +
                     "one or more setting dependencies are null.");
-                return;
+                return false;
             }
 
             context.SettingService.BeginUpdate();
@@ -52,22 +78,45 @@ namespace StateMachine.Core
                 Debug.LogError(
                     "SettingState failed to enter: " +
                     "setting UI values could not be initialized.");
+                return false;
+            }
+            return valuesInitialized;
+        }
+        private void OnRequestSettingOperation(ERequestSettingOperation operation)
+        {
+            if (operation == null)
+            {
                 return;
             }
+            switch (operation.SettingOperation)
+            {
+                case SettingOperation.Cancel:
+                    StateMachine.Context.SettingService.CancelUpdate();
+                    RefreshUIAndBeginUpdate();
+                    return;
+                case SettingOperation.Close:
+                    StateMachine.Context.SettingService.CancelUpdate();
+                    StateMachine.SwitchState<MainMenuState>();
+                    return;
+                case SettingOperation.Confirm:
+                    if (!StateMachine.Context.SettingService.ConfirmUpdate())
+                    {
+                        StateMachine.Context.SettingService.CancelUpdate();
 
-            context.InputManager.Push(new MainMenu.Input.SettingState());
-            Setting.alpha = 1f;
-            Setting.interactable = true;
-            Setting.blocksRaycasts = true;
-            //Pop 需要后续CloseSetting+EventBus接入
-            //Confirm & Cancel需要等待UI接入
-        }
-        public override void Exit()
-        {
-            base.Exit();
-            Setting.alpha = 0f;
-            Setting.interactable = false;
-            Setting.blocksRaycasts = false;
+                        if (!RefreshUIAndBeginUpdate())
+                        {
+                            Debug.LogError(
+                                "SettingState failed to recover after confirm failure.");
+                        }
+
+                        return;
+                    }
+
+                    StateMachine.Context.SettingService.BeginUpdate();
+                    return;
+                default:
+                    return;
+            }
         }
     }
 }

@@ -3,6 +3,8 @@ using UnityEngine;
 using Utility;
 namespace StateMachine.Node
 {
+    //实际上，应该是NodeAdvancer
+    //这是早期的设计失误，为每一个Node绑定一个StateMachine
     public class NodeStateMachine : StateMachine<NodeState>
     {
         public Running.Node Node { get; private set; }
@@ -18,30 +20,35 @@ namespace StateMachine.Node
         }
         public bool TryStart()
         {
-            if (Node.Steps.Count > 0)
-            {
-                CurrentStep = Node.Steps[CurrentStepIndex];
-                SwitchState(new AdvanceState(this, CurrentStep));
-                return true;
-            }
-            else
+            if (Node.Steps.Count <= 0)
             {
                 Debug.LogError("Node has no steps");
                 return false;
             }
+                CurrentStep = Node.Steps[CurrentStepIndex];
+            if (CurrentStep.AdvanceType != StepAdvanceType.Start)
+            {
+                Debug.LogError("CurrentStep is not a Start Step.");
+                return false;
+            }
+            SwitchState(new AdvanceState(this, CurrentStep));
+            return true;
         }
         public void Advance(StepID nextID)
         {
-            if (Node.StepsMap.TryGetValue(nextID, out Running.Step nextStep))
+            switch(Node.TryGetStep(nextID,out Running.Step nextStep))
             {
-                CurrentStep = nextStep;
-                CurrentStepIndex = Node.Steps.IndexOf(nextStep);
-                SwitchState(new AdvanceState(this, CurrentStep));
-            }
-            else
-            {
-                Debug.LogError($"No step with ID {nextID} found in the node.\nThe Node will be interrupted");
-                Complete();
+                case Running.GetStepCode.Succeeded:
+                    CurrentStep = nextStep;
+                    CurrentStepIndex = Node.Steps.IndexOf(nextStep);
+                    SwitchState(new AdvanceState(this, CurrentStep));
+                    break;
+                case Running.GetStepCode.Failed:
+                    SwitchState(new FailureState(this,Running.NodeErrorCode.StepNotFound));
+                    break;
+                case Running.GetStepCode.InvalidID:
+                    SwitchState(new FailureState(this, Running.NodeErrorCode.InvalidNextStepID));
+                    break;
             }
         }
         public void Complete()

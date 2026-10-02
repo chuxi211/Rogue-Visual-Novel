@@ -7,7 +7,7 @@ namespace MainMenu
     {
         public void Click()
         {
-            EventBus.Publish(new ERequestCloseSetting());
+            EventBus.Publish(new ERequestSettingOperation(SettingOperation.Close));
         }
 
         public override void Execute()
@@ -16,11 +16,7 @@ namespace MainMenu
         }
         public void OnClick()
         {
-            if (InputManager == null)
-            {
-                return;
-            }
-            InputManager.Push(this);
+            TryPush();
         }
     }
 }

@@ -11,27 +11,40 @@ public class ConfigRepository
     {
         LayerMapLoader = layerMapLoader;
     }
-    public bool TryGetLayerMapGroup(int layer, out LayerMapGroup layerMap)
+    public GetMapCode TryGetLayerMapGroup(int layer, out LayerMapGroup layerMap)
     {
-        if (MapConfigTable.TryGetMapGroup(layer, out layerMap)) return true;
-        if (!LayerMapLoader.TryLoad(LayerToBundleName(layer), LayerToAssetName(layer), out layerMap)) return false;
-        MapConfigTable.Add(layer, layerMap); return true;
+        if (MapConfigTable.TryGetMapGroup(layer, out layerMap)) return GetMapCode.SucceededToGet;
+        if (!LayerMapLoader.TryLoad(LayerToBundleName(layer), LayerToAssetName(layer), out layerMap)) return GetMapCode.FailedToGet;
+        MapConfigTable.Add(layer, layerMap); return GetMapCode.SucceededToGet;
     }
-    public bool TryGetMap(int layer, out Map map)
+    public GetMapCode TryGetMap(int layer,int maxlayer, out Map map)
     {
+        map = null;
+        if(layer < 0 || maxlayer < 0)
+        {
+            return GetMapCode.InvaildLayer;
+        }
+        if (layer > maxlayer)
+        {
+            return GetMapCode.Ended;
+        }
         if (MapConfigTable.TryGetMap(layer, out map))
         {
-            return true;
+            return GetMapCode.SucceededToGet;
         }
 
         if (!LayerMapLoader.TryLoad(LayerToBundleName(layer), LayerToAssetName(layer), out LayerMapGroup layerMapGroup))
         {
-            map = null;
-            return false;
+            return GetMapCode.FailedToGet;
         }
 
         MapConfigTable.Add(layer, layerMapGroup);
-        return MapConfigTable.TryGetMap(layer, out map);
+        MapConfigTable.TryGetMap(layer, out map);
+        if(map == null)
+        {
+            return GetMapCode.FailedToGet;
+        }
+        return GetMapCode.SucceededToGet;
     }
     private string LayerToAssetName(int layer)
     {
@@ -41,4 +54,11 @@ public class ConfigRepository
     {
         return $"layermap_{layer}";
     }
+}
+public enum GetMapCode
+{
+    SucceededToGet,
+    FailedToGet,
+    InvaildLayer,
+    Ended
 }

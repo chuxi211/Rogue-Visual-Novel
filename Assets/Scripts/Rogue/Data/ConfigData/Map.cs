@@ -10,7 +10,43 @@ namespace Config
     //用于持久化存档
     public class Map : ScriptableObject
     {
+        public MapID ID;
         public List<Node> Nodes;
         public List<Edge> Edges;
+    }
+    [Serializable]
+    public struct MapID : IEquatable<MapID>
+    {
+        [SerializeField]
+        private int Layer;
+        [SerializeField]
+        private int VariantIndex;
+        public string Value
+        {
+            get
+            {
+                return $"{Layer}_{VariantIndex}";
+            }
+        }
+        public bool Equals(MapID other)
+        {
+            return Layer == other.Layer && VariantIndex == other.VariantIndex;
+        }
+        public override bool Equals(object obj)
+        {
+            return obj is MapID other && Equals(other);
+        }
+        public override int GetHashCode()
+        {
+            return Value == null ? 0 : Value.GetHashCode();
+        }
+        public static bool operator ==(MapID left, MapID right)
+        {
+            return left.Equals(right);
+        }
+        public static bool operator !=(MapID left, MapID right)
+        {
+            return !left.Equals(right);
+        }
     }
 }

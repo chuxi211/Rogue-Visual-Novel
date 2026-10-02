@@ -17,7 +17,9 @@ public class CoreBootstrap : MonoBehaviour
     public CGPlayer CGPlayer;
     public Transform AudioPlayers;
     public List<MainMenuInput> MainMenuInputs;
+    public List<SettingInput> SettingInputs;
 
+    public Transform SettingArea;
     public AudioArea AudioArea;
     public DisplayArea DisplayArea;
     public InputArea InputArea;
@@ -35,6 +37,7 @@ public class CoreBootstrap : MonoBehaviour
         Instance = this;
         DontDestroyOnLoad(Instance);
         DontDestroyOnLoad(AudioPlayers);
+        DontDestroyOnLoad(SettingArea);
         InitCoreStateMachine();
         LogApplicationInfo();
     }
@@ -62,6 +65,7 @@ public class CoreBootstrap : MonoBehaviour
             settingLoader,
             CGPlayer,
             MainMenuInputs,
+            SettingInputs,
             AudioPlayers,
             InputCollector,
             InputManager,

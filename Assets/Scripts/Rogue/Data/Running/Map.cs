@@ -1,11 +1,17 @@
+using Config;
 using System.Collections.Generic;
 
 namespace Running
 {
     public class Map
     {
+        public MapID ID { get; private set; }
         public List<Node> Nodes { get; private set; } = new List<Node>();
         private readonly List<Edge> Edges = new List<Edge>();
+        public Map(MapID id)
+        {
+            ID = id;
+        }
         public bool TryAddEdge(Edge edge)
         {
             if (!IsValidEdge(edge)) return false;

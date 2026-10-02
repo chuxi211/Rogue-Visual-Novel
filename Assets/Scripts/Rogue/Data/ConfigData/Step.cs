@@ -9,6 +9,7 @@ namespace Config
     {
         public StepID ID;
         public StepID NextID;
+        public StepAdvanceType AdvanceType;
         public List<NodeBehaviour> Behaviours;
     }
 }

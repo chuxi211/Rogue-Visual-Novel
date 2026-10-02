@@ -34,5 +34,12 @@ namespace Setting.Config
         public string UserSettingDire;
         [SerializeField]
         public string UserSettingsFileName;
+        [SerializeField]
+        public string SavedInfoDire;
+        [SerializeField]
+        public string SavedInfoName;
+        [SerializeField]
+        public string AutoSavedInfoName;
+        public int MaxRogueLayer;
     }
 }

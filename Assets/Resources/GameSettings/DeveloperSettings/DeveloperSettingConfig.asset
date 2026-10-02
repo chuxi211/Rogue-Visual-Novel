@@ -23,3 +23,9 @@ MonoBehaviour:
   AudioDefinitionCatalogAsset: AudioDefinitionCatalog
   ButtonSE:
     ID: UI_Button
+  UserSettingDire: UserSetting
+  UserSettingsFileName: UserSetting
+  SavedInfoDire: .\Save
+  SavedInfoName: Save
+  AutoSavedInfoName: AutoSave
+  MaxRogueLayer: 5
