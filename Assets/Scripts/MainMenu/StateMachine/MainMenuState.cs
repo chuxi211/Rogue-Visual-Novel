@@ -15,6 +15,7 @@ namespace StateMachine.Core
             EventBus.Subscript<ERequestEnterRogue>(OnNewGame);
             EventBus.Subscript<ERequestGallery>(OnGallery);
             EventBus.Subscript<ERequestSetting>(OnSetting);
+            EventBus.Subscript<ERequestSavedPanel>(OnSaved);
             if (Menu == null)
             {
                 Debug.LogError("Menu is null");
@@ -29,6 +30,7 @@ namespace StateMachine.Core
             EventBus.Unsubscript<ERequestEnterRogue>(OnNewGame);
             EventBus.Unsubscript<ERequestGallery>(OnGallery);
             EventBus.Unsubscript<ERequestSetting>(OnSetting);
+            EventBus.Unsubscript<ERequestSavedPanel>(OnSaved);
         }
         private void OnNewGame(ERequestEnterRogue e)
         {
@@ -38,13 +40,24 @@ namespace StateMachine.Core
         {
             Menu.interactable = false;
             Menu.blocksRaycasts = false;
-            StateMachine.SwitchState<GalleryState>();
+            StateMachine.SwitchState<GalleryModeState>();
         }
         private void OnSetting(ERequestSetting e)
         {
             Menu.interactable = false;
             Menu.blocksRaycasts = false;
             StateMachine.SwitchState<SettingState>();
+        }
+        private void OnSaved(ERequestSavedPanel e)
+        {
+            Menu.interactable = false;
+            Menu.blocksRaycasts = false;
+            if(StateMachine.TryGetState<SavedModeState>(out var savedModeState))
+            {
+                savedModeState.SetEnterMode(e.ModeOfEnterSaveMode);
+                StateMachine.SwitchState(savedModeState);
+                return;
+            }
         }
     }
 }

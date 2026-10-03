@@ -41,5 +41,6 @@ namespace Setting.Config
         [SerializeField]
         public string AutoSavedInfoName;
         public int MaxRogueLayer;
+        public int MaxSaveSlot;
     }
 }

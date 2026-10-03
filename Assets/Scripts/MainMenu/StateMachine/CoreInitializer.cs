@@ -2,6 +2,7 @@
 using Audio;
 using Display;
 using Input;
+using MainMenu;
 using MainMenu.Input;
 using Running;
 using Setting;
@@ -20,6 +21,7 @@ namespace StateMachine.Core
         public AssetBundleManager AssetBundleManager { get; private set; }
         public SavedInfoSerializer SavedInfoSerializer { get; private set; }
         public SavedInfoDeserializer SavedInfoDeserializer { get; private set; }
+        public SavedInfoPanel SavedInfoPanel { get; private set; }
         public CGPlayer CGPlayer { get; private set; }
         public CGLoader CGLoader { get; private set; }
         public List<MainMenuInput> MainMenuInputs { get; private set; }
@@ -33,6 +35,7 @@ namespace StateMachine.Core
         public TextArea TextArea { get; private set; }
         public CoreInitilaizer(
             SettingLoader settingLoader,
+            SavedInfoPanel savedInfoPanel,
             CGPlayer cgPlayer,
             List<MainMenuInput> minputs,
             List<SettingInput> sinputs,
@@ -45,6 +48,7 @@ namespace StateMachine.Core
             TextArea textArea)
         {
             SettingLoader = settingLoader;
+            SavedInfoPanel = savedInfoPanel;
             CGPlayer = cgPlayer;
             MainMenuInputs = minputs;
             SettingInputs = sinputs;
@@ -120,6 +124,10 @@ namespace StateMachine.Core
             }
             #endregion
             if (!InitSavedServices(dvlpSetting.SavedInfoDire, dvlpSetting.SavedInfoName, dvlpSetting.AutoSavedInfoName))
+            {
+                return false;
+            }
+            if(!InitSavedInfoPanel(dvlpSetting.MaxSaveSlot))
             {
                 return false;
             }
@@ -302,6 +310,19 @@ namespace StateMachine.Core
                 return false;
             }
 
+            return true;
+        }
+
+        public bool InitSavedInfoPanel(int maxSlotcount)
+        {
+                       if (SavedInfoPanel == null)
+            {
+                Debug.LogError(
+                    "CoreContext initialization failed: " +
+                    "SavedInfoPanel is null.");
+                return false;
+            }
+            SavedInfoPanel.Init(maxSlotcount,InputManager,SavedInfoDeserializer);
             return true;
         }
         public bool InitCGPlayer()

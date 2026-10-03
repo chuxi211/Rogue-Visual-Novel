@@ -2,11 +2,11 @@ using UnityEngine;
 
 namespace StateMachine.Core
 {
-    public class GalleryState : CoreState
+    public class GalleryModeState : CoreState
     {
         private CanvasGroup GalleryCnvsGrp;
         private CGPlayer CGPlayer;
-        public GalleryState(CoreStateMachine stateMachine, CanvasGroup canvas, CGPlayer player) : base(stateMachine)
+        public GalleryModeState(CoreStateMachine stateMachine, CanvasGroup canvas, CGPlayer player) : base(stateMachine)
         {
             GalleryCnvsGrp = canvas;
             CGPlayer = player;

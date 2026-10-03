@@ -15,6 +15,19 @@ namespace Utility
         {
             States[state.GetType()] = state;
         }
+        public bool TryGetState<TState>(out TState state) where TState : T
+        {
+            if (States.TryGetValue(typeof(TState), out T foundState))
+            {
+                state = (TState)foundState;
+                return true;
+            }
+            else
+            {
+                state = default;
+                return false;
+            }
+        }
         public virtual void SwitchState<TState>() where TState : T
         {
             CurrentState?.Exit();

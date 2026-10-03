@@ -1,4 +1,5 @@
 using Input;
+using MainMenu;
 using MainMenu.Input;
 using Setting;
 using Setting.Config;
@@ -14,7 +15,9 @@ public class CoreBootstrap : MonoBehaviour
     public CanvasGroup Menu;
     public CanvasGroup GalleryCnvsGrp;
     public CanvasGroup SettingCnvsGrp;
+    public CanvasGroup SavedInfoCnvsGrp;
     public CGPlayer CGPlayer;
+    public SavedInfoPanel SavedPanel;
     public Transform AudioPlayers;
     public List<MainMenuInput> MainMenuInputs;
     public List<SettingInput> SettingInputs;
@@ -63,6 +66,7 @@ public class CoreBootstrap : MonoBehaviour
         SettingLoader settingLoader = new SettingLoader(DefaultSettingConfig);
         CoreInitilaizer coreInitilaizer = new CoreInitilaizer(
             settingLoader,
+            SavedPanel,
             CGPlayer,
             MainMenuInputs,
             SettingInputs,
@@ -78,7 +82,8 @@ public class CoreBootstrap : MonoBehaviour
         StateMachine.RegisterState(new ExitState(StateMachine));
         StateMachine.RegisterState(new StateMachine.Core.MainMenuState(StateMachine, Menu));
         StateMachine.RegisterState(new RogueModeState(StateMachine));
-        StateMachine.RegisterState(new GalleryState(StateMachine, GalleryCnvsGrp, CGPlayer));
+        StateMachine.RegisterState(new GalleryModeState(StateMachine, GalleryCnvsGrp, CGPlayer));
+        StateMachine.RegisterState(new StateMachine.Core.SavedModeState(StateMachine, SavedInfoCnvsGrp,SavedPanel));
         StateMachine.RegisterState(new StateMachine.Core.SettingState(StateMachine,SettingCnvsGrp));
         StateMachine.SwitchState<InitState>();
     }
