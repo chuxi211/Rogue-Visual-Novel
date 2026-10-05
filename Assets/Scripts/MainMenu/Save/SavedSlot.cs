@@ -13,7 +13,7 @@ namespace MainMenu
         public TextMeshPro Name;
         public SavedClick Click;
         private SavedInfo Info;
-        private bool IsEmpty
+        public bool IsEmpty
         {
             get
             {

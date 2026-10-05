@@ -19,7 +19,7 @@ namespace StateMachine.Rogue
                 return;
             }
 
-            inputManager.Switch(new MapInputState());
+            inputManager.Switch(new Input.RogueInputState());
             EventBus.Subscript<ERequestEnterNode>(OnRequestEnterNode);
         }
         public override void Exit()

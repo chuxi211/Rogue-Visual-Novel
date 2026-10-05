@@ -32,9 +32,23 @@ namespace StateMachine.Core
             EventBus.Unsubscript<ERequestSetting>(OnSetting);
             EventBus.Unsubscript<ERequestSavedPanel>(OnSaved);
         }
+        public override void Resume()
+        {
+            EventBus.Subscript<ERequestEnterRogue>(OnNewGame);
+            EventBus.Subscript<ERequestGallery>(OnGallery);
+            EventBus.Subscript<ERequestSetting>(OnSetting);
+            EventBus.Subscript<ERequestSavedPanel>(OnSaved);
+        }
+        public override void Suspend()
+        {
+            EventBus.Unsubscript<ERequestEnterRogue>(OnNewGame);
+            EventBus.Unsubscript<ERequestGallery>(OnGallery);
+            EventBus.Unsubscript<ERequestSetting>(OnSetting);
+            EventBus.Unsubscript<ERequestSavedPanel>(OnSaved);
+        }
         private void OnNewGame(ERequestEnterRogue e)
         {
-            StateMachine.SwitchState(new RogueModeState(StateMachine,e.EnterRogueMode,e.LoadIndex));
+            StateMachine.SwitchState(new RogueModeState(StateMachine));
         }
         private void OnGallery(ERequestGallery e)
         {
@@ -55,7 +69,8 @@ namespace StateMachine.Core
             if(StateMachine.TryGetState<SavedModeState>(out var savedModeState))
             {
                 savedModeState.SetEnterMode(e.ModeOfEnterSaveMode);
-                StateMachine.SwitchState(savedModeState);
+                savedModeState.SetSavedInfoProvider(null);
+                StateMachine.SuspendState(savedModeState);
                 return;
             }
         }

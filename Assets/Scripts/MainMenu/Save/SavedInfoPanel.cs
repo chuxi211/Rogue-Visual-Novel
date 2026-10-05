@@ -10,10 +10,11 @@ namespace MainMenu
         [SerializeField]
         private SavedSlot Template;
         private int MaxSlotCount;
-        private List<SavedSlot> Slots = new List<SavedSlot>();
+        public List<SavedSlot> Slots { get; private set; } = new List<SavedSlot>();
         private InputManager InputManager;
         private SavedInfoDeserializer SavedInfoDeserializer;
         private ModeOfEnterSaveMode EnterMode;
+
         public void Init(int maxSlotCount,InputManager inputManager,SavedInfoDeserializer deserializer)
         {
             MaxSlotCount = maxSlotCount;
@@ -34,19 +35,23 @@ namespace MainMenu
             CreateSlot();
             for (int i = 0; i < MaxSlotCount; i++)
             {
+                Slots[i].gameObject.SetActive(false);
                 SavedErrorCode errorCode = SavedInfoDeserializer.TryDeserialise(i, out SavedInfo savedInfo);
                 switch (errorCode)
                 {
                     case SavedErrorCode.Success:
-                        Slots[i].gameObject.SetActive(true);
+                    case SavedErrorCode.FileNotFound:
                         Slots[i].SetEnterMode(EnterMode);
                         Slots[i].SetInfo(savedInfo);
+                        Slots[i].gameObject.SetActive(
+                            EnterMode == ModeOfEnterSaveMode.Save || savedInfo != null);
                         break;
-                    case SavedErrorCode.FileNotFound:
-                        Debug.Log($"SavedInfoPanel: No saved info found for slot {i}");
-                    break;
                 }
             }
+        }
+        public void Refresh()
+        {
+            Show();
         }
         private void CreateSlot()
         {

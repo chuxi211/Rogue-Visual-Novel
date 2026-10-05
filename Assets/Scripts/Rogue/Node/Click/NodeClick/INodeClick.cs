@@ -1,6 +1,8 @@
+using Rogue.Input;
+
 namespace Input
 {
-    public interface INodeClick : IClick
+    public interface INodeClick :IRogueInput,IClick
     {
         void BindActor(NodeActor nodeActor);
     }

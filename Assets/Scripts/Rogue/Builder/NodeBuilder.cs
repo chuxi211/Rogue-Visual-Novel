@@ -19,7 +19,7 @@ namespace Running
                 Debug.LogError("ConfigNode is null");
                 return null;
             }
-            Node node = new Node(configNode.Position, configNode.AdvanceType);
+            Node node = new Node(configNode.NodeID, configNode.Position, configNode.AdvanceType);
             Vector3 position = new Vector3(configNode.Position.X * nodeSpacing.x, configNode.Position.Y * nodeSpacing.y);
             GameObject go = GameObject.Instantiate(configNode.NodePrefab, position, Quaternion.identity, parent);
             NodeActor nodeActor = go.GetComponent<NodeActor>();

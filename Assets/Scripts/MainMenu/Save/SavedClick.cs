@@ -1,12 +1,13 @@
 using Input;
+using Running;
 
 namespace MainMenu.Input
 {
     public class SavedClick : SavedPanelInput
     {
-        private InputManager InputManager;
         private ModeOfEnterSaveMode Mode;
         private int Index;
+        private SavedInfo SavedInfo;
         public void SetEnterMode(ModeOfEnterSaveMode mode)
         {
             Mode = mode;

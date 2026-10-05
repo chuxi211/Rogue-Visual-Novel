@@ -17,5 +17,15 @@ namespace StateMachine.Core
         {
             Debug.Log($"ExitState:{this.GetType()}");
         }
+
+        public virtual void Suspend()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public virtual void Resume()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

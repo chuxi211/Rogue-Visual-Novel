@@ -5,6 +5,7 @@ namespace Running
 {
     public class Node
     {
+        public readonly string ID;
         public readonly NodePosition Position;
         public readonly NodeAdvanceType AdvanceType;
         public List<Step> Steps { get; private set; } = new List<Step>();
@@ -21,9 +22,10 @@ namespace Running
         //因此该属性不由Node本身直接设置，而由MapProgression的TryMoveTo方法来判断。
         public bool IsCompleted { get; private set; } = false;
         public StateMachine.Node.NodeStateMachine StateMachine { get; private set; }
-        public Node(NodePosition position, NodeAdvanceType advanceType)
+        public Node(string id, NodePosition position, NodeAdvanceType advanceType)
         {
             StateMachine = new StateMachine.Node.NodeStateMachine(this);
+            ID = id;
             Position = position;
             AdvanceType = advanceType;
         }

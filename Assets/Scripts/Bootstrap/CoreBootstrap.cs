@@ -4,6 +4,7 @@ using MainMenu.Input;
 using Setting;
 using Setting.Config;
 using StateMachine.Core;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,7 +22,8 @@ public class CoreBootstrap : MonoBehaviour
     public Transform AudioPlayers;
     public List<MainMenuInput> MainMenuInputs;
     public List<SettingInput> SettingInputs;
-
+    public List<SavedPanelInput> SavedPanelInputs;
+    
     public Transform SettingArea;
     public AudioArea AudioArea;
     public DisplayArea DisplayArea;
@@ -41,6 +43,7 @@ public class CoreBootstrap : MonoBehaviour
         DontDestroyOnLoad(Instance);
         DontDestroyOnLoad(AudioPlayers);
         DontDestroyOnLoad(SettingArea);
+        DontDestroyOnLoad(SavedPanel.transform.parent.gameObject);
         InitCoreStateMachine();
         LogApplicationInfo();
     }
@@ -70,6 +73,7 @@ public class CoreBootstrap : MonoBehaviour
             CGPlayer,
             MainMenuInputs,
             SettingInputs,
+            SavedPanelInputs,
             AudioPlayers,
             InputCollector,
             InputManager,

@@ -26,6 +26,7 @@ namespace StateMachine.Core
         public CGLoader CGLoader { get; private set; }
         public List<MainMenuInput> MainMenuInputs { get; private set; }
         public List<SettingInput> SettingInputs { get; private set; }
+        public List<SavedPanelInput> SavedPanelInputs { get; private set; }
         public Transform AudioPlayerParent { get; private set; }
         public InputCollector InputCollector { get; private set; }
         public InputManager InputManager { get; private set; }
@@ -39,6 +40,7 @@ namespace StateMachine.Core
             CGPlayer cgPlayer,
             List<MainMenuInput> minputs,
             List<SettingInput> sinputs,
+            List<SavedPanelInput> savedPanelInputs,
             Transform audioPlayerParent,
             InputCollector inputCollector,
             InputManager inputManager,
@@ -52,6 +54,7 @@ namespace StateMachine.Core
             CGPlayer = cgPlayer;
             MainMenuInputs = minputs;
             SettingInputs = sinputs;
+            SavedPanelInputs = savedPanelInputs;
             AudioPlayerParent = audioPlayerParent;
             InputCollector = inputCollector;
             InputManager = inputManager;
@@ -374,7 +377,8 @@ namespace StateMachine.Core
         public void InitInputs(InputManager inputManager, AudioID audioID, ISoundPlayback soundPlayback)
         {
             if (MainMenuInputs == null || MainMenuInputs.Count == 0
-                ||SettingInputs==null||SettingInputs.Count==0)
+                ||SettingInputs==null||SettingInputs.Count==0
+                ||SavedPanelInputs==null||SavedPanelInputs.Count==0)
             {
                 Debug.LogWarning("CoreContext initialization warning: Buttons list is null or empty.");
                 return;
@@ -397,6 +401,15 @@ namespace StateMachine.Core
             foreach(var input in SettingInputs)
             {
                 if(input == null)
+                {
+                    Debug.LogWarning("CoreContext initialization warning: A button in the list is null.");
+                    continue;
+                }
+                input.BindInput(inputManager);
+            }
+            foreach(var input in SavedPanelInputs)
+            {
+                if (input == null)
                 {
                     Debug.LogWarning("CoreContext initialization warning: A button in the list is null.");
                     continue;

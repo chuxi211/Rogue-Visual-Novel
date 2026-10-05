@@ -1,5 +1,6 @@
 using Audio;
 using Input;
+using Running;
 using Utility;
 
 namespace StateMachine.Rogue
@@ -12,20 +13,20 @@ namespace StateMachine.Rogue
         private AudioSystem AudioSystem;
         private InputManager InputManager;
         private EnterRogueMode EnterRogueMode;
-        private int LoadIndex;
+        private SavedInfo SavedInfo = null;
         public InitState(
             RogueStateMachine stateMachine,
             AssetBundleManager assetBundleManager,
             AudioSystem audioSystem,
             InputManager inputManager,
             EnterRogueMode mode,
-            int index) : base(stateMachine)
+            SavedInfo savedInfo=null) : base(stateMachine)
         {
             AssetBundleManager = assetBundleManager;
             AudioSystem = audioSystem;
             InputManager = inputManager;
             EnterRogueMode = mode;
-            LoadIndex = index;
+            SavedInfo = savedInfo;
         }
         public override void Enter()
         {
@@ -73,7 +74,23 @@ namespace StateMachine.Rogue
         }
         private void Load()
         {
-            UnityEngine.Debug.LogError("LoadSystem is not Implement");
+            StateMachine.Context.LayerProgression.SetLayer(SavedInfo.CurrentLayer);
+            switch ( StateMachine.Context.ConfigRepository.TryGetMap(
+                SavedInfo.CurrentMapID,out Config.Map map))
+            {
+                case GetMapCode.SucceededToGet:
+                    StateMachine.SwitchState(new BuildMapState(StateMachine, map));
+                    break;
+                case GetMapCode.FailedToGet:
+                    StateMachine.SwitchState(new FailureState(StateMachine));
+                    break;
+                case GetMapCode.InvaildMapID:
+                    StateMachine.SwitchState(new FailureState(StateMachine));
+                    break;
+                case GetMapCode.Ended:
+                    StateMachine.SwitchState(new ExitState(StateMachine));
+                    break;
+            }
             return;
         }
     }

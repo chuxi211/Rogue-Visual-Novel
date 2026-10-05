@@ -17,6 +17,37 @@ public class ConfigRepository
         if (!LayerMapLoader.TryLoad(LayerToBundleName(layer), LayerToAssetName(layer), out layerMap)) return GetMapCode.FailedToGet;
         MapConfigTable.Add(layer, layerMap); return GetMapCode.SucceededToGet;
     }
+    public GetMapCode TryGetMap(MapID mapID, out Config.Map map)
+    {
+        map = null;
+        if (mapID == null)
+        {
+            return GetMapCode.InvaildMapID;
+        }
+        if (MapConfigTable.TryGetMap(mapID, out map))
+        {
+            if (map.ID == mapID)
+            {
+                return GetMapCode.SucceededToGet;
+            }
+            else
+            {
+                return GetMapCode.FailedToGet;
+            }
+        }
+        return GetMapCode.FailedToGet;
+        //if (!LayerMapLoader.TryLoad(LayerToBundleName(mapID.Layer), LayerToAssetName(mapID.Layer), out LayerMapGroup layerMapGroup))
+        //{
+        //    return GetMapCode.FailedToGet;
+        //}
+        //MapConfigTable.Add(mapID.Layer, layerMapGroup);
+        //MapConfigTable.TryGetMap(mapID.Layer, out map);
+        //if (map == null || map.ID != mapID)
+        //{
+        //    return GetMapCode.FailedToGet;
+        //}
+        //return GetMapCode.SucceededToGet;
+    }
     public GetMapCode TryGetMap(int layer,int maxlayer, out Map map)
     {
         map = null;
@@ -59,6 +90,7 @@ public enum GetMapCode
 {
     SucceededToGet,
     FailedToGet,
+    InvaildMapID,
     InvaildLayer,
     Ended
 }

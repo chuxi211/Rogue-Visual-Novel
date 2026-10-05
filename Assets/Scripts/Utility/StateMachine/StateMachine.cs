@@ -59,5 +59,24 @@ namespace Utility
             CurrentState = StateStack.Pop();
             CurrentState?.Enter();
         }
+        public virtual void SuspendState(T newState)
+        {
+            if (CurrentState != null)
+            {
+                StateStack.Push(CurrentState);
+                CurrentState.Suspend();
+            }
+            CurrentState = newState;
+            CurrentState?.Enter();
+        }
+        public virtual void ResumeState()
+        {
+            if (CurrentState != null)
+            {
+                CurrentState.Exit();
+            }
+            CurrentState = StateStack.Pop();
+            CurrentState?.Resume();
+        }
     }
 }
