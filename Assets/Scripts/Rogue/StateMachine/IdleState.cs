@@ -14,7 +14,8 @@ namespace StateMachine.Rogue
             InputManager inputManager = StateMachine?.Context?.InputManager;
             if (inputManager == null)
             {
-                StateMachine.SwitchState(new FailureState(StateMachine, "Rogue input manager is unavailable."));
+                Debug.LogError(
+                    "Rogue IdleState failed to enter: InputManager is null.");
                 return;
             }
 
@@ -28,12 +29,6 @@ namespace StateMachine.Rogue
         }
         private void OnRequestEnterNode(ERequestEnterNode e)
         {
-            if (e?.Actor == null || e.Actor.NodeRunning == null ||
-                StateMachine.Context.MapProgression == null || StateMachine.Context.Camera == null)
-            {
-                StateMachine.SwitchState(new FailureState(StateMachine, "Node entry dependencies are missing."));
-                return;
-            }
             if (!StateMachine.Context.MapProgression.TryMoveTo(e.Actor.NodeRunning))
             {
                 return;

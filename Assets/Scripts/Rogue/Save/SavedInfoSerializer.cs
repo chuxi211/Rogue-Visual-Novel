@@ -17,53 +17,23 @@ namespace Running
         }
         public SavedErrorCode TrySerialize(SavedInfo savedInfo,int index,SaveMode saveMode)
         {
-            if (savedInfo == null || !savedInfo.IsValid)
+            string path = string.Empty;
+            if(saveMode==SaveMode.Auto)
             {
-                return SavedErrorCode.InvalidData;
+                path = Path.Combine(SavedInfoDire, $"{AutoSavedInfoName}.json");
             }
-            if (saveMode == SaveMode.Manual && index < 0)
+            if(saveMode== SaveMode.Manual)
             {
-                return SavedErrorCode.InvalidSlot;
+                path = Path.Combine(SavedInfoDire, $"{SavedInfoName}_{index}.json");
             }
-            if (saveMode != SaveMode.Auto && saveMode != SaveMode.Manual)
+            string jsonFile = JsonUtility.ToJson(savedInfo);
+            if(!SafeWriteAllText(path, jsonFile))
             {
-                return SavedErrorCode.InvalidData;
+                return SavedErrorCode.IOError;
             }
-            if (string.IsNullOrWhiteSpace(SavedInfoDire))
-            {
-                return SavedErrorCode.InvalidPath;
-            }
-            string json;
-            try
-            {
-                json = JsonUtility.ToJson(savedInfo);
-            }
-            catch (ArgumentException)
-            {
-                return SavedErrorCode.InvalidData;
-            }
-            try
-            {
-                string fileName = saveMode == SaveMode.Auto ? AutoSavedInfoName : SavedInfoName;
-                if (string.IsNullOrWhiteSpace(fileName))
-                {
-                    return SavedErrorCode.InvalidPath;
-                }
-                string path = saveMode == SaveMode.Auto
-                    ? Path.Combine(SavedInfoDire, $"{fileName}.json")
-                    : Path.Combine(SavedInfoDire, $"{fileName}_{index}.json");
-                return SafeWriteAllText(path, json);
-            }
-            catch (ArgumentException)
-            {
-                return SavedErrorCode.InvalidPath;
-            }
-            catch (NotSupportedException)
-            {
-                return SavedErrorCode.InvalidPath;
-            }
+            return SavedErrorCode.Success;
         }
-        private SavedErrorCode SafeWriteAllText(string path, string text)
+        private bool SafeWriteAllText(string path, string text)
         {
             string directory = Path.GetDirectoryName(path);
             string tmp = Path.Combine(
@@ -86,23 +56,17 @@ namespace Running
                 {
                     File.Move(tmp, path);
                 }
-                return SavedErrorCode.Success;
+                return true;
             }
             catch (UnauthorizedAccessException)
             {
-                return SavedErrorCode.UnauthorizedAccess;
-            }
-            catch (System.Security.SecurityException)
-            {
-                return SavedErrorCode.UnauthorizedAccess;
+                Debug.LogError($"FatalError: Unauthorize to write file:{path}");
+                return false;
             }
             catch (IOException)
             {
-                return SavedErrorCode.IOError;
-            }
-            catch (NotSupportedException)
-            {
-                return SavedErrorCode.IOError;
+                Debug.LogError("FatalError: ");
+                return false;
             }
             finally
             {

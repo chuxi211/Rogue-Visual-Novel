@@ -6,8 +6,5 @@ namespace Running
         FileNotFound,
         UnauthorizedAccess,
         IOError,
-        InvalidData,
-        InvalidSlot,
-        InvalidPath,
     }
 }

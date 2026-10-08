@@ -21,37 +21,22 @@ namespace StateMachine.Rogue
             InputManager inputManager = StateMachine?.Context?.InputManager;
             if (inputManager == null)
             {
-                StateMachine.SwitchState(new FailureState(StateMachine, "Node input manager is unavailable."));
+                Debug.LogError(
+                    "Rogue NodeState failed to enter: InputManager is null.");
                 return;
             }
 
             inputManager.Switch(new StepInputState(StateMachine.Context.SettingService));
             EventBus.Subscript<ENodeCompleted>(OnNodeCompleted);
-            EventBus.Subscript<ENodeFailed>(OnNodeFailed);
-            if (CurrentNode == null)
+            if (CurrentNode == null || !CurrentNode.TryStart())
             {
-                StateMachine.SwitchState(new FailureState(StateMachine, "Current node is null."));
-                return;
-            }
-            if (!CurrentNode.TryStart(out NodeErrorCode errorCode))
-            {
-                StateMachine.SwitchState(new FailureState(
-                    StateMachine, $"Cannot start node '{CurrentNode.ID}': {errorCode}."));
+                StateMachine.SwitchState(new FailureState(StateMachine));
             }
         }
         public override void Exit()
         {
             base.Exit();
             EventBus.Unsubscript<ENodeCompleted>(OnNodeCompleted);
-            EventBus.Unsubscript<ENodeFailed>(OnNodeFailed);
-        }
-        private void OnNodeFailed(ENodeFailed e)
-        {
-            if (CurrentNode != null && e.NodeID == CurrentNode.ID)
-            {
-                StateMachine.SwitchState(new FailureState(
-                    StateMachine, $"Node '{e.NodeID}' failed: {e.ErrorCode}."));
-            }
         }
         private void OnNodeCompleted(ENodeCompleted e)
         {
@@ -73,10 +58,10 @@ namespace StateMachine.Rogue
                         StateMachine.Context.LayerProgression.AddLayer();
                         break;
                     case GetMapCode.FailedToGet:
-                        StateMachine.SwitchState(new FailureState(StateMachine, "Next map could not be loaded."));
+                        StateMachine.SwitchState(new FailureState(StateMachine));
                         break;
                     case GetMapCode.InvaildLayer:
-                        StateMachine.SwitchState(new FailureState(StateMachine, "Next map layer is invalid."));
+                        StateMachine.SwitchState(new FailureState(StateMachine));
                         break;
                     case GetMapCode.Ended:
                         StateMachine.SwitchState<ExitState>();

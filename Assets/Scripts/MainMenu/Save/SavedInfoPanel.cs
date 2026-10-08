@@ -46,15 +46,6 @@ namespace MainMenu
                         Slots[i].gameObject.SetActive(
                             EnterMode == ModeOfEnterSaveMode.Save || savedInfo != null);
                         break;
-                    case SavedErrorCode.InvalidData:
-                        Debug.LogError($"Save slot {i} contains invalid data.");
-                        Slots[i].SetEnterMode(EnterMode);
-                        Slots[i].SetInfo(null);
-                        Slots[i].gameObject.SetActive(EnterMode == ModeOfEnterSaveMode.Save);
-                        break;
-                    default:
-                        Debug.LogError($"Cannot read save slot {i}: {errorCode}.");
-                        break;
                 }
             }
         }

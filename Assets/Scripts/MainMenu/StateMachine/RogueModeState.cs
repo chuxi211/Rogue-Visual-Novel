@@ -1,5 +1,4 @@
 using Running;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,7 +9,6 @@ namespace StateMachine.Core
         private EnterRogueMode EnterMode;
         private SavedInfo SavedInfo;
         private RogueBootstrap RogueBootstrap;
-        private bool ReturningToMenu;
         public RogueModeState(CoreStateMachine stateMachine) : base(stateMachine)
         {
         }
@@ -22,11 +20,10 @@ namespace StateMachine.Core
         public override void Enter()
         {
             base.Enter();
-            ReturningToMenu = false;
             SceneManager.sceneLoaded += OnSceneLoaded;
+            SceneManager.LoadScene("Game");
             EventBus.Subscript<ERequestAbortRogue>(OnReturnMainMenu);
             EventBus.Subscript<ERequestSavedPanel>(OnRequestSavedPanel);
-            SceneManager.LoadScene("Game");
         }
         public override void Exit()
         {
@@ -38,10 +35,12 @@ namespace StateMachine.Core
         }
         public override void Suspend()
         {
+            EventBus.Unsubscript<ERequestAbortRogue>(OnReturnMainMenu);
             EventBus.Unsubscript<ERequestSavedPanel>(OnRequestSavedPanel);
         }
         public override void Resume()
         {
+            EventBus.Subscript<ERequestAbortRogue>(OnReturnMainMenu);
             EventBus.Subscript<ERequestSavedPanel>(OnRequestSavedPanel);
         }
         private void OnSceneLoaded(Scene scene, LoadSceneMode loadSceneMode)
@@ -50,17 +49,14 @@ namespace StateMachine.Core
             {
                 SceneManager.sceneLoaded -= OnSceneLoaded;
                 RogueBootstrap = GameObject.FindFirstObjectByType<RogueBootstrap>();
-                if (RogueBootstrap == null ||
-                    !RogueBootstrap.InitStateMachine(StateMachine.Context,EnterMode,SavedInfo))
+                if (RogueBootstrap != null)
                 {
-                    Debug.LogError("Rogue scene initialization failed.");
-                    OnReturnMainMenu(new ERequestAbortRogue());
+                    RogueBootstrap.InitStateMachine(StateMachine.Context,EnterMode,SavedInfo);
                 }
             }
             if(scene.name == "MainMenu")
             {
                 SceneManager.sceneLoaded -= OnSceneLoaded;
-                StateMachine.ClearHistory();
                 StateMachine.SwitchState<MainMenuState>();
             }
         }
@@ -89,27 +85,7 @@ namespace StateMachine.Core
         }
         private void OnReturnMainMenu(ERequestAbortRogue e)
         {
-            if (ReturningToMenu)
-            {
-                return;
-            }
-            ReturningToMenu = true;
-            EventBus.Unsubscript<ERequestAbortRogue>(OnReturnMainMenu);
-            EventBus.Unsubscript<ERequestSavedPanel>(OnRequestSavedPanel);
-            SceneManager.sceneLoaded -= OnSceneLoaded;
             SceneManager.sceneLoaded += OnSceneLoaded;
-            if (CoreBootstrap.Instance != null)
-            {
-                CoreBootstrap.Instance.StartCoroutine(LoadMainMenuNextFrame());
-            }
-            else
-            {
-                SceneManager.LoadScene("MainMenu");
-            }
-        }
-        private IEnumerator LoadMainMenuNextFrame()
-        {
-            yield return null;
             SceneManager.LoadScene("MainMenu");
         }
     }

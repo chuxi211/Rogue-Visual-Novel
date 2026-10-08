@@ -55,10 +55,6 @@ namespace Running
         {
             return StateMachine.TryStart();
         }
-        public bool TryStart(out NodeErrorCode errorCode)
-        {
-            return StateMachine.TryStart(out errorCode);
-        }
         public void AddStep(Step step)
         {
             if (step != null)

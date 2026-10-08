@@ -12,7 +12,5 @@ namespace Running
         public bool IsNodeCompleted;
         public int CurrentLayer;
         public NodePosition Position;
-        public bool IsValid => CurrentMapID.IsValid && CurrentLayer > 0 &&
-            CurrentLayer == CurrentMapID.LayerNumber && !string.IsNullOrWhiteSpace(CurrentNodeID);
     }
 }

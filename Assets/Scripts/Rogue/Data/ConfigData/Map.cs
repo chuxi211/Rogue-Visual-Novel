@@ -21,8 +21,6 @@ namespace Config
         private int Layer;
         [SerializeField]
         private int VariantIndex;
-        public int LayerNumber => Layer;
-        public bool IsValid => Layer > 0 && VariantIndex >= 0;
         public string Value
         {
             get

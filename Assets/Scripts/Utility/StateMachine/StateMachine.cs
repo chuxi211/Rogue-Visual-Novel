@@ -78,9 +78,5 @@ namespace Utility
             CurrentState = StateStack.Pop();
             CurrentState?.Resume();
         }
-        public void ClearHistory()
-        {
-            StateStack.Clear();
-        }
     }
 }

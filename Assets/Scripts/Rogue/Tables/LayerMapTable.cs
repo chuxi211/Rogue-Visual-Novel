@@ -34,7 +34,7 @@ public class LayerMapTable
             configmap = null;
             return false;
         }
-        if (group.Variants == null || group.Variants.Count == 0)
+        if (group.Variants.Count == 0)
         {
             Debug.LogError($"The Variants of group({layer}) count is 0");
             configmap = null;
