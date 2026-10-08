@@ -2,9 +2,13 @@ namespace Running
 {
     public enum NodeErrorCode
     {
+        None,
         NoSteps,
         InvalidStartStep,
         InvalidNextStepID,
-        StepNotFound
+        StepNotFound,
+        InvalidNode,
+        InvalidStep,
+        InvalidComponent
     }
 }

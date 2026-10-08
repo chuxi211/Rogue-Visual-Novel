@@ -57,7 +57,20 @@ namespace StateMachine.Core
             switch (e.Mode)
             {
                 case ModeOfEnterSaveMode.Load:
-                    StateMachine.Context.SavedInfoDeserializer.TryDeserialise(e.SlotIndex,out SavedInfo savedInfo);
+                    if (e.SlotIndex < 0 || e.SlotIndex >= SavedInfoPanel.Slots.Count)
+                    {
+                        Debug.LogError($"Invalid load slot index: {e.SlotIndex}");
+                        break;
+                    }
+                    SavedErrorCode loadResult = StateMachine.Context.SavedInfoDeserializer.TryDeserialise(
+                        e.SlotIndex, out SavedInfo savedInfo);
+                    if (loadResult != SavedErrorCode.Success || savedInfo == null)
+                    {
+                        Debug.LogError($"Failed to load slot {e.SlotIndex}: {loadResult}");
+                        SavedInfoPanel.Refresh();
+                        break;
+                    }
+                    StateMachine.ResumeState();
                     StateMachine.SwitchState(new RogueModeState(StateMachine, EnterRogueMode.Load, savedInfo));
                     break;
                 case ModeOfEnterSaveMode.Save:

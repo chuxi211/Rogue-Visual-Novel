@@ -34,6 +34,8 @@ namespace StateMachine.Core
         }
         public override void Resume()
         {
+            Menu.blocksRaycasts = true;
+            Menu.interactable = true;
             EventBus.Subscript<ERequestEnterRogue>(OnNewGame);
             EventBus.Subscript<ERequestGallery>(OnGallery);
             EventBus.Subscript<ERequestSetting>(OnSetting);
@@ -41,6 +43,8 @@ namespace StateMachine.Core
         }
         public override void Suspend()
         {
+            Menu.interactable = false;
+            Menu.blocksRaycasts = false;
             EventBus.Unsubscript<ERequestEnterRogue>(OnNewGame);
             EventBus.Unsubscript<ERequestGallery>(OnGallery);
             EventBus.Unsubscript<ERequestSetting>(OnSetting);
@@ -64,8 +68,6 @@ namespace StateMachine.Core
         }
         private void OnSaved(ERequestSavedPanel e)
         {
-            Menu.interactable = false;
-            Menu.blocksRaycasts = false;
             if(StateMachine.TryGetState<SavedModeState>(out var savedModeState))
             {
                 savedModeState.SetEnterMode(e.ModeOfEnterSaveMode);

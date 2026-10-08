@@ -1,4 +1,5 @@
 using Config;
+using Running;
 using UnityEngine;
 using Utility;
 namespace StateMachine.Node
@@ -20,15 +21,30 @@ namespace StateMachine.Node
         }
         public bool TryStart()
         {
-            if (Node.Steps.Count <= 0)
+            return TryStart(out _);
+        }
+        public bool TryStart(out NodeErrorCode errorCode)
+        {
+            errorCode = NodeErrorCode.None;
+            if (Node == null)
             {
-                Debug.LogError("Node has no steps");
+                errorCode = NodeErrorCode.InvalidNode;
                 return false;
             }
-                CurrentStep = Node.Steps[CurrentStepIndex];
-            if (CurrentStep.AdvanceType != StepAdvanceType.Start)
+            if (Node.Steps == null || Node.Steps.Count <= 0)
             {
-                Debug.LogError("CurrentStep is not a Start Step.");
+                errorCode = NodeErrorCode.NoSteps;
+                return false;
+            }
+            if (CurrentStepIndex < 0 || CurrentStepIndex >= Node.Steps.Count)
+            {
+                errorCode = NodeErrorCode.InvalidStartStep;
+                return false;
+            }
+            CurrentStep = Node.Steps[CurrentStepIndex];
+            if (CurrentStep == null || CurrentStep.AdvanceType != StepAdvanceType.Start)
+            {
+                errorCode = NodeErrorCode.InvalidStartStep;
                 return false;
             }
             SwitchState(new AdvanceState(this, CurrentStep));

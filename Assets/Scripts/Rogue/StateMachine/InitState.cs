@@ -62,10 +62,10 @@ namespace StateMachine.Rogue
                     StateMachine.SwitchState(new BuildMapState(StateMachine, map));
                     break;
                 case GetMapCode.FailedToGet:
-                    StateMachine.SwitchState(new FailureState(StateMachine));
+                    StateMachine.SwitchState(new FailureState(StateMachine, "Initial map could not be loaded."));
                     break;
                 case GetMapCode.InvaildLayer:
-                    StateMachine.SwitchState(new FailureState(StateMachine));
+                    StateMachine.SwitchState(new FailureState(StateMachine, "Initial map layer is invalid."));
                     break;
                 case GetMapCode.Ended:
                     StateMachine.SwitchState(new ExitState(StateMachine));
@@ -74,24 +74,50 @@ namespace StateMachine.Rogue
         }
         private void Load()
         {
+            if (SavedInfo == null || !SavedInfo.IsValid)
+            {
+                StateMachine.SwitchState(new FailureState(StateMachine, "Save data is missing or invalid."));
+                return;
+            }
             StateMachine.Context.LayerProgression.SetLayer(SavedInfo.CurrentLayer);
             switch ( StateMachine.Context.ConfigRepository.TryGetMap(
                 SavedInfo.CurrentMapID,out Config.Map map))
             {
                 case GetMapCode.SucceededToGet:
+                    if (!ContainsSavedNode(map))
+                    {
+                        StateMachine.SwitchState(new FailureState(
+                            StateMachine, $"Saved node '{SavedInfo.CurrentNodeID}' was not found in the map."));
+                        break;
+                    }
                     StateMachine.SwitchState(new BuildMapState(StateMachine, map));
                     break;
                 case GetMapCode.FailedToGet:
-                    StateMachine.SwitchState(new FailureState(StateMachine));
+                    StateMachine.SwitchState(new FailureState(StateMachine, $"Saved map '{SavedInfo.CurrentMapID.Value}' could not be loaded."));
                     break;
                 case GetMapCode.InvaildMapID:
-                    StateMachine.SwitchState(new FailureState(StateMachine));
+                    StateMachine.SwitchState(new FailureState(StateMachine, "Saved map ID is invalid."));
                     break;
                 case GetMapCode.Ended:
                     StateMachine.SwitchState(new ExitState(StateMachine));
                     break;
             }
             return;
+        }
+        private bool ContainsSavedNode(Config.Map map)
+        {
+            if (map?.Nodes == null)
+            {
+                return false;
+            }
+            foreach (Config.Node node in map.Nodes)
+            {
+                if (node != null && node.NodeID == SavedInfo.CurrentNodeID)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

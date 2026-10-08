@@ -1,4 +1,5 @@
 using Running;
+using UnityEngine;
 namespace StateMachine.Node
 {
     public class FailureState : NodeState
@@ -11,7 +12,9 @@ namespace StateMachine.Node
         public override void Enter()
         {
             base.Enter();
+            Debug.LogError($"Node '{StateMachine.Node?.ID}' failed: {ErrorCode}.");
             ClearAllVisual();
+            EventBus.Publish(new ENodeFailed(StateMachine.Node?.ID, ErrorCode));
         }
         public override void Exit()
         {
@@ -19,10 +22,22 @@ namespace StateMachine.Node
         }
         private void ClearAllVisual()
         {
+            if (StateMachine.Node == null)
+            {
+                return;
+            }
             while (StateMachine.Node.EnteredComponents.Count > 0)
             {
                 IComponent cmp = StateMachine.Node.EnteredComponents.Dequeue();
-                cmp.ExitOnNodeEnd();
+                if (cmp == null) continue;
+                try
+                {
+                    cmp.ExitOnNodeEnd();
+                }
+                catch (System.Exception exception)
+                {
+                    Debug.LogException(exception);
+                }
             }
         }
     }

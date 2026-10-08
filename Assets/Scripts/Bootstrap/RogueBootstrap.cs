@@ -33,17 +33,34 @@ public class RogueBootstrap : MonoBehaviour
             Position = node.Position
         };
     }
-    public void InitStateMachine(CoreContext coreContext,EnterRogueMode mode=EnterRogueMode.New,SavedInfo savedInfo=null)
+    public bool InitStateMachine(CoreContext coreContext,EnterRogueMode mode=EnterRogueMode.New,SavedInfo savedInfo=null)
     {
-        if (PlayerParent == null)
+        if (coreContext == null || coreContext.InputManager == null ||
+            coreContext.AssetBundleManager == null || coreContext.AudioSystem == null ||
+            coreContext.SettingService?.Config?.DeveloperSetting == null ||
+            PlayerParent == null || RogueMapParent == null || RogueCamera == null)
         {
-            Debug.LogError("RogueController initialization failed: PlayerParent is null.");
-            return;
+            Debug.LogError("RogueController initialization failed: a required dependency is null.");
+            return false;
         }
-        StateMachine = new RogueStateMachine();
-        InjectContextDependency(coreContext.SettingService);
-        RegisterStates(coreContext,mode,savedInfo);
-        StateMachine.SwitchState<StateMachine.Rogue.InitState>();
+        try
+        {
+            StateMachine = new RogueStateMachine();
+            InjectContextDependency(coreContext.SettingService);
+            foreach (var input in FindObjectsByType<Rogue.Input.Rogue2DFunction>(
+                FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                input.BindInputManager(coreContext.InputManager);
+            }
+            RegisterStates(coreContext,mode,savedInfo);
+            StateMachine.SwitchState<StateMachine.Rogue.InitState>();
+            return true;
+        }
+        catch (System.Exception exception)
+        {
+            Debug.LogException(exception);
+            return false;
+        }
     }
     private void InjectContextDependency(SettingService settingService)
     {

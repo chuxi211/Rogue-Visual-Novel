@@ -1,4 +1,6 @@
 using Running;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace StateMachine.Node
@@ -7,6 +9,7 @@ namespace StateMachine.Node
     {
         private Step Step;
         private bool HasRequestedAdvance = false;
+        private readonly List<IComponent> ActivatedComponents = new List<IComponent>();
         public AdvanceState(NodeStateMachine stateMachine, Step step) : base(stateMachine)
         {
             Step = step;
@@ -18,34 +21,51 @@ namespace StateMachine.Node
         public override void Enter()
         {
             base.Enter();
+            if (Step?.ComponentsList == null)
+            {
+                StateMachine.SwitchState(new FailureState(StateMachine, NodeErrorCode.InvalidStep));
+                return;
+            }
             EventBus.Subscript<ERequestStepByID>(OnRequestStepByID);
             EventBus.Subscript<ERequestNextStep>(OnRequestNextStep);
 
-            Step.ComponentsList.ForEach(component =>
+            foreach (IComponent component in Step.ComponentsList)
             {
                 if (component == null)
                 {
-                    Debug.LogError("Some Component is null");
+                    StateMachine.SwitchState(new FailureState(StateMachine, NodeErrorCode.InvalidComponent));
                     return;
                 }
-                component.Enter();
+                ActivatedComponents.Add(component);
                 StateMachine.Node.AddEnteredComponent(component);
-            });
+                try
+                {
+                    component.Enter();
+                }
+                catch (Exception exception)
+                {
+                    Debug.LogException(exception);
+                    StateMachine.SwitchState(new FailureState(StateMachine, NodeErrorCode.InvalidComponent));
+                    return;
+                }
+            }
         }
         public override void Exit()
         {
             base.Exit();
-            Step.ComponentsList.ForEach(component =>
-            {
-                if (component == null)
-                {
-                    Debug.LogError("Some Component is null");
-                    return;
-                }
-                component.ExitOnStepEnd();
-            });
             EventBus.Unsubscript<ERequestStepByID>(OnRequestStepByID);
             EventBus.Unsubscript<ERequestNextStep>(OnRequestNextStep);
+            foreach (IComponent component in ActivatedComponents)
+            {
+                try
+                {
+                    component.ExitOnStepEnd();
+                }
+                catch (Exception exception)
+                {
+                    Debug.LogException(exception);
+                }
+            }
         }
         private void OnRequestStepByID(ERequestStepByID e)
         {

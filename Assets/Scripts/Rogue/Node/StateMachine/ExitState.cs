@@ -1,4 +1,6 @@
 using Running;
+using System;
+using UnityEngine;
 
 namespace StateMachine.Node
 {
@@ -11,8 +13,16 @@ namespace StateMachine.Node
         public override void Enter()
         {
             base.Enter();
-            ClearAllVisual();
-            EventBus.Publish(new ENodeCompleted());
+            try
+            {
+                ClearAllVisual();
+                EventBus.Publish(new ENodeCompleted());
+            }
+            catch (Exception exception)
+            {
+                Debug.LogException(exception);
+                StateMachine.SwitchState(new FailureState(StateMachine, NodeErrorCode.InvalidComponent));
+            }
         }
         private void ClearAllVisual()
         {

@@ -1,5 +1,7 @@
 using Config;
+using System;
 using Utility;
+using UnityEngine;
 
 public class ConfigRepository
 {
@@ -14,39 +16,46 @@ public class ConfigRepository
     public GetMapCode TryGetLayerMapGroup(int layer, out LayerMapGroup layerMap)
     {
         if (MapConfigTable.TryGetMapGroup(layer, out layerMap)) return GetMapCode.SucceededToGet;
-        if (!LayerMapLoader.TryLoad(LayerToBundleName(layer), LayerToAssetName(layer), out layerMap)) return GetMapCode.FailedToGet;
+        try
+        {
+            if (!LayerMapLoader.TryLoad(LayerToBundleName(layer), LayerToAssetName(layer), out layerMap))
+                return GetMapCode.FailedToGet;
+        }
+        catch (Exception exception)
+        {
+            Debug.LogException(exception);
+            layerMap = null;
+            return GetMapCode.FailedToGet;
+        }
         MapConfigTable.Add(layer, layerMap); return GetMapCode.SucceededToGet;
     }
     public GetMapCode TryGetMap(MapID mapID, out Config.Map map)
     {
         map = null;
-        if (mapID == null)
+        if (!mapID.IsValid)
         {
             return GetMapCode.InvaildMapID;
         }
-        if (MapConfigTable.TryGetMap(mapID, out map))
+        if (MapConfigTable.TryGetMap(mapID, out map) && map != null)
         {
-            if (map.ID == mapID)
+            return GetMapCode.SucceededToGet;
+        }
+
+        if (TryGetLayerMapGroup(mapID.LayerNumber, out LayerMapGroup group) != GetMapCode.SucceededToGet ||
+            group == null || group.Variants == null)
+        {
+            return GetMapCode.FailedToGet;
+        }
+        foreach (Map variant in group.Variants)
+        {
+            if (variant != null && variant.ID == mapID)
             {
+                map = variant;
+                MapConfigTable.Add(mapID, map);
                 return GetMapCode.SucceededToGet;
-            }
-            else
-            {
-                return GetMapCode.FailedToGet;
             }
         }
         return GetMapCode.FailedToGet;
-        //if (!LayerMapLoader.TryLoad(LayerToBundleName(mapID.Layer), LayerToAssetName(mapID.Layer), out LayerMapGroup layerMapGroup))
-        //{
-        //    return GetMapCode.FailedToGet;
-        //}
-        //MapConfigTable.Add(mapID.Layer, layerMapGroup);
-        //MapConfigTable.TryGetMap(mapID.Layer, out map);
-        //if (map == null || map.ID != mapID)
-        //{
-        //    return GetMapCode.FailedToGet;
-        //}
-        //return GetMapCode.SucceededToGet;
     }
     public GetMapCode TryGetMap(int layer,int maxlayer, out Map map)
     {
@@ -64,12 +73,11 @@ public class ConfigRepository
             return GetMapCode.SucceededToGet;
         }
 
-        if (!LayerMapLoader.TryLoad(LayerToBundleName(layer), LayerToAssetName(layer), out LayerMapGroup layerMapGroup))
+        if (TryGetLayerMapGroup(layer, out LayerMapGroup layerMapGroup) != GetMapCode.SucceededToGet ||
+            layerMapGroup == null)
         {
             return GetMapCode.FailedToGet;
         }
-
-        MapConfigTable.Add(layer, layerMapGroup);
         MapConfigTable.TryGetMap(layer, out map);
         if(map == null)
         {

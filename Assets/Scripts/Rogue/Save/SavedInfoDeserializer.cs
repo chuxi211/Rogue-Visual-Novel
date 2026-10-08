@@ -16,29 +16,66 @@ namespace Running
         }
         public SavedErrorCode TryDeserialise(int index, out SavedInfo savedInfo)
         {
-            string path = Path.Combine(SavedInfoDire, $"{SavedInfoName}_{index}.json");
-            if (!File.Exists(path))
+            savedInfo = null;
+            if (index < 0)
             {
-                savedInfo = null;
-                return SavedErrorCode.FileNotFound;
+                return SavedErrorCode.InvalidSlot;
+            }
+            if (string.IsNullOrWhiteSpace(SavedInfoDire) || string.IsNullOrWhiteSpace(SavedInfoName))
+            {
+                return SavedErrorCode.InvalidPath;
+            }
+            string path;
+            try
+            {
+                path = Path.Combine(SavedInfoDire, $"{SavedInfoName}_{index}.json");
+            }
+            catch (ArgumentException)
+            {
+                return SavedErrorCode.InvalidPath;
+            }
+            catch (NotSupportedException)
+            {
+                return SavedErrorCode.InvalidPath;
             }
             try
             {
                 string jsonFile = File.ReadAllText(path);
                 savedInfo = JsonUtility.FromJson<SavedInfo>(jsonFile);
+                if (savedInfo == null || !savedInfo.IsValid)
+                {
+                    savedInfo = null;
+                    return SavedErrorCode.InvalidData;
+                }
                 return SavedErrorCode.Success;
+            }
+            catch (FileNotFoundException)
+            {
+                return SavedErrorCode.FileNotFound;
+            }
+            catch (DirectoryNotFoundException)
+            {
+                return SavedErrorCode.FileNotFound;
             }
             catch (UnauthorizedAccessException)
             {
-                Debug.LogError($"FatalError: Unauthorize to read file:{path}");
-                savedInfo = null;
+                return SavedErrorCode.UnauthorizedAccess;
+            }
+            catch (System.Security.SecurityException)
+            {
                 return SavedErrorCode.UnauthorizedAccess;
             }
             catch (IOException)
             {
-                Debug.LogError($"FatalError: IO error when reading file:{path}");
-                savedInfo = null;
                 return SavedErrorCode.IOError;
+            }
+            catch (ArgumentException)
+            {
+                return SavedErrorCode.InvalidData;
+            }
+            catch (NotSupportedException)
+            {
+                return SavedErrorCode.InvalidPath;
             }
         }
     }

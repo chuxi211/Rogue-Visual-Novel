@@ -7,6 +7,7 @@ using StateMachine.Core;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Utility;
 
 public class CoreBootstrap : MonoBehaviour
 {
@@ -36,16 +37,71 @@ public class CoreBootstrap : MonoBehaviour
     {
         if (Instance != null && Instance != this)
         {
+            Instance.RebindMainMenuScene(this);
             Destroy(gameObject);
             return;
         }
         Instance = this;
         DontDestroyOnLoad(Instance);
-        DontDestroyOnLoad(AudioPlayers);
-        DontDestroyOnLoad(SettingArea);
-        DontDestroyOnLoad(SavedPanel.transform.parent.gameObject);
+        if (AudioPlayers != null) DontDestroyOnLoad(AudioPlayers);
+        if (SettingArea != null) DontDestroyOnLoad(SettingArea);
+        if (SavedPanel != null) DontDestroyOnLoad(SavedPanel.transform.root.gameObject);
         InitCoreStateMachine();
         LogApplicationInfo();
+    }
+    private void RebindMainMenuScene(CoreBootstrap sceneBootstrap)
+    {
+        if (StateMachine?.Context == null)
+        {
+            Debug.LogError("Cannot rebind MainMenu: CoreStateMachine is unavailable.");
+            return;
+        }
+
+        if (StateMachine.Context.InputManager == null || StateMachine.Context.SettingService?.Config?.DeveloperSetting == null)
+        {
+            Debug.LogError("Cannot rebind MainMenu: input or settings are unavailable.");
+            return;
+        }
+
+        Menu = sceneBootstrap.Menu;
+        GalleryCnvsGrp = sceneBootstrap.GalleryCnvsGrp;
+        CGPlayer = sceneBootstrap.CGPlayer;
+        MainMenuInputs = sceneBootstrap.MainMenuInputs;
+        StateMachine.RegisterState(new StateMachine.Core.MainMenuState(StateMachine, Menu));
+        if (sceneBootstrap.CGPlayer != null)
+        {
+            sceneBootstrap.CGPlayer.InitCGLoader(new CGLoader(StateMachine.Context.AssetBundleManager));
+            StateMachine.RegisterState(new GalleryModeState(
+                StateMachine, sceneBootstrap.GalleryCnvsGrp, sceneBootstrap.CGPlayer));
+        }
+        if (sceneBootstrap.MainMenuInputs != null)
+        {
+            foreach (MainMenuInput input in sceneBootstrap.MainMenuInputs)
+            {
+                if (input == null) continue;
+                input.BindInput(StateMachine.Context.InputManager);
+                input.InitSE(
+                    StateMachine.Context.SettingService.Config.DeveloperSetting.ButtonSE,
+                    StateMachine.Context.AudioSystem);
+            }
+        }
+
+        if (sceneBootstrap.SavedPanel != null)
+        {
+            sceneBootstrap.SavedPanel.transform.root.gameObject.SetActive(false);
+            Destroy(sceneBootstrap.SavedPanel.transform.root.gameObject);
+        }
+        if (sceneBootstrap.SettingArea != null)
+        {
+            sceneBootstrap.SettingArea.root.gameObject.SetActive(false);
+            Destroy(sceneBootstrap.SettingArea.root.gameObject);
+        }
+        if (sceneBootstrap.AudioPlayers != null)
+            Destroy(sceneBootstrap.AudioPlayers.root.gameObject);
+        if (sceneBootstrap.InputCollector != null)
+            Destroy(sceneBootstrap.InputCollector.gameObject);
+        if (sceneBootstrap.InputManager != null)
+            Destroy(sceneBootstrap.InputManager.gameObject);
     }
     private void OnDestroy()
     {
