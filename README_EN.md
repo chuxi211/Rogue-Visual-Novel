@@ -71,23 +71,23 @@ Counts reflect the current working tree under `Assets/Scripts/`. Type declaratio
 Hello,here's XI(Hsin or Eleven, as you like).I would be honored if you can see it.This might take up some of your time because this is some meaningless
 content, so if you don't want to read it, please just ignore this part.
 
-Origianlly,this project was prepared for 21days-Gamejam.However,it don't as a entry because of the misjudgement of my ability an time.What's worse is
+Originally,this project was prepared for 21-day Gamejam.However,it was not submitted as a entry because of the misjudgement of my ability and time.What's worse is
 that the completion date has been pushed from July 2026 all the way to October 2026.
 
-Originally,I thought I could prepare Examination and this project(include code,screenwrite,art and other) at the same time,but now,It's obviously
-imposible.Just the code alone took me a few months.
+Originally,I thought I could prepare for exams and work on this project(include code,screenwrite,art and other) at the same time,but now,It's obviously
+impossible.Just the code alone took me a few months.
 
-There are a mount of question in this project.Example:chaotic namespace,chaotic file organization,no assembly devision, no GameManager and an
-architecture that's not particularly great.Everyone is a drawback for program.(Please stop making fun of this coding,guys.This code,was all writen by me,
+There are many problems in this project.Example:chaotic namespace,chaotic file organization,no assembly definitions, no GameManager and an
+architecture that's not particularly great.Each of this is a drawback for the project.(Please stop making fun of this coding,guys.This code,was all written by me,
 line by line.Meme.jpg)
 
 I even feel that I'm getting worse and worse at coding.Every time I'm about to finish, the feeling of opening the editor and not being able to write
 anything for an hour hits me extra hard.
 
-Then,I want to have a little talk about the relatation between game and developer.In my view,It's necessary to tast the game for developer,Obviously.But
+Then,I want to have a little talk about the relatationship between games and developers.In my view,It's necessary to play their game for developer,Obviously.But
 I feel like this sentence can only be directed at planners or the person in the team who comes up with ideas or takes responsibility. For others (at
 least programmers, or at least from my personal perspective), I don't think this should be something they have to do. Please allow me to express this
-somewhat extreme opinion. At least for me, I wouldn't go through something that makes writing it incredibly painful. I can say this because the
+somewhat extreme opinion. At least for me, I wouldn't want to play a game that was painful for me to develop. I can say this because the
 development process is obviously not enjoyable.I'm sorry.It's my problem.Maybe I shouldn't talk about it in here.It's just my rant but I really,really
 want to say it out.
 
